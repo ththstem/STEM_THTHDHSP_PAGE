@@ -322,43 +322,36 @@
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
         // API UPLOAD ẢNH BANNER LÊN CLOUD
-        async function uploadFileToCloudinary(event, targetInputId, statusElemId) {
+        // HÀM CHUYỂN ẢNH THÀNH BASE64 (DÙNG Y HỆT DỰ ÁN KHO)
+        function uploadFileToCloudinary(event, targetInputId, statusElemId) {
             const file = event.target.files[0];
             if (!file) return;
-
+        
             const statusEl = document.getElementById(statusElemId);
             if (statusEl) {
                 statusEl.className = "text-xs mb-2 font-medium text-amber-400";
-                statusEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Đang tải ảnh lên Cloud...`;
+                statusEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Đang tải ảnh...`;
             }
-
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('upload_preset', UPLOAD_PRESET);
-
-            try {
-                const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
-                    method: 'POST',
-                    body: formData
-                });
-                const data = await res.json();
-
-                if (data.secure_url) {
-                    document.getElementById(targetInputId).value = data.secure_url;
-                    if (statusEl) {
-                        statusEl.className = "text-xs mb-2 font-medium text-emerald-400";
-                        statusEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> Tải ảnh lên thành công!`;
-                    }
-                } else {
-                    throw new Error("Upload error");
+        
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+        
+            reader.onload = function (e) {
+                // Gán trực tiếp chuỗi Base64 vào ô input URL
+                document.getElementById(targetInputId).value = e.target.result;
+        
+                if (statusEl) {
+                    statusEl.className = "text-xs mb-2 font-medium text-emerald-400";
+                    statusEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> Đã tải ảnh thành công! Bấm "Lưu Banner" nhé.`;
                 }
-            } catch (err) {
-                console.error(err);
+            };
+        
+            reader.onerror = function () {
                 if (statusEl) {
                     statusEl.className = "text-xs mb-2 font-medium text-rose-500";
-                    statusEl.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Tải ảnh thất bại! Vui lòng thử dán trực tiếp link URL ảnh.`;
+                    statusEl.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Không thể đọc tệp ảnh này!`;
                 }
-            }
+            };
         }
 
         // API UPLOAD BỘ BÀI ĐĂNG BLOG LÊN CLOUD
