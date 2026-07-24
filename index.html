@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- TÊN PAGE TRÊN TAB TRÌNH DUYỆT -->
     <title>CLB STEM THTH ĐHSP</title>
 
-    <!-- FAVICON (LOGO CLB TRÊN TAB TRÌNH DUYỆT) -->
+    <!-- FAVICON -->
     <link rel="icon" type="image/png" href="STEM_THTHDHSP_LOGO.png">
     <link rel="shortcut icon" type="image/png" href="STEM_THTHDHSP_LOGO.png">
     <link rel="apple-touch-icon" href="STEM_THTHDHSP_LOGO.png">
@@ -17,7 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- FIREBASE SDK (COMPAT VERSION) -->
+    <!-- FIREBASE SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
@@ -92,7 +90,7 @@
         <p>© 2026 Câu Lạc Bộ STEM Trường Trung Học Thực Hành – Đại Học Sư Phạm.</p>
     </footer>
 
-    <!-- LIGHTBOX POPUP XEM ẢNH FULL -->
+    <!-- LIGHTBOX POPUP -->
     <div id="lightbox" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4 backdrop-blur-md cursor-zoom-out" onclick="closeLightbox()">
         <img id="lightbox-img" src="" class="max-w-full max-h-[90vh] rounded-2xl shadow-2xl object-contain border border-slate-800">
     </div>
@@ -141,13 +139,12 @@
                     </div>
                 </div>
 
-                <!-- UPLOAD NHIỀU ẢNH ART GALLERY -->
                 <div class="space-y-3 bg-slate-950/50 p-4 rounded-2xl border border-slate-800/80">
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Bộ Sưu Tập Ảnh (Upload trực tiếp)</label>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Bộ Sưu Tập Ảnh (Upload từ máy tính)</label>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
                             <input type="file" id="form-image-files" accept="image/*" multiple onchange="handleMultipleImagesUpload(event)" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-500 cursor-pointer">
-                            <span id="upload-loading-text" class="text-[10px] text-slate-500 mt-1 block">* Chọn ảnh từ máy tính để tự động upload</span>
+                            <span id="upload-loading-text" class="text-[10px] text-slate-500 mt-1 block">* Chọn ảnh để tải trực tiếp từ máy tính</span>
                         </div>
                         <div>
                             <textarea id="form-image-urls" rows="2" placeholder="Hoặc dán thêm link URL ảnh (mỗi link 1 dòng)" oninput="updatePreviewFromText()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500"></textarea>
@@ -157,8 +154,8 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Tóm tắt ngắn (Hỗ trợ xuống dòng tự do)</label>
-                    <textarea id="form-summary" rows="4" required placeholder="🎨 TẠI WORKSHOP BẠN SẼ:&#10;• Tự tay vẽ...&#10;• Trải nghiệm..." class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 leading-relaxed"></textarea>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Tóm tắt ngắn</label>
+                    <textarea id="form-summary" rows="4" required placeholder="Nhập mô tả tóm tắt bài viết..." class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 leading-relaxed"></textarea>
                 </div>
 
                 <div>
@@ -168,7 +165,7 @@
 
                 <div class="flex justify-end gap-3 pt-4 border-t border-slate-800">
                     <button type="button" onclick="closeModal('item-modal')" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition">Hủy bỏ</button>
-                    <button type="submit" id="btn-submit-post" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-xs transition shadow-lg shadow-blue-600/20">Lưu & Đăng Bài lên Firebase</button>
+                    <button type="submit" id="btn-submit-post" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-xs transition shadow-lg shadow-blue-600/20">Lưu & Đăng Bài</button>
                 </div>
             </form>
         </div>
@@ -188,13 +185,14 @@
                     <textarea id="hero-desc" rows="3" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none"></textarea>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Link Ảnh Hero hoặc Chọn Tệp Upload</label>
-                    <input type="file" accept="image/*" onchange="uploadHeroImage(event)" class="mb-2 w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:bg-amber-600 file:text-white">
-                    <input type="text" id="hero-image-url" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" placeholder="Link ảnh">
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Tải Ảnh Banner từ Máy Tính</label>
+                    <input type="file" accept="image/*" onchange="uploadHeroImage(event)" class="mb-2 w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:bg-amber-600 file:text-white cursor-pointer">
+                    <span id="hero-upload-status" class="text-[10px] text-slate-400 block mb-2"></span>
+                    <input type="text" id="hero-image-url" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" placeholder="Hoặc dán Link ảnh">
                 </div>
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeModal('hero-modal')" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl text-xs font-semibold">Hủy</button>
-                    <button type="submit" class="px-5 py-2 bg-amber-600 hover:bg-amber-500 text-white font-semibold rounded-xl text-xs shadow-lg">Lưu Banner</button>
+                    <button type="submit" id="btn-save-hero" class="px-5 py-2 bg-amber-600 hover:bg-amber-500 text-white font-semibold rounded-xl text-xs shadow-lg">Lưu Banner</button>
                 </div>
             </form>
         </div>
@@ -209,9 +207,8 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // CLOUDINARY CONFIG
-        const CLOUDINARY_UPLOAD_PRESET = "ml_default"; 
-        const CLOUDINARY_CLOUD_NAME = "demo"; 
+        // API KEY UPLOAD ẢNH TỰ ĐỘNG (ImgBB Free API)
+        const IMGBB_API_KEY = "19602fa4ca7903dbca73eaec711a56ea";
 
         const ADMIN_PIN_HASH = "c6f79918cdb313adf1017aece79c61f17fb7ce934ed56a3deb0e7d1d4f1f502a";
         
@@ -222,8 +219,8 @@
 
         const defaultData = {
             hero: {
-                title: "Khám Phá Sáng Tạo STEM & Công Nghệ Sang Tạo",
-                desc: "Chào mừng bạn đến với không gian chia sẻ kiến thức, dự án nghiên cứu và các hoạt động trải nghiệm thực tế từ các thành viên CLB STEM THTH - ĐHSP.",
+                title: "CLB STEM THTH ĐHSP",
+                desc: "Chào mừng bạn đến với không gian chia sẻ kiến thức, dự án và các hoạt động của CLB STEM THTH ĐHSP.",
                 images: ["https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1600&q=80"]
             },
             sp: [],
@@ -232,7 +229,6 @@
 
         let appData = defaultData;
 
-        // Cập nhật thời gian thực
         function updateTimestamp() {
             const now = new Date();
             const timeStr = now.toLocaleTimeString('vi-VN') + ' - ' + now.toLocaleDateString('vi-VN');
@@ -240,7 +236,6 @@
             if (el) el.innerText = timeStr;
         }
 
-        // READ DATA FROM FIREBASE
         db.ref('stem_club').on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -316,61 +311,75 @@
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
+        // TẢI ẢNH BÀI ĐĂNG TỪ MÁY TÍNH LÊN MÂY
         async function handleMultipleImagesUpload(event) {
             const files = event.target.files;
             if (!files.length) return;
 
             const textStatus = document.getElementById('upload-loading-text');
             const submitBtn = document.getElementById('btn-submit-post');
-            textStatus.innerText = "⏳ Đang upload ảnh lên mây, vui lòng chờ...";
+            textStatus.innerText = "⏳ Đang tải ảnh từ máy tính lên mây...";
             textStatus.className = "text-[10px] text-amber-400 mt-1 block font-semibold animate-pulse";
             submitBtn.disabled = true;
 
             for (let file of files) {
                 const formData = new FormData();
-                formData.append('file', file);
-                formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+                formData.append('image', file);
 
                 try {
-                    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+                    const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
                         method: 'POST',
                         body: formData
                     });
-                    const data = await res.json();
-                    if (data.secure_url) {
-                        currentUploadedImages.push(data.secure_url);
+                    const result = await res.json();
+                    if (result.success) {
+                        currentUploadedImages.push(result.data.url);
                     }
                 } catch (err) {
                     console.error("Lỗi upload:", err);
                 }
             }
 
-            textStatus.innerText = "✅ Đã tải ảnh lên thành công!";
+            textStatus.innerText = "✅ Tải ảnh thành công!";
             textStatus.className = "text-[10px] text-emerald-400 mt-1 block font-semibold";
             submitBtn.disabled = false;
             renderPreviewImages();
         }
 
+        // TẢI ẢNH HERO BANNER TỪ MÁY TÍNH LÊN MÂY
         async function uploadHeroImage(event) {
             const file = event.target.files[0];
             if (!file) return;
 
+            const statusText = document.getElementById('hero-upload-status');
+            const saveBtn = document.getElementById('btn-save-hero');
+            
+            statusText.innerText = "⏳ Đang tải ảnh lên...";
+            statusText.className = "text-[10px] text-amber-400 block mb-2 font-semibold animate-pulse";
+            saveBtn.disabled = true;
+
             const formData = new FormData();
-            formData.append('file', file);
-            formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+            formData.append('image', file);
 
             try {
-                const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
                     method: 'POST',
                     body: formData
                 });
-                const data = await res.json();
-                if (data.secure_url) {
-                    document.getElementById('hero-image-url').value = data.secure_url;
+                const result = await res.json();
+                if (result.success) {
+                    document.getElementById('hero-image-url').value = result.data.url;
+                    statusText.innerText = "✅ Đã tải ảnh lên thành công!";
+                    statusText.className = "text-[10px] text-emerald-400 block mb-2 font-semibold";
+                } else {
+                    statusText.innerText = "❌ Tải ảnh thất bại!";
+                    statusText.className = "text-[10px] text-red-400 block mb-2 font-semibold";
                 }
             } catch (err) {
-                alert("Upload thất bại!");
+                statusText.innerText = "❌ Lỗi kết nối khi tải ảnh!";
+                statusText.className = "text-[10px] text-red-400 block mb-2 font-semibold";
             }
+            saveBtn.disabled = false;
         }
 
         function updatePreviewFromText() {
@@ -475,19 +484,31 @@
             document.getElementById('hero-title').value = hero.title;
             document.getElementById('hero-desc').value = hero.desc;
             document.getElementById('hero-image-url').value = hero.images ? hero.images[0] : '';
+            document.getElementById('hero-upload-status').innerText = '';
             openModal('hero-modal');
         }
 
         function handleHeroSubmit(e) {
             e.preventDefault();
+            const imageUrl = document.getElementById('hero-image-url').value.trim() || "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1600&q=80";
+            
             appData.hero = {
                 title: document.getElementById('hero-title').value,
                 desc: document.getElementById('hero-desc').value,
-                images: [document.getElementById('hero-image-url').value]
+                images: [imageUrl]
             };
             saveData();
             closeModal('hero-modal');
             render();
+        }
+
+        function openLightbox(src) {
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox').classList.remove('hidden');
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.add('hidden');
         }
 
         function render() {
@@ -535,8 +556,8 @@
                             </div>
                         </div>
 
-                        <div class="md:w-1/2 w-full aspect-16-9 rounded-2xl overflow-hidden border border-slate-800 shadow-2xl relative group">
-                            <img src="${hero.images ? hero.images[0] : ''}" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+                        <div class="md:w-1/2 w-full aspect-16-9 rounded-2xl overflow-hidden border border-slate-800 shadow-2xl relative group bg-slate-950">
+                            <img src="${hero.images ? hero.images[0] : ''}" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" onclick="openLightbox(this.src)">
                         </div>
                     </div>
                 </div>
@@ -571,7 +592,7 @@
                 const coverImg = (item.images && item.images.length > 0) ? item.images[0] : '';
                 html += `
                     <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl hover:border-slate-700 transition duration-300 flex flex-col group">
-                        <div class="aspect-16-9 overflow-hidden relative cursor-pointer" onclick="goDetail('${currentCategory}', '${item.id}')">
+                        <div class="aspect-16-9 overflow-hidden relative cursor-pointer bg-slate-950" onclick="goDetail('${currentCategory}', '${item.id}')">
                             <img src="${coverImg}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                             <span class="absolute top-4 left-4 px-3 py-1 bg-slate-950/80 backdrop-blur-md border border-slate-800 text-blue-400 text-[10px] font-bold rounded-full uppercase">
                                 ${item.author || 'STEM Club'}
@@ -644,7 +665,7 @@
                             <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider"><i class="fa-solid fa-images"></i> Hình Ảnh Bộ Sưu Tập</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 ${item.images.map(img => `
-                                    <div class="aspect-16-9 rounded-2xl overflow-hidden border border-slate-800 cursor-zoom-in group" onclick="openLightbox('${img}')">
+                                    <div class="aspect-16-9 rounded-2xl overflow-hidden border border-slate-800 cursor-zoom-in group bg-slate-950" onclick="openLightbox('${img}')">
                                         <img src="${img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                                     </div>
                                 `).join('')}
