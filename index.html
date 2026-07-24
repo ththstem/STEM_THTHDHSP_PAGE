@@ -140,16 +140,17 @@
                 </div>
 
                 <div class="space-y-3 bg-slate-950/50 p-4 rounded-2xl border border-slate-800/80">
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Ảnh Bài Đăng</label>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div>
-                            <input type="file" id="form-image-files" accept="image/*" multiple onchange="handleBase64ImageUpload(event)" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-500 cursor-pointer">
-                            <span id="upload-loading-text" class="text-[10px] text-slate-500 mt-1 block">Chọn ảnh từ máy (Tối đa 2MB/ảnh)</span>
-                        </div>
-                        <div>
-                            <textarea id="form-image-urls" rows="2" placeholder="Hoặc dán URL ảnh (mỗi URL 1 dòng)" oninput="updatePreviewFromText()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500"></textarea>
-                        </div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Tải Ảnh Bài Đăng</label>
+                    
+                    <input type="file" accept="image/*" multiple onchange="uploadMultipleFilesToCloudinary(event)" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-500 cursor-pointer">
+                    
+                    <p id="blog-upload-status" class="text-xs font-medium"></p>
+
+                    <div>
+                        <label class="block text-[11px] text-slate-500 mb-1">Hoặc dán thủ công danh sách URL ảnh (mỗi link 1 dòng):</label>
+                        <textarea id="form-image-urls" rows="2" placeholder="https://example.com/image1.jpg" oninput="updatePreviewFromText()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500"></textarea>
                     </div>
+
                     <div id="gallery-preview-container" class="grid grid-cols-3 md:grid-cols-4 gap-2 pt-2"></div>
                 </div>
 
@@ -185,9 +186,12 @@
                     <textarea id="hero-desc" rows="3" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none"></textarea>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Chọn Ảnh Banner Từ Máy Tính</label>
-                    <input type="file" accept="image/*" onchange="uploadHeroBase64(event)" class="mb-2 w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:bg-amber-600 file:text-white cursor-pointer">
-                    <input type="text" id="hero-image-url" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" placeholder="Hoặc dán Link/URL ảnh trực tiếp">
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Tải Ảnh Banner Từ Máy Tính hoặc Dán Link URL</label>
+                    <input type="file" accept="image/*" onchange="uploadFileToCloudinary(event, 'hero-image-url', 'hero-upload-status')" class="mb-2 w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:bg-amber-600 file:text-white cursor-pointer">
+                    
+                    <p id="hero-upload-status" class="text-xs mb-2 font-medium"></p>
+
+                    <input type="text" id="hero-image-url" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" placeholder="Đường dẫn URL ảnh sẽ xuất hiện ở đây...">
                 </div>
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeModal('hero-modal')" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl text-xs font-semibold">Hủy</button>
@@ -199,6 +203,10 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
+        // CONFIG CLOUDINARY UPLOAD API
+        const CLOUD_NAME = "demo"; 
+        const UPLOAD_PRESET = "docs_upload_example_us_preset"; 
+
         // FIREBASE REALTIME DATABASE CONFIG
         const firebaseConfig = {
             databaseURL: "https://stem-ththdhsp-page-default-rtdb.asia-southeast1.firebasedatabase.app/"
@@ -208,7 +216,7 @@
 
         const ADMIN_PIN_HASH = "c6f79918cdb313adf1017aece79c61f17fb7ce934ed56a3deb0e7d1d4f1f502a";
         
-        // ĐỌC TRẠNG THÁI ADMIN TỪ LOCALSTORAGE ĐỂ KHÔNG BỊ SIGN OUT KHI RELOAD TRANG
+        // GIỮ TRẠNG THÁI ADMIN BẰNG LOCALSTORAGE KHÔNG BỊ SIGN OUT KHI RELOAD
         let isAdmin = localStorage.getItem('stem_admin_logged') === 'true';
         let currentCategory = 'home'; 
         let currentDetailId = null;
@@ -313,49 +321,89 @@
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-        // ĐỌC ẢNH BẰNG BASE64 - 100% THÀNH CÔNG DÙ KHÔNG CÓ SERVER
-        function handleBase64ImageUpload(event) {
-            const files = event.target.files;
-            if (!files.length) return;
-
-            Array.from(files).forEach(file => {
-                if (file.size > 3 * 1024 * 1024) {
-                    alert(`Ảnh "${file.name}" dung lượng lớn hơn 3MB, hãy chọn ảnh nhẹ hơn để tải nhanh hơn nhé!`);
-                    return;
-                }
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    currentUploadedImages.push(e.target.result);
-                    renderPreviewImages();
-                };
-                reader.readAsDataURL(file);
-            });
-        }
-
-        function uploadHeroBase64(event) {
+        // API UPLOAD ẢNH BANNER LÊN CLOUD
+        async function uploadFileToCloudinary(event, targetInputId, statusElemId) {
             const file = event.target.files[0];
             if (!file) return;
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('hero-image-url').value = e.target.result;
-            };
-            reader.readAsDataURL(file);
+            const statusEl = document.getElementById(statusElemId);
+            if (statusEl) {
+                statusEl.className = "text-xs mb-2 font-medium text-amber-400";
+                statusEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Đang tải ảnh lên Cloud...`;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', UPLOAD_PRESET);
+
+            try {
+                const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+
+                if (data.secure_url) {
+                    document.getElementById(targetInputId).value = data.secure_url;
+                    if (statusEl) {
+                        statusEl.className = "text-xs mb-2 font-medium text-emerald-400";
+                        statusEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> Tải ảnh lên thành công!`;
+                    }
+                } else {
+                    throw new Error("Upload error");
+                }
+            } catch (err) {
+                console.error(err);
+                if (statusEl) {
+                    statusEl.className = "text-xs mb-2 font-medium text-rose-500";
+                    statusEl.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Tải ảnh thất bại! Vui lòng thử dán trực tiếp link URL ảnh.`;
+                }
+            }
+        }
+
+        // API UPLOAD BỘ BÀI ĐĂNG BLOG LÊN CLOUD
+        async function uploadMultipleFilesToCloudinary(event) {
+            const files = event.target.files;
+            if (!files.length) return;
+
+            const statusEl = document.getElementById('blog-upload-status');
+            statusEl.className = "text-xs font-medium text-amber-400";
+            statusEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Đang tải ${files.length} ảnh lên server...`;
+
+            for (let i = 0; i < files.length; i++) {
+                const formData = new FormData();
+                formData.append('file', files[i]);
+                formData.append('upload_preset', UPLOAD_PRESET);
+
+                try {
+                    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await res.json();
+                    if (data.secure_url) {
+                        currentUploadedImages.push(data.secure_url);
+                    }
+                } catch (e) {
+                    console.error("Upload file fail:", e);
+                }
+            }
+
+            statusEl.className = "text-xs font-medium text-emerald-400";
+            statusEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> Đã tải tất cả ảnh hoàn tất!`;
+            renderPreviewImages();
         }
 
         function updatePreviewFromText() {
-            const textUrls = document.getElementById('form-image-urls').value.split('\n').map(u => u.trim()).filter(u => u !== '');
-            renderPreviewContainer([...currentUploadedImages, ...textUrls]);
+            renderPreviewImages();
         }
 
         function renderPreviewImages() {
             const textUrls = document.getElementById('form-image-urls').value.split('\n').map(u => u.trim()).filter(u => u !== '');
-            renderPreviewContainer([...currentUploadedImages, ...textUrls]);
-        }
-
-        function renderPreviewContainer(images) {
+            const allImgs = [...currentUploadedImages, ...textUrls];
+            
             const container = document.getElementById('gallery-preview-container');
-            container.innerHTML = images.map((img, idx) => `
+            container.innerHTML = allImgs.map((img, idx) => `
                 <div class="relative group aspect-video rounded-xl overflow-hidden border border-slate-800 bg-slate-900">
                     <img src="${img}" class="w-full h-full object-cover">
                     <button type="button" onclick="removeImage(${idx})" class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] opacity-80 hover:opacity-100">✕</button>
@@ -364,13 +412,21 @@
         }
 
         function removeImage(index) {
-            currentUploadedImages.splice(index, 1);
+            if (index < currentUploadedImages.length) {
+                currentUploadedImages.splice(index, 1);
+            } else {
+                const textIdx = index - currentUploadedImages.length;
+                const textUrls = document.getElementById('form-image-urls').value.split('\n').map(u => u.trim()).filter(u => u !== '');
+                textUrls.splice(textIdx, 1);
+                document.getElementById('form-image-urls').value = textUrls.join('\n');
+            }
             renderPreviewImages();
         }
 
         function openItemModal(itemId = null) {
             currentUploadedImages = [];
             document.getElementById('item-form').reset();
+            document.getElementById('blog-upload-status').innerHTML = '';
             document.getElementById('gallery-preview-container').innerHTML = '';
             
             if (itemId) {
@@ -445,6 +501,7 @@
             document.getElementById('hero-title').value = hero.title;
             document.getElementById('hero-desc').value = hero.desc;
             document.getElementById('hero-image-url').value = hero.images ? hero.images[0] : '';
+            document.getElementById('hero-upload-status').innerHTML = '';
             openModal('hero-modal');
         }
 
