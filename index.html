@@ -8,11 +8,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FIREBASE SDK (COMPAT VERSION) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
         .active-tab { background-color: #3b82f6; color: white; shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
         .aspect-16-9 { aspect-ratio: 16 / 9; }
-        /* Style cho bài viết Blog xuống dòng đẹp */
         .blog-content p { margin-bottom: 1.25rem; line-height: 1.8; color: #cbd5e1; font-size: 1.05rem; }
     </style>
 </head>
@@ -62,7 +66,12 @@
 
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-10 flex-1 w-full">
-        <div id="app-content"></div>
+        <div id="app-content">
+            <div class="text-center py-20 text-slate-500">
+                <i class="fa-solid fa-circle-notch fa-spin text-3xl mb-3 text-blue-500"></i>
+                <p class="text-sm">Đang tải dữ liệu từ Firebase...</p>
+            </div>
+        </div>
     </main>
 
     <!-- FOOTER -->
@@ -93,7 +102,7 @@
         </div>
     </div>
 
-    <!-- MODAL 2: THÊM / SỬA BÀI ĐĂNG BLOG (HỖ TRỢ NHIỀU ẢNH ART GALLERY) -->
+    <!-- MODAL 2: THÊM / SỬA BÀI ĐĂNG BLOG -->
     <div id="item-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-3xl w-full p-6 md:p-8 max-h-[90vh] overflow-y-auto shadow-2xl">
             <div class="flex justify-between items-center mb-6">
@@ -131,21 +140,20 @@
                             <textarea id="form-image-urls" rows="2" placeholder="Hoặc dán nhiều link URL ảnh (mỗi link 1 dòng)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500"></textarea>
                         </div>
                     </div>
-                    <!-- PREVIEW BỘ ẢNH -->
                     <div id="gallery-preview-container" class="grid grid-cols-3 md:grid-cols-4 gap-2 pt-2"></div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Tóm tắt ngắn (Xuống dòng tự do, viết bullet point thoải mái)</label>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Tóm tắt ngắn (Hỗ trợ xuống dòng tự do)</label>
                     <textarea id="form-summary" rows="4" required placeholder="🎨 TẠI WORKSHOP BẠN SẼ:&#10;• Tự tay vẽ...&#10;• Trải nghiệm..." class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 leading-relaxed"></textarea>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Nội dung chi tiết Blog (Xuống dòng chia các đoạn lớn)</label>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Nội dung chi tiết Blog</label>
                     <textarea id="form-content" rows="8" placeholder="Nhập nội dung chi tiết bài viết ở đây..." class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 leading-relaxed"></textarea>
                 </div>
                 
-                <!-- BỔ SUNG CHO SẢN PHẨM KỸ THUẬT -->
+                <!-- BỔ SUNG CHO SẢN PHẨM KĨ THUẬT -->
                 <div id="tech-fields" class="space-y-4 border-t border-slate-800 pt-6">
                     <h3 class="text-sm font-bold text-emerald-400 uppercase tracking-wider"><i class="fa-solid fa-code"></i> Tài liệu kỹ thuật chi tiết</h3>
                     <div>
@@ -160,7 +168,7 @@
 
                 <div class="flex justify-end gap-3 pt-4 border-t border-slate-800">
                     <button type="button" onclick="closeModal('item-modal')" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition">Hủy bỏ</button>
-                    <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-xs transition shadow-lg shadow-blue-600/20">Lưu & Xuất Bản Bài Đăng</button>
+                    <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-xs transition shadow-lg shadow-blue-600/20">Lưu & Đăng Bài lên Firebase</button>
                 </div>
             </form>
         </div>
@@ -193,6 +201,13 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
+        // 1. KẾT NỐI FIREBASE REALTIME DATABASE CỦA BẠN
+        const firebaseConfig = {
+            databaseURL: "https://stem-ththdhsp-page-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
         const ADMIN_PIN_HASH = "c6f79918cdb313adf1017aece79c61f17fb7ce934ed56a3deb0e7d1d4f1f502a";
         
         let isAdmin = false;
@@ -238,10 +253,24 @@
             ]
         };
 
-        let appData = JSON.parse(localStorage.getItem('stem_club_data_v3')) || defaultData;
+        let appData = defaultData;
+
+        // 2. ĐỒNG BỘ DỮ LIỆU BẰNG FIREBASE REALTIME LISTENERS
+        db.ref('stem_club').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                appData = data;
+            } else {
+                appData = defaultData;
+                saveData();
+            }
+            render();
+        });
 
         function saveData() {
-            localStorage.setItem('stem_club_data_v3', JSON.stringify(appData));
+            db.ref('stem_club').set(appData)
+              .then(() => console.log("Lưu thành công lên Firebase!"))
+              .catch((err) => console.error("Lỗi khi lưu dữ liệu:", err));
         }
 
         async function hashPIN(pin) {
@@ -332,7 +361,7 @@
             }
         }
 
-        // 1. RENDER TRANG CHỦ
+        // RENDER TRANG CHỦ
         function renderHomeView(container) {
             const hero = appData.hero || defaultData.hero;
             const stemList = appData.stem || [];
@@ -377,7 +406,7 @@
                                 <h2 class="text-2xl font-bold text-white flex items-center gap-2.5">
                                     <i class="fa-solid fa-photo-film text-blue-500"></i> Hoạt Động STEM Nổi Bật
                                 </h2>
-                                <p class="text-xs text-slate-400 mt-1">Ghi lại những khoảnh khắc khoảnh khắc đầy cảm hứng</p>
+                                <p class="text-xs text-slate-400 mt-1">Ghi lại những khoảnh khắc đầy cảm hứng</p>
                             </div>
                             <button onclick="switchCategory('stem')" class="text-xs font-bold text-blue-400 hover:text-blue-300 transition">
                                 Tất cả bài viết →
@@ -462,7 +491,7 @@
             updateSlideUI();
         }
 
-        // 2. RENDER TRANG DANH SÁCH
+        // RENDER TRANG DANH SÁCH BÀI VIẾT
         function renderListView(container) {
             const list = appData[currentCategory] || [];
 
@@ -536,7 +565,7 @@
             container.innerHTML = html;
         }
 
-        // 3. RENDER TRANG CHI TIẾT BLOG & ART GALLERY
+        // RENDER TRANG CHI TIẾT
         function renderDetailBlogView(container) {
             const list = appData[currentCategory] || [];
             const item = list.find(i => i.id === currentDetailId);
@@ -555,7 +584,6 @@
 
             container.innerHTML = `
                 <article class="max-w-4xl mx-auto space-y-8 animate-fade-in">
-                    <!-- NÚT BACK & EDIT -->
                     <div class="flex justify-between items-center">
                         <button onclick="goBack()" class="px-4 py-2 bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 text-xs font-bold rounded-xl flex items-center gap-2 transition">
                             <i class="fa-solid fa-arrow-left"></i> Quay lại danh sách
@@ -567,7 +595,6 @@
                         ` : ''}
                     </div>
 
-                    <!-- THÔNG TIN TIÊU ĐỀ BLOG -->
                     <header class="space-y-4 border-b border-slate-900 pb-8">
                         <div class="flex items-center gap-3 text-xs text-slate-400">
                             <span class="px-3.5 py-1 bg-blue-500/10 border border-blue-500/30 text-blue-400 font-bold rounded-full">${item.author || 'CLB STEM'}</span>
@@ -576,13 +603,11 @@
                         </div>
                         <h1 class="text-3xl md:text-5xl font-black text-white leading-tight tracking-tight uppercase">${item.title}</h1>
                         
-                        <!-- MIÊU TẢ NGẮN KHÔNG BỊ GIỚI HẠN XUỐNG DÒNG -->
                         <div class="text-slate-200 text-base leading-relaxed italic border-l-4 border-blue-500 pl-5 py-3 bg-slate-900/60 rounded-r-2xl whitespace-pre-line shadow-inner">
 ${item.summary}
                         </div>
                     </header>
 
-                    <!-- ART GALLERY LƯỚI ẢNH SIZE 16:9 CHUẨN NGHỆ THUẬT -->
                     ${images.length > 0 ? `
                         <section class="space-y-3">
                             <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
@@ -598,14 +623,12 @@ ${item.summary}
                         </section>
                     ` : ''}
 
-                    <!-- NỘI DUNG BLOG PHONG CÁCH CÁ NHÂN -->
                     ${paragraphs ? `
                         <section class="blog-content pt-4 border-t border-slate-900/60">
                             ${paragraphs}
                         </section>
                     ` : ''}
 
-                    <!-- PHẦN TÀI LIỆU KỸ THUẬT (NẾU LÀ SẢN PHẨM BAN KỸ THUẬT) -->
                     ${isTech ? `
                         <div class="space-y-6 pt-6 border-t border-slate-900">
                             <h2 class="text-xl font-bold text-white flex items-center gap-2">
@@ -631,7 +654,6 @@ ${item.summary}
             `;
         }
 
-        // XỬ LÝ UPLOAD NHIỀU ẢNH LÊN BASE64
         function handleMultipleImagesUpload(e) {
             const files = Array.from(e.target.files);
             if (files.length === 0) return;
@@ -655,7 +677,6 @@ ${item.summary}
             });
         }
 
-        // UTILS MODAL
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
@@ -676,7 +697,6 @@ ${item.summary}
             appData.hero = { title, desc, images: [url] };
             saveData();
             closeModal('hero-modal');
-            render();
         }
 
         function openItemModal(id = null) {
@@ -727,6 +747,8 @@ ${item.summary}
             const now = new Date();
             const dateStr = `${now.getDate()} Tháng ${now.getMonth() + 1}, ${now.getFullYear()}`;
 
+            if (!appData[currentCategory]) appData[currentCategory] = [];
+
             if (id) {
                 const index = appData[currentCategory].findIndex(i => i.id === id);
                 appData[currentCategory][index] = {
@@ -745,14 +767,12 @@ ${item.summary}
 
             saveData();
             closeModal('item-modal');
-            render();
         }
 
         function deleteItem(id) {
-            if (confirm('Bạn có chắc chắn muốn xóa bài viết này khỏi Blog?')) {
+            if (confirm('Bạn có chắc chắn muốn xóa bài viết này? Dữ liệu trên Firebase cũng sẽ bị xóa vĩnh viễn.')) {
                 appData[currentCategory] = appData[currentCategory].filter(i => i.id !== id);
                 saveData();
-                render();
             }
         }
 
@@ -765,8 +785,6 @@ ${item.summary}
             downloadAnchor.click();
             downloadAnchor.remove();
         }
-
-        render();
     </script>
 </body>
 </html>
