@@ -127,7 +127,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="md:col-span-2">
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Tiêu đề bài viết</label>
-                        <input type="text" id="form-title" required placeholder="Nhập tiêu đề ấn tượng..." class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 font-semibold">
+                        <input type="text" id="form-title" required placeholder="Nhập tiêu đề..." class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 font-semibold">
                     </div>
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Tag / Chuyên Mục</label>
@@ -140,14 +140,14 @@
                 </div>
 
                 <div class="space-y-3 bg-slate-950/50 p-4 rounded-2xl border border-slate-800/80">
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Bộ Sưu Tập Ảnh (Upload từ máy tính)</label>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Ảnh Bài Đăng</label>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
-                            <input type="file" id="form-image-files" accept="image/*" multiple onchange="handleMultipleImagesUpload(event)" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-500 cursor-pointer">
-                            <span id="upload-loading-text" class="text-[10px] text-slate-500 mt-1 block">* Chọn ảnh để tải trực tiếp từ máy tính</span>
+                            <input type="file" id="form-image-files" accept="image/*" multiple onchange="handleBase64ImageUpload(event)" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-500 cursor-pointer">
+                            <span id="upload-loading-text" class="text-[10px] text-slate-500 mt-1 block">Chọn ảnh từ máy (Tối đa 2MB/ảnh)</span>
                         </div>
                         <div>
-                            <textarea id="form-image-urls" rows="2" placeholder="Hoặc dán thêm link URL ảnh (mỗi link 1 dòng)" oninput="updatePreviewFromText()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500"></textarea>
+                            <textarea id="form-image-urls" rows="2" placeholder="Hoặc dán URL ảnh (mỗi URL 1 dòng)" oninput="updatePreviewFromText()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500"></textarea>
                         </div>
                     </div>
                     <div id="gallery-preview-container" class="grid grid-cols-3 md:grid-cols-4 gap-2 pt-2"></div>
@@ -155,12 +155,12 @@
 
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Tóm tắt ngắn</label>
-                    <textarea id="form-summary" rows="4" required placeholder="Nhập mô tả tóm tắt bài viết..." class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 leading-relaxed"></textarea>
+                    <textarea id="form-summary" rows="3" required placeholder="Nhập mô tả tóm tắt..." class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 leading-relaxed"></textarea>
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Nội dung chi tiết Blog</label>
-                    <textarea id="form-content" rows="8" placeholder="Nhập nội dung chi tiết bài viết ở đây..." class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 leading-relaxed"></textarea>
+                    <textarea id="form-content" rows="6" placeholder="Nhập nội dung chi tiết bài viết ở đây..." class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 leading-relaxed"></textarea>
                 </div>
 
                 <div class="flex justify-end gap-3 pt-4 border-t border-slate-800">
@@ -185,14 +185,13 @@
                     <textarea id="hero-desc" rows="3" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none"></textarea>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Tải Ảnh Banner từ Máy Tính</label>
-                    <input type="file" accept="image/*" onchange="uploadHeroImage(event)" class="mb-2 w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:bg-amber-600 file:text-white cursor-pointer">
-                    <span id="hero-upload-status" class="text-[10px] text-slate-400 block mb-2"></span>
-                    <input type="text" id="hero-image-url" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" placeholder="Hoặc dán Link ảnh">
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Chọn Ảnh Banner Từ Máy Tính</label>
+                    <input type="file" accept="image/*" onchange="uploadHeroBase64(event)" class="mb-2 w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:bg-amber-600 file:text-white cursor-pointer">
+                    <input type="text" id="hero-image-url" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" placeholder="Hoặc dán Link/URL ảnh trực tiếp">
                 </div>
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeModal('hero-modal')" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl text-xs font-semibold">Hủy</button>
-                    <button type="submit" id="btn-save-hero" class="px-5 py-2 bg-amber-600 hover:bg-amber-500 text-white font-semibold rounded-xl text-xs shadow-lg">Lưu Banner</button>
+                    <button type="submit" class="px-5 py-2 bg-amber-600 hover:bg-amber-500 text-white font-semibold rounded-xl text-xs shadow-lg">Lưu Banner</button>
                 </div>
             </form>
         </div>
@@ -207,12 +206,10 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // API KEY UPLOAD ẢNH TỰ ĐỘNG (ImgBB Free API)
-        const IMGBB_API_KEY = "19602fa4ca7903dbca73eaec711a56ea";
-
         const ADMIN_PIN_HASH = "c6f79918cdb313adf1017aece79c61f17fb7ce934ed56a3deb0e7d1d4f1f502a";
         
-        let isAdmin = false;
+        // ĐỌC TRẠNG THÁI ADMIN TỪ LOCALSTORAGE ĐỂ KHÔNG BỊ SIGN OUT KHI RELOAD TRANG
+        let isAdmin = localStorage.getItem('stem_admin_logged') === 'true';
         let currentCategory = 'home'; 
         let currentDetailId = null;
         let currentUploadedImages = [];
@@ -221,7 +218,7 @@
             hero: {
                 title: "CLB STEM THTH ĐHSP",
                 desc: "Chào mừng bạn đến với không gian chia sẻ kiến thức, dự án và các hoạt động của CLB STEM THTH ĐHSP.",
-                images: ["https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1600&q=80"]
+                images: ["STEM_THTHDHSP_LOGO.png"]
             },
             sp: [],
             stem: []
@@ -245,6 +242,7 @@
                 saveData();
             }
             updateTimestamp();
+            updateAdminAuthBtnText();
             render();
         });
 
@@ -262,7 +260,9 @@
         function toggleAdminLogin() {
             if (isAdmin) {
                 isAdmin = false;
-                updateAdminUI();
+                localStorage.setItem('stem_admin_logged', 'false');
+                updateAdminAuthBtnText();
+                render();
                 alert("Đã đăng xuất khỏi chế độ Admin!");
             } else {
                 document.getElementById('admin-pin-input').value = '';
@@ -277,17 +277,19 @@
 
             if (inputHash === ADMIN_PIN_HASH) {
                 isAdmin = true;
+                localStorage.setItem('stem_admin_logged', 'true');
                 closeModal('admin-login-modal');
-                updateAdminUI();
+                updateAdminAuthBtnText();
+                render();
                 alert("Đăng nhập Admin thành công!");
             } else {
                 alert("Mã PIN không chính xác!");
             }
         }
 
-        function updateAdminUI() {
-            document.getElementById('admin-auth-text').innerText = isAdmin ? 'Đăng xuất Admin' : 'Admin Login';
-            render();
+        function updateAdminAuthBtnText() {
+            const btnText = document.getElementById('admin-auth-text');
+            if (btnText) btnText.innerText = isAdmin ? 'Đăng xuất Admin' : 'Admin Login';
         }
 
         function switchCategory(cat) {
@@ -311,75 +313,34 @@
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-        // TẢI ẢNH BÀI ĐĂNG TỪ MÁY TÍNH LÊN MÂY
-        async function handleMultipleImagesUpload(event) {
+        // ĐỌC ẢNH BẰNG BASE64 - 100% THÀNH CÔNG DÙ KHÔNG CÓ SERVER
+        function handleBase64ImageUpload(event) {
             const files = event.target.files;
             if (!files.length) return;
 
-            const textStatus = document.getElementById('upload-loading-text');
-            const submitBtn = document.getElementById('btn-submit-post');
-            textStatus.innerText = "⏳ Đang tải ảnh từ máy tính lên mây...";
-            textStatus.className = "text-[10px] text-amber-400 mt-1 block font-semibold animate-pulse";
-            submitBtn.disabled = true;
-
-            for (let file of files) {
-                const formData = new FormData();
-                formData.append('image', file);
-
-                try {
-                    const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-                        method: 'POST',
-                        body: formData
-                    });
-                    const result = await res.json();
-                    if (result.success) {
-                        currentUploadedImages.push(result.data.url);
-                    }
-                } catch (err) {
-                    console.error("Lỗi upload:", err);
+            Array.from(files).forEach(file => {
+                if (file.size > 3 * 1024 * 1024) {
+                    alert(`Ảnh "${file.name}" dung lượng lớn hơn 3MB, hãy chọn ảnh nhẹ hơn để tải nhanh hơn nhé!`);
+                    return;
                 }
-            }
-
-            textStatus.innerText = "✅ Tải ảnh thành công!";
-            textStatus.className = "text-[10px] text-emerald-400 mt-1 block font-semibold";
-            submitBtn.disabled = false;
-            renderPreviewImages();
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentUploadedImages.push(e.target.result);
+                    renderPreviewImages();
+                };
+                reader.readAsDataURL(file);
+            });
         }
 
-        // TẢI ẢNH HERO BANNER TỪ MÁY TÍNH LÊN MÂY
-        async function uploadHeroImage(event) {
+        function uploadHeroBase64(event) {
             const file = event.target.files[0];
             if (!file) return;
 
-            const statusText = document.getElementById('hero-upload-status');
-            const saveBtn = document.getElementById('btn-save-hero');
-            
-            statusText.innerText = "⏳ Đang tải ảnh lên...";
-            statusText.className = "text-[10px] text-amber-400 block mb-2 font-semibold animate-pulse";
-            saveBtn.disabled = true;
-
-            const formData = new FormData();
-            formData.append('image', file);
-
-            try {
-                const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await res.json();
-                if (result.success) {
-                    document.getElementById('hero-image-url').value = result.data.url;
-                    statusText.innerText = "✅ Đã tải ảnh lên thành công!";
-                    statusText.className = "text-[10px] text-emerald-400 block mb-2 font-semibold";
-                } else {
-                    statusText.innerText = "❌ Tải ảnh thất bại!";
-                    statusText.className = "text-[10px] text-red-400 block mb-2 font-semibold";
-                }
-            } catch (err) {
-                statusText.innerText = "❌ Lỗi kết nối khi tải ảnh!";
-                statusText.className = "text-[10px] text-red-400 block mb-2 font-semibold";
-            }
-            saveBtn.disabled = false;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('hero-image-url').value = e.target.result;
+            };
+            reader.readAsDataURL(file);
         }
 
         function updatePreviewFromText() {
@@ -444,7 +405,7 @@
             const finalImages = [...currentUploadedImages, ...textUrls];
 
             if (finalImages.length === 0) {
-                finalImages.push("https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80");
+                finalImages.push("STEM_THTHDHSP_LOGO.png");
             }
 
             const itemData = {
@@ -484,13 +445,12 @@
             document.getElementById('hero-title').value = hero.title;
             document.getElementById('hero-desc').value = hero.desc;
             document.getElementById('hero-image-url').value = hero.images ? hero.images[0] : '';
-            document.getElementById('hero-upload-status').innerText = '';
             openModal('hero-modal');
         }
 
         function handleHeroSubmit(e) {
             e.preventDefault();
-            const imageUrl = document.getElementById('hero-image-url').value.trim() || "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1600&q=80";
+            const imageUrl = document.getElementById('hero-image-url').value.trim() || "STEM_THTHDHSP_LOGO.png";
             
             appData.hero = {
                 title: document.getElementById('hero-title').value,
@@ -556,8 +516,8 @@
                             </div>
                         </div>
 
-                        <div class="md:w-1/2 w-full aspect-16-9 rounded-2xl overflow-hidden border border-slate-800 shadow-2xl relative group bg-slate-950">
-                            <img src="${hero.images ? hero.images[0] : ''}" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" onclick="openLightbox(this.src)">
+                        <div class="md:w-1/2 w-full aspect-16-9 rounded-2xl overflow-hidden border border-slate-800 shadow-2xl relative group bg-slate-950 flex items-center justify-center">
+                            <img src="${hero.images ? hero.images[0] : 'STEM_THTHDHSP_LOGO.png'}" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" onclick="openLightbox(this.src)" onerror="this.src='STEM_THTHDHSP_LOGO.png'">
                         </div>
                     </div>
                 </div>
@@ -589,11 +549,11 @@
             }
 
             list.forEach(item => {
-                const coverImg = (item.images && item.images.length > 0) ? item.images[0] : '';
+                const coverImg = (item.images && item.images.length > 0) ? item.images[0] : 'STEM_THTHDHSP_LOGO.png';
                 html += `
                     <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl hover:border-slate-700 transition duration-300 flex flex-col group">
                         <div class="aspect-16-9 overflow-hidden relative cursor-pointer bg-slate-950" onclick="goDetail('${currentCategory}', '${item.id}')">
-                            <img src="${coverImg}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            <img src="${coverImg}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='STEM_THTHDHSP_LOGO.png'">
                             <span class="absolute top-4 left-4 px-3 py-1 bg-slate-950/80 backdrop-blur-md border border-slate-800 text-blue-400 text-[10px] font-bold rounded-full uppercase">
                                 ${item.author || 'STEM Club'}
                             </span>
@@ -666,7 +626,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 ${item.images.map(img => `
                                     <div class="aspect-16-9 rounded-2xl overflow-hidden border border-slate-800 cursor-zoom-in group bg-slate-950" onclick="openLightbox('${img}')">
-                                        <img src="${img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                        <img src="${img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='STEM_THTHDHSP_LOGO.png'">
                                     </div>
                                 `).join('')}
                             </div>
