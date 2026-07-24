@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CLB STEM THTH - ĐHSP | Blog & Gallery</title>
+
+    <!-- FAVICON (LOGO TRÊN TAB TRÌNH DUYỆT) -->
+    <link rel="shortcut icon" href="STEM_THTHDHSP_LOGO.png" type="image/x-icon">
+    <link rel="icon" href="STEM_THTHDHSP_LOGO.png" type="image/png">
+
     <!-- Tailwind CSS & FontAwesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -26,15 +31,20 @@
     <header class="bg-slate-900/80 border-b border-slate-800/80 sticky top-0 z-40 backdrop-blur-xl">
         <div class="max-w-7xl mx-auto px-4 py-3.5 flex flex-wrap justify-between items-center gap-4">
             
-            <!-- LOGO & BRAND -->
+            <!-- LOGO & BRAND (ĐÃ CẬP NHẬT THEO MẪU MỚI) -->
             <div class="flex items-center gap-3.5 cursor-pointer group" onclick="switchCategory('home')">
-                <div class="w-11 h-11 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-2xl flex items-center justify-center font-black text-xl shadow-lg shadow-blue-500/20 text-white group-hover:scale-105 transition duration-300">
-                    S
+                <div class="w-12 h-12 bg-white rounded-2xl p-1.5 flex items-center justify-center shadow-md border border-slate-800 group-hover:scale-105 transition duration-300 overflow-hidden shrink-0">
+                    <img src="STEM_THTHDHSP_LOGO.png" alt="CLB STEM THTH - ĐHSP Logo" class="w-full h-full object-contain">
                 </div>
                 <div>
-                    <h1 class="font-bold text-lg text-white leading-tight tracking-tight group-hover:text-blue-400 transition">CLB STEM THTH <span class="text-xs text-blue-400 font-normal px-2 py-0.5 bg-blue-500/10 border border-blue-500/20 rounded-full">ĐHSP</span></h1>
-                    <div class="flex items-center gap-2 text-xs text-slate-400 mt-0.5">
-                        <span id="status-mode" class="text-slate-400">Chế độ: Khách (Chỉ xem)</span>
+                    <h1 class="font-extrabold text-xl text-blue-500 leading-tight tracking-tight group-hover:text-blue-400 transition flex items-center gap-2">
+                        CLB STEM THTH – ĐHSP
+                    </h1>
+                    <div class="flex items-center gap-2 text-xs text-slate-400 mt-1">
+                        <span id="status-mode" class="text-slate-400 flex items-center gap-1.5">
+                            <i class="fa-solid fa-clock text-emerald-400"></i>
+                            Cập nhật lần cuối: <span id="last-updated-time">Vừa xong</span>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -130,14 +140,14 @@
 
                 <!-- UPLOAD NHIỀU ẢNH ART GALLERY -->
                 <div class="space-y-3 bg-slate-950/50 p-4 rounded-2xl border border-slate-800/80">
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Bộ Sưu Tập Ảnh Art Gallery (Size 16:9)</label>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Bộ Sưu Tập Ảnh (Upload trực tiếp)</label>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
                             <input type="file" id="form-image-files" accept="image/*" multiple onchange="handleMultipleImagesUpload(event)" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-500 cursor-pointer">
-                            <span class="text-[10px] text-slate-500 mt-1 block">* Chọn nhiều ảnh cùng lúc từ máy tính</span>
+                            <span id="upload-loading-text" class="text-[10px] text-slate-500 mt-1 block">* Chọn ảnh từ máy tính để tự động upload</span>
                         </div>
                         <div>
-                            <textarea id="form-image-urls" rows="2" placeholder="Hoặc dán nhiều link URL ảnh (mỗi link 1 dòng)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500"></textarea>
+                            <textarea id="form-image-urls" rows="2" placeholder="Hoặc dán thêm link URL ảnh (mỗi link 1 dòng)" oninput="updatePreviewFromText()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500"></textarea>
                         </div>
                     </div>
                     <div id="gallery-preview-container" class="grid grid-cols-3 md:grid-cols-4 gap-2 pt-2"></div>
@@ -152,23 +162,10 @@
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Nội dung chi tiết Blog</label>
                     <textarea id="form-content" rows="8" placeholder="Nhập nội dung chi tiết bài viết ở đây..." class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 leading-relaxed"></textarea>
                 </div>
-                
-                <!-- BỔ SUNG CHO SẢN PHẨM KĨ THUẬT -->
-                <div id="tech-fields" class="space-y-4 border-t border-slate-800 pt-6">
-                    <h3 class="text-sm font-bold text-emerald-400 uppercase tracking-wider"><i class="fa-solid fa-code"></i> Tài liệu kỹ thuật chi tiết</h3>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">📖 Hướng dẫn sử dụng</label>
-                        <textarea id="form-user-guide" rows="3" placeholder="Các bước vận hành..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500"></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">🛠️ Hướng dẫn cách làm (DIY)</label>
-                        <textarea id="form-diy-guide" rows="3" placeholder="Sơ đồ mạch, linh kiện, lắp ráp..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500"></textarea>
-                    </div>
-                </div>
 
                 <div class="flex justify-end gap-3 pt-4 border-t border-slate-800">
                     <button type="button" onclick="closeModal('item-modal')" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition">Hủy bỏ</button>
-                    <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-xs transition shadow-lg shadow-blue-600/20">Lưu & Đăng Bài lên Firebase</button>
+                    <button type="submit" id="btn-submit-post" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-xs transition shadow-lg shadow-blue-600/20">Lưu & Đăng Bài lên Firebase</button>
                 </div>
             </form>
         </div>
@@ -188,8 +185,9 @@
                     <textarea id="hero-desc" rows="3" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none"></textarea>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Link Ảnh Hero (16:9)</label>
-                    <input type="text" id="hero-image-url" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Link Ảnh Hero hoặc Chọn Tệp Upload</label>
+                    <input type="file" accept="image/*" onchange="uploadHeroImage(event)" class="mb-2 w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:bg-amber-600 file:text-white">
+                    <input type="text" id="hero-image-url" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" placeholder="Link ảnh">
                 </div>
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeModal('hero-modal')" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl text-xs font-semibold">Hủy</button>
@@ -201,12 +199,16 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        // 1. KẾT NỐI FIREBASE REALTIME DATABASE CỦA BẠN
+        // FIREBASE REALTIME DATABASE CONFIG
         const firebaseConfig = {
             databaseURL: "https://stem-ththdhsp-page-default-rtdb.asia-southeast1.firebasedatabase.app/"
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
+
+        // CLOUDINARY CONFIG
+        const CLOUDINARY_UPLOAD_PRESET = "ml_default"; 
+        const CLOUDINARY_CLOUD_NAME = "demo"; 
 
         const ADMIN_PIN_HASH = "c6f79918cdb313adf1017aece79c61f17fb7ce934ed56a3deb0e7d1d4f1f502a";
         
@@ -214,8 +216,6 @@
         let currentCategory = 'home'; 
         let currentDetailId = null;
         let currentUploadedImages = [];
-        let slideshowInterval = null;
-        let currentSlideIndex = 0;
 
         const defaultData = {
             hero: {
@@ -223,39 +223,21 @@
                 desc: "Chào mừng bạn đến với không gian chia sẻ kiến thức, dự án nghiên cứu và các hoạt động trải nghiệm thực tế từ các thành viên CLB STEM THTH - ĐHSP.",
                 images: ["https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1600&q=80"]
             },
-            sp: [
-                {
-                    id: 'sp-1',
-                    date: '24 Tháng 7, 2026',
-                    author: 'Ban Kỹ thuật',
-                    title: 'Dự Án Xe Tự Hành Tránh Vật Cản Thông Minh Arduino',
-                    images: [
-                        'https://images.unsplash.com/photo-1563770660941-20978e870e26?auto=format&fit=crop&w=1200&q=80',
-                        'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80'
-                    ],
-                    summary: '• Mô hình xe lập trình điều khiển tự động.\n• Khả năng nhận diện chướng ngại vật cực nhạy ở khoảng cách 20cm.\n• Tích hợp linh kiện Arduino Uno R3.',
-                    content: `Xe tự hành tránh vật cản là một trong những dự án đầu tay quan trọng dành cho các bạn học sinh bắt đầu làm quen với lập trình nhúng và phần cứng vi điều khiển Arduino.\n\nDự án này kết hợp hài hòa giữa kiến thức cơ khí chế tạo khung xe, kỹ năng đấu nối mạch điện tử và thuật toán xử lý tín hiệu cảm biến thời gian thực.`
-                }
-            ],
-            stem: [
-                {
-                    id: 'stem-1',
-                    date: '15 Tháng 7, 2026',
-                    author: 'Sự kiện & Workshop',
-                    title: 'WORKSHOP MÓC KHÓA NHỰA CO NHIỆT',
-                    images: [
-                        'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80',
-                        'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=80'
-                    ],
-                    summary: `🎨 TẠI WORKSHOP BẠN SẼ:\n• Tự tay vẽ và thiết kế móc khóa theo phong cách riêng.\n• Trải nghiệm khoảnh khắc "bản thiết kế" của mình co lại thành chiếc móc khóa nhỏ nhắn.\n• Có thể biến thành sản phẩm thành những chiếc móc khóa treo điện thoại hay móc khóa treo cặp dễ thương.`,
-                    content: `Sáng ngày 15/07/2026, Buổi Workshop Móc Khóa Nhựa Co Nhiệt đã diễn ra vô cùng sôi nổi tại phòng Lab CLB STEM.\n\nCác bạn tham gia không chỉ được thỏa sức sáng tạo hội họa mà còn được khám phá nguyên lý biến đổi nhiệt tính chất của nhựa Polyethylene vô cùng độc đáo.`
-                }
-            ]
+            sp: [],
+            stem: []
         };
 
         let appData = defaultData;
 
-        // 2. ĐỒNG BỘ DỮ LIỆU BẰNG FIREBASE REALTIME LISTENERS
+        // Cập nhật thời gian thực
+        function updateTimestamp() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('vi-VN') + ' - ' + now.toLocaleDateString('vi-VN');
+            const el = document.getElementById('last-updated-time');
+            if (el) el.innerText = timeStr;
+        }
+
+        // READ DATA FROM FIREBASE
         db.ref('stem_club').on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -264,21 +246,19 @@
                 appData = defaultData;
                 saveData();
             }
+            updateTimestamp();
             render();
         });
 
         function saveData() {
-            db.ref('stem_club').set(appData)
-              .then(() => console.log("Lưu thành công lên Firebase!"))
-              .catch((err) => console.error("Lỗi khi lưu dữ liệu:", err));
+            db.ref('stem_club').set(appData);
         }
 
         async function hashPIN(pin) {
             const encoder = new TextEncoder();
             const data = encoder.encode(pin);
             const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').toLowerCase();
+            return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('').toLowerCase();
         }
 
         function toggleAdminLogin() {
@@ -309,16 +289,12 @@
 
         function updateAdminUI() {
             document.getElementById('admin-auth-text').innerText = isAdmin ? 'Đăng xuất Admin' : 'Admin Login';
-            const statusMode = document.getElementById('status-mode');
-            statusMode.innerText = isAdmin ? 'Chế độ: Đang là Admin' : 'Chế độ: Khách (Chỉ xem)';
-            statusMode.className = isAdmin ? 'text-amber-400 font-semibold' : 'text-slate-400';
             render();
         }
 
         function switchCategory(cat) {
             currentCategory = cat;
             currentDetailId = null;
-            if (slideshowInterval) clearInterval(slideshowInterval);
             
             document.getElementById('nav-home').className = `px-5 py-2 rounded-xl text-sm font-semibold transition ${cat === 'home' ? 'active-tab' : 'text-slate-400 hover:text-white'}`;
             document.getElementById('nav-sp').className = `px-5 py-2 rounded-xl text-sm font-semibold transition ${cat === 'sp' ? 'active-tab' : 'text-slate-400 hover:text-white'}`;
@@ -330,22 +306,185 @@
         function goDetail(category, id) {
             currentCategory = category;
             currentDetailId = id;
-            if (slideshowInterval) clearInterval(slideshowInterval);
             window.scrollTo({ top: 0, behavior: 'smooth' });
             render();
         }
 
-        function goBack() {
-            currentDetailId = null;
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        async function handleMultipleImagesUpload(event) {
+            const files = event.target.files;
+            if (!files.length) return;
+
+            const textStatus = document.getElementById('upload-loading-text');
+            const submitBtn = document.getElementById('btn-submit-post');
+            textStatus.innerText = "⏳ Đang upload ảnh lên mây, vui lòng chờ...";
+            textStatus.className = "text-[10px] text-amber-400 mt-1 block font-semibold animate-pulse";
+            submitBtn.disabled = true;
+
+            for (let file of files) {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+                try {
+                    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await res.json();
+                    if (data.secure_url) {
+                        currentUploadedImages.push(data.secure_url);
+                    }
+                } catch (err) {
+                    console.error("Lỗi upload:", err);
+                }
+            }
+
+            textStatus.innerText = "✅ Đã tải ảnh lên thành công!";
+            textStatus.className = "text-[10px] text-emerald-400 mt-1 block font-semibold";
+            submitBtn.disabled = false;
+            renderPreviewImages();
+        }
+
+        async function uploadHeroImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+            try {
+                const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.secure_url) {
+                    document.getElementById('hero-image-url').value = data.secure_url;
+                }
+            } catch (err) {
+                alert("Upload thất bại!");
+            }
+        }
+
+        function updatePreviewFromText() {
+            const textUrls = document.getElementById('form-image-urls').value.split('\n').map(u => u.trim()).filter(u => u !== '');
+            renderPreviewContainer([...currentUploadedImages, ...textUrls]);
+        }
+
+        function renderPreviewImages() {
+            const textUrls = document.getElementById('form-image-urls').value.split('\n').map(u => u.trim()).filter(u => u !== '');
+            renderPreviewContainer([...currentUploadedImages, ...textUrls]);
+        }
+
+        function renderPreviewContainer(images) {
+            const container = document.getElementById('gallery-preview-container');
+            container.innerHTML = images.map((img, idx) => `
+                <div class="relative group aspect-video rounded-xl overflow-hidden border border-slate-800 bg-slate-900">
+                    <img src="${img}" class="w-full h-full object-cover">
+                    <button type="button" onclick="removeImage(${idx})" class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] opacity-80 hover:opacity-100">✕</button>
+                </div>
+            `).join('');
+        }
+
+        function removeImage(index) {
+            currentUploadedImages.splice(index, 1);
+            renderPreviewImages();
+        }
+
+        function openItemModal(itemId = null) {
+            currentUploadedImages = [];
+            document.getElementById('item-form').reset();
+            document.getElementById('gallery-preview-container').innerHTML = '';
+            
+            if (itemId) {
+                const list = appData[currentCategory] || [];
+                const item = list.find(i => i.id === itemId);
+                if (item) {
+                    document.getElementById('modal-title').innerText = "Chỉnh Sửa Bài Viết";
+                    document.getElementById('form-id').value = item.id;
+                    document.getElementById('form-title').value = item.title;
+                    document.getElementById('form-tag').value = item.author || 'CLB STEM';
+                    document.getElementById('form-summary').value = item.summary;
+                    document.getElementById('form-content').value = item.content || '';
+                    currentUploadedImages = item.images ? [...item.images] : [];
+                    renderPreviewImages();
+                }
+            } else {
+                document.getElementById('modal-title').innerText = "Thêm Bài Viết Mới";
+                document.getElementById('form-id').value = '';
+            }
+            openModal('item-modal');
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('form-id').value || `${currentCategory}-${Date.now()}`;
+            const title = document.getElementById('form-title').value;
+            const tag = document.getElementById('form-tag').value;
+            const summary = document.getElementById('form-summary').value;
+            const content = document.getElementById('form-content').value;
+            
+            const textUrls = document.getElementById('form-image-urls').value.split('\n').map(u => u.trim()).filter(u => u !== '');
+            const finalImages = [...currentUploadedImages, ...textUrls];
+
+            if (finalImages.length === 0) {
+                finalImages.push("https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80");
+            }
+
+            const itemData = {
+                id,
+                title,
+                author: tag,
+                date: new Date().toLocaleDateString('vi-VN', { day: 'numeric', month: 'long', year: 'numeric' }),
+                summary,
+                content,
+                images: finalImages
+            };
+
+            if (!appData[currentCategory]) appData[currentCategory] = [];
+
+            const index = appData[currentCategory].findIndex(i => i.id === id);
+            if (index >= 0) {
+                appData[currentCategory][index] = itemData;
+            } else {
+                appData[currentCategory].unshift(itemData);
+            }
+
+            saveData();
+            closeModal('item-modal');
             render();
         }
 
-        function openLightbox(imgSrc) {
-            document.getElementById('lightbox-img').src = imgSrc;
-            document.getElementById('lightbox').classList.remove('hidden');
+        function deleteItem(cat, id) {
+            if (confirm("Bạn có chắc chắn muốn xóa bài viết này?")) {
+                appData[cat] = appData[cat].filter(i => i.id !== id);
+                saveData();
+                render();
+            }
         }
-        function closeLightbox() {
-            document.getElementById('lightbox').classList.add('hidden');
+
+        function openHeroModal() {
+            const hero = appData.hero || defaultData.hero;
+            document.getElementById('hero-title').value = hero.title;
+            document.getElementById('hero-desc').value = hero.desc;
+            document.getElementById('hero-image-url').value = hero.images ? hero.images[0] : '';
+            openModal('hero-modal');
+        }
+
+        function handleHeroSubmit(e) {
+            e.preventDefault();
+            appData.hero = {
+                title: document.getElementById('hero-title').value,
+                desc: document.getElementById('hero-desc').value,
+                images: [document.getElementById('hero-image-url').value]
+            };
+            saveData();
+            closeModal('hero-modal');
+            render();
         }
 
         function render() {
@@ -361,10 +500,8 @@
             }
         }
 
-        // RENDER TRANG CHỦ
         function renderHomeView(container) {
             const hero = appData.hero || defaultData.hero;
-            const stemList = appData.stem || [];
 
             container.innerHTML = `
                 <div class="space-y-14">
@@ -399,99 +536,10 @@
                             <img src="${hero.images ? hero.images[0] : ''}" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
                         </div>
                     </div>
-
-                    <div class="space-y-6">
-                        <div class="flex justify-between items-end border-b border-slate-900 pb-4">
-                            <div>
-                                <h2 class="text-2xl font-bold text-white flex items-center gap-2.5">
-                                    <i class="fa-solid fa-photo-film text-blue-500"></i> Hoạt Động STEM Nổi Bật
-                                </h2>
-                                <p class="text-xs text-slate-400 mt-1">Ghi lại những khoảnh khắc đầy cảm hứng</p>
-                            </div>
-                            <button onclick="switchCategory('stem')" class="text-xs font-bold text-blue-400 hover:text-blue-300 transition">
-                                Tất cả bài viết →
-                            </button>
-                        </div>
-
-                        ${stemList.length > 0 ? `
-                            <div class="relative rounded-3xl overflow-hidden border border-slate-800 bg-slate-900 aspect-16-9 shadow-2xl group cursor-pointer" onclick="goDetail('stem', '${stemList[0].id}')">
-                                <img id="slide-img" src="${stemList[0].images[0]}" class="w-full h-full object-cover transition-all duration-700">
-                                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent flex flex-col justify-end p-6 md:p-10">
-                                    <span id="slide-date" class="text-xs font-semibold text-blue-400 mb-2">${stemList[0].author || 'CLB STEM'} • ${stemList[0].date || ''}</span>
-                                    <h3 id="slide-title" class="text-xl md:text-3xl font-extrabold text-white mb-2 leading-tight">${stemList[0].title}</h3>
-                                    <p id="slide-desc" class="text-xs md:text-sm text-slate-300 max-w-3xl line-clamp-2 leading-relaxed whitespace-pre-line">${stemList[0].summary}</p>
-                                </div>
-
-                                <button onclick="event.stopPropagation(); prevSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-2xl bg-slate-900/80 hover:bg-blue-600 text-white border border-slate-700 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
-                                    <i class="fa-solid fa-chevron-left"></i>
-                                </button>
-                                <button onclick="event.stopPropagation(); nextSlide()" class="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-2xl bg-slate-900/80 hover:bg-blue-600 text-white border border-slate-700 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
-                                    <i class="fa-solid fa-chevron-right"></i>
-                                </button>
-
-                                <div class="absolute bottom-6 right-8 flex gap-2" id="slide-dots">
-                                    ${stemList.map((_, idx) => `
-                                        <button onclick="event.stopPropagation(); goToSlide(${idx})" class="h-2 rounded-full ${idx === 0 ? 'bg-blue-500 w-8' : 'bg-slate-700 w-2'} transition-all duration-300"></button>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        ` : ''}
-                    </div>
                 </div>
             `;
-
-            if (stemList.length > 0) {
-                currentSlideIndex = 0;
-                startSlideshow();
-            }
         }
 
-        function startSlideshow() {
-            const list = appData.stem || [];
-            if (list.length <= 1) return;
-            
-            slideshowInterval = setInterval(() => {
-                currentSlideIndex = (currentSlideIndex + 1) % list.length;
-                updateSlideUI();
-            }, 4000);
-        }
-
-        function updateSlideUI() {
-            const list = appData.stem || [];
-            if (list.length === 0) return;
-            const item = list[currentSlideIndex];
-            
-            document.getElementById('slide-img').src = item.images[0];
-            document.getElementById('slide-title').innerText = item.title;
-            document.getElementById('slide-desc').innerText = item.summary;
-            document.getElementById('slide-date').innerText = `${item.author || 'CLB STEM'} • ${item.date || ''}`;
-
-            const dots = document.getElementById('slide-dots');
-            if (dots) {
-                dots.innerHTML = list.map((_, idx) => `
-                    <button onclick="event.stopPropagation(); goToSlide(${idx})" class="h-2 rounded-full ${idx === currentSlideIndex ? 'bg-blue-500 w-8' : 'bg-slate-700 w-2'} transition-all duration-300"></button>
-                `).join('');
-            }
-        }
-
-        function prevSlide() {
-            const list = appData.stem || [];
-            currentSlideIndex = (currentSlideIndex - 1 + list.length) % list.length;
-            updateSlideUI();
-        }
-
-        function nextSlide() {
-            const list = appData.stem || [];
-            currentSlideIndex = (currentSlideIndex + 1) % list.length;
-            updateSlideUI();
-        }
-
-        function goToSlide(idx) {
-            currentSlideIndex = idx;
-            updateSlideUI();
-        }
-
-        // RENDER TRANG DANH SÁCH BÀI VIẾT
         function renderListView(container) {
             const list = appData[currentCategory] || [];
 
@@ -517,47 +565,43 @@
             }
 
             list.forEach(item => {
-                const coverImg = (item.images && item.images.length > 0) ? item.images[0] : 'https://via.placeholder.com/800x450';
-                const imgCount = item.images ? item.images.length : 1;
-
+                const coverImg = (item.images && item.images.length > 0) ? item.images[0] : '';
                 html += `
-                    <article class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl hover:border-slate-700 transition duration-300 flex flex-col group">
-                        <div class="relative aspect-16-9 overflow-hidden bg-slate-950 cursor-pointer" onclick="goDetail('${currentCategory}', '${item.id}')">
+                    <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl hover:border-slate-700 transition duration-300 flex flex-col group">
+                        <div class="aspect-16-9 overflow-hidden relative cursor-pointer" onclick="goDetail('${currentCategory}', '${item.id}')">
                             <img src="${coverImg}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                            ${imgCount > 1 ? `
-                                <span class="absolute bottom-3 right-3 px-2.5 py-1 bg-black/70 backdrop-blur-md border border-white/10 rounded-lg text-[10px] font-bold text-white flex items-center gap-1.5">
-                                    <i class="fa-solid fa-images text-blue-400"></i> ${imgCount} ảnh
-                                </span>
-                            ` : ''}
+                            <span class="absolute top-4 left-4 px-3 py-1 bg-slate-950/80 backdrop-blur-md border border-slate-800 text-blue-400 text-[10px] font-bold rounded-full uppercase">
+                                ${item.author || 'STEM Club'}
+                            </span>
                         </div>
-                        <div class="p-6 flex-1 flex flex-col justify-between">
-                            <div class="space-y-3">
-                                <div class="flex items-center gap-2 text-[11px] text-slate-400">
-                                    <span class="text-blue-400 font-semibold px-2.5 py-0.5 bg-blue-500/10 border border-blue-500/20 rounded-full">${item.author || 'CLB STEM'}</span>
-                                    <span>•</span>
-                                    <span>${item.date || 'Gần đây'}</span>
-                                </div>
-                                <h3 onclick="goDetail('${currentCategory}', '${item.id}')" class="font-bold text-lg text-white hover:text-blue-400 cursor-pointer transition line-clamp-2 leading-snug">
+                        <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+                            <div>
+                                <div class="text-[11px] text-slate-500 mb-2 font-medium">${item.date || ''}</div>
+                                <h3 class="text-lg font-bold text-white group-hover:text-blue-400 transition line-clamp-2 cursor-pointer" onclick="goDetail('${currentCategory}', '${item.id}')">
                                     ${item.title}
                                 </h3>
-                                <div class="text-slate-400 text-xs line-clamp-3 leading-relaxed whitespace-pre-line">
+                                <p class="text-xs text-slate-400 mt-2 line-clamp-3 leading-relaxed whitespace-pre-line">
                                     ${item.summary}
-                                </div>
+                                </p>
                             </div>
-
-                            <div class="pt-5 mt-4 border-t border-slate-800/60 flex items-center justify-between">
-                                <button onclick="goDetail('${currentCategory}', '${item.id}')" class="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1.5">
-                                    Đọc tiếp <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            
+                            <div class="pt-4 border-t border-slate-800/80 flex justify-between items-center">
+                                <button onclick="goDetail('${currentCategory}', '${item.id}')" class="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 transition">
+                                    Xem Chi Tiết <i class="fa-solid fa-arrow-right text-[10px]"></i>
                                 </button>
                                 ${isAdmin ? `
-                                    <div class="flex items-center gap-2">
-                                        <button onclick="openItemModal('${item.id}')" class="p-1.5 text-slate-400 hover:text-amber-400 transition" title="Sửa"><i class="fa-solid fa-pen-to-square"></i></button>
-                                        <button onclick="deleteItem('${item.id}')" class="p-1.5 text-slate-400 hover:text-red-400 transition" title="Xóa"><i class="fa-solid fa-trash"></i></button>
+                                    <div class="flex gap-2">
+                                        <button onclick="openItemModal('${item.id}')" class="p-2 bg-amber-600/20 hover:bg-amber-600 text-amber-400 hover:text-white rounded-lg text-xs transition">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </button>
+                                        <button onclick="deleteItem('${currentCategory}', '${item.id}')" class="p-2 bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white rounded-lg text-xs transition">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
                                     </div>
                                 ` : ''}
                             </div>
                         </div>
-                    </article>
+                    </div>
                 `;
             });
 
@@ -565,225 +609,59 @@
             container.innerHTML = html;
         }
 
-        // RENDER TRANG CHI TIẾT
         function renderDetailBlogView(container) {
             const list = appData[currentCategory] || [];
             const item = list.find(i => i.id === currentDetailId);
 
             if (!item) {
-                goBack();
+                container.innerHTML = `<div class="text-center py-20 text-slate-500">Bài viết không tồn tại. <button onclick="switchCategory('home')" class="text-blue-400 underline">Về trang chủ</button></div>`;
                 return;
             }
 
-            const isTech = currentCategory === 'sp';
-            const images = item.images || [];
-
-            const paragraphs = item.content 
-                ? item.content.split('\n').filter(p => p.trim() !== '').map(p => `<p>${p}</p>`).join('')
-                : '';
-
             container.innerHTML = `
-                <article class="max-w-4xl mx-auto space-y-8 animate-fade-in">
-                    <div class="flex justify-between items-center">
-                        <button onclick="goBack()" class="px-4 py-2 bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 text-xs font-bold rounded-xl flex items-center gap-2 transition">
-                            <i class="fa-solid fa-arrow-left"></i> Quay lại danh sách
-                        </button>
-                        ${isAdmin ? `
-                            <button onclick="openItemModal('${item.id}')" class="px-4 py-2 bg-amber-600/20 border border-amber-500/30 text-amber-400 hover:bg-amber-600 hover:text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5">
-                                <i class="fa-solid fa-pen-to-square"></i> Chỉnh Sửa Bài Viết
-                            </button>
-                        ` : ''}
+                <div class="max-w-4xl mx-auto space-y-8">
+                    <button onclick="switchCategory('${currentCategory}')" class="px-4 py-2 bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white rounded-xl text-xs font-semibold transition flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i> Quay Lại Danh Sách
+                    </button>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <span class="px-3 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold rounded-full">${item.author || 'STEM Club'}</span>
+                            <span class="text-xs text-slate-500">${item.date || ''}</span>
+                        </div>
+                        <h1 class="text-2xl md:text-4xl font-extrabold text-white leading-tight">${item.title}</h1>
                     </div>
 
-                    <header class="space-y-4 border-b border-slate-900 pb-8">
-                        <div class="flex items-center gap-3 text-xs text-slate-400">
-                            <span class="px-3.5 py-1 bg-blue-500/10 border border-blue-500/30 text-blue-400 font-bold rounded-full">${item.author || 'CLB STEM'}</span>
-                            <span>•</span>
-                            <span><i class="fa-regular fa-calendar text-slate-500"></i> ${item.date || '2026'}</span>
-                        </div>
-                        <h1 class="text-3xl md:text-5xl font-black text-white leading-tight tracking-tight uppercase">${item.title}</h1>
-                        
-                        <div class="text-slate-200 text-base leading-relaxed italic border-l-4 border-blue-500 pl-5 py-3 bg-slate-900/60 rounded-r-2xl whitespace-pre-line shadow-inner">
-${item.summary}
-                        </div>
-                    </header>
+                    <div class="p-6 bg-slate-900/80 border border-slate-800 rounded-2xl text-slate-300 text-sm leading-relaxed whitespace-pre-line font-medium border-l-4 border-l-blue-500">
+                        ${item.summary}
+                    </div>
 
-                    ${images.length > 0 ? `
-                        <section class="space-y-3">
-                            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
-                                <i class="fa-solid fa-camera"></i> BỘ SƯU TẬP ẢNH ART GALLERY (CLICK VÀO ẢNH ĐỂ PHÓNG TO)
-                            </h3>
+                    ${item.images && item.images.length > 0 ? `
+                        <div class="space-y-3">
+                            <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider"><i class="fa-solid fa-images"></i> Hình Ảnh Bộ Sưu Tập</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                ${images.map((imgSrc, idx) => `
-                                    <div class="${idx === 0 && images.length % 2 !== 0 ? 'col-span-full' : ''} aspect-16-9 rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 shadow-xl group cursor-pointer" onclick="openLightbox('${imgSrc}')">
-                                        <img src="${imgSrc}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://via.placeholder.com/800x450'">
+                                ${item.images.map(img => `
+                                    <div class="aspect-16-9 rounded-2xl overflow-hidden border border-slate-800 cursor-zoom-in group" onclick="openLightbox('${img}')">
+                                        <img src="${img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                                     </div>
                                 `).join('')}
                             </div>
-                        </section>
-                    ` : ''}
-
-                    ${paragraphs ? `
-                        <section class="blog-content pt-4 border-t border-slate-900/60">
-                            ${paragraphs}
-                        </section>
-                    ` : ''}
-
-                    ${isTech ? `
-                        <div class="space-y-6 pt-6 border-t border-slate-900">
-                            <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                                <i class="fa-solid fa-microchip text-emerald-400"></i> Hồ Sơ Kỹ Thuật Dự Án
-                            </h2>
-
-                            <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 space-y-3">
-                                <h3 class="text-sm font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
-                                    <i class="fa-solid fa-book-open"></i> Hướng Dẫn Sử Dụng
-                                </h3>
-                                <div class="text-slate-300 text-sm whitespace-pre-line leading-relaxed">${item.userGuide || 'Đang cập nhật...'}</div>
-                            </div>
-
-                            <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 space-y-3">
-                                <h3 class="text-sm font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
-                                    <i class="fa-solid fa-screwdriver-wrench"></i> Hướng Dẫn Cách Làm (DIY)
-                                </h3>
-                                <div class="text-slate-300 text-sm whitespace-pre-line leading-relaxed">${item.diyGuide || 'Đang cập nhật...'}</div>
-                            </div>
                         </div>
                     ` : ''}
-                </article>
+
+                    <div class="blog-content pt-6 border-t border-slate-900">
+                        <p class="whitespace-pre-line">${item.content || 'Nội dung chi tiết đang được cập nhật...'}</p>
+                    </div>
+                </div>
             `;
-        }
-
-        function handleMultipleImagesUpload(e) {
-            const files = Array.from(e.target.files);
-            if (files.length === 0) return;
-
-            currentUploadedImages = [];
-            const previewContainer = document.getElementById('gallery-preview-container');
-            previewContainer.innerHTML = '';
-
-            files.forEach(file => {
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    const base64Str = evt.target.result;
-                    currentUploadedImages.push(base64Str);
-
-                    const imgDiv = document.createElement('div');
-                    imgDiv.className = 'aspect-16-9 rounded-xl overflow-hidden border border-slate-700 bg-slate-950 relative';
-                    imgDiv.innerHTML = `<img src="${base64Str}" class="w-full h-full object-cover">`;
-                    previewContainer.appendChild(imgDiv);
-                }
-                reader.readAsDataURL(file);
-            });
-        }
-
-        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-        function openHeroModal() {
-            openModal('hero-modal');
-            const hero = appData.hero || defaultData.hero;
-            document.getElementById('hero-title').value = hero.title;
-            document.getElementById('hero-desc').value = hero.desc;
-            document.getElementById('hero-image-url').value = hero.images ? hero.images[0] : '';
-        }
-
-        function handleHeroSubmit(e) {
-            e.preventDefault();
-            const title = document.getElementById('hero-title').value;
-            const desc = document.getElementById('hero-desc').value;
-            const url = document.getElementById('hero-image-url').value;
-
-            appData.hero = { title, desc, images: [url] };
-            saveData();
-            closeModal('hero-modal');
-        }
-
-        function openItemModal(id = null) {
-            openModal('item-modal');
-            const isTech = currentCategory === 'sp';
-            document.getElementById('tech-fields').style.display = isTech ? 'block' : 'none';
-            currentUploadedImages = [];
-            document.getElementById('gallery-preview-container').innerHTML = '';
-
-            if (id) {
-                const item = appData[currentCategory].find(i => i.id === id);
-                document.getElementById('modal-title').innerText = 'Chỉnh Sửa Bài Viết Blog';
-                document.getElementById('form-id').value = item.id;
-                document.getElementById('form-title').value = item.title;
-                document.getElementById('form-tag').value = item.author || 'Sự kiện & Workshop';
-                document.getElementById('form-summary').value = item.summary;
-                document.getElementById('form-content').value = item.content || '';
-                document.getElementById('form-user-guide').value = item.userGuide || '';
-                document.getElementById('form-diy-guide').value = item.diyGuide || '';
-                
-                if (item.images && item.images.length > 0) {
-                    document.getElementById('form-image-urls').value = item.images.join('\n');
-                }
-            } else {
-                document.getElementById('modal-title').innerText = `Tạo Bài Viết ${isTech ? 'Sản Phẩm Kỹ Thuật' : 'Các hoạt động CLB'} Mới`;
-                document.getElementById('item-form').reset();
-                document.getElementById('form-id').value = '';
-            }
-        }
-
-        function handleFormSubmit(e) {
-            e.preventDefault();
-            const id = document.getElementById('form-id').value;
-            const title = document.getElementById('form-title').value;
-            const author = document.getElementById('form-tag').value;
-            const summary = document.getElementById('form-summary').value;
-            const content = document.getElementById('form-content').value;
-            const userGuide = document.getElementById('form-user-guide').value;
-            const diyGuide = document.getElementById('form-diy-guide').value;
-
-            const rawUrls = document.getElementById('form-image-urls').value.split('\n').map(u => u.trim()).filter(u => u !== '');
-            
-            let finalImages = [...currentUploadedImages, ...rawUrls];
-            if (finalImages.length === 0) {
-                finalImages = ['https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80'];
-            }
-
-            const now = new Date();
-            const dateStr = `${now.getDate()} Tháng ${now.getMonth() + 1}, ${now.getFullYear()}`;
-
-            if (!appData[currentCategory]) appData[currentCategory] = [];
-
-            if (id) {
-                const index = appData[currentCategory].findIndex(i => i.id === id);
-                appData[currentCategory][index] = {
-                    ...appData[currentCategory][index],
-                    title, author, summary, content, images: finalImages, userGuide, diyGuide
-                };
-            } else {
-                const newObj = {
-                    id: `${currentCategory}-${Date.now()}`,
-                    date: dateStr,
-                    author,
-                    title, summary, content, images: finalImages, userGuide, diyGuide
-                };
-                appData[currentCategory].unshift(newObj);
-            }
-
-            saveData();
-            closeModal('item-modal');
-        }
-
-        function deleteItem(id) {
-            if (confirm('Bạn có chắc chắn muốn xóa bài viết này? Dữ liệu trên Firebase cũng sẽ bị xóa vĩnh viễn.')) {
-                appData[currentCategory] = appData[currentCategory].filter(i => i.id !== id);
-                saveData();
-            }
         }
 
         function exportJSON() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", "data.json");
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
+            const dlAnchorElem = document.createElement('a');
+            dlAnchorElem.setAttribute("href", dataStr);
+            dlAnchorElem.setAttribute("download", "stem_club_data.json");
+            dlAnchorElem.click();
         }
     </script>
 </body>
