@@ -1,301 +1,711 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CLB STEM THTH ĐHSP</title>
-  <style>
-    /* ---------------- BASE STYLES ---------------- */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLB STEM THTH ĐHSP</title>
 
-    body {
-      background-color: #0b0f19;
-      color: #ffffff;
-      min-height: 100vh;
-      padding: 16px 24px;
-    }
+    <!-- FAVICON -->
+    <link rel="icon" type="image/png" href="STEM_THTHDHSP_LOGO.png">
+    <link rel="shortcut icon" type="image/png" href="STEM_THTHDHSP_LOGO.png">
+    <link rel="apple-touch-icon" href="STEM_THTHDHSP_LOGO.png">
 
-    /* ---------------- HEADER / NAVBAR ---------------- */
-    .navbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 24px;
-      background-color: #0b0f19;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      margin-bottom: 20px;
-    }
+    <!-- Tailwind CSS & FontAwesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- FONTS: Plus Jakarta Sans & Shrikhand -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Shrikhand&display=swap" rel="stylesheet">
+    
+    <!-- FIREBASE SDK (Compat Version 9.x) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-    .brand-container {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+    <style>
+        :root {
+            --font-shrikhand: 'Shrikhand', cursive;
+        }
 
-    /* FIX LOGO: Fit sát ván khung tròn vuông */
-    .logo-box {
-      width: 42px;
-      height: 42px;
-      border-radius: 10px;
-      border: 1.5px solid #2563eb;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #ffffff;
-      flex-shrink: 0;
-    }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #060b13;
+            color: #f1f5f9;
+            overflow-x: hidden;
+            position: relative;
+        }
 
-    .logo-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
+        /* Canvas Particle Background */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
 
-    /* HEADER: Tất cả chữ tiêu đề màu TRẮNG HẾT */
-    .brand-title {
-      font-size: 1.25rem;
-      font-weight: 800;
-      font-style: italic;
-      letter-spacing: 0.5px;
-      color: #ffffff !important;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-    }
+        /* Typography & Styling */
+        .noders-title-main {
+            font-family: var(--font-shrikhand);
+            color: #ffffff;
+            letter-spacing: 0.02em;
+            text-shadow: 0 0 25px rgba(59, 130, 246, 0.6);
+        }
 
-    .status-tag {
-      font-size: 0.75rem;
-      color: #94a3b8;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 2px;
-    }
+        .active-tab { 
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); 
+            color: white !important; 
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.5); 
+        }
 
-    .status-dot {
-      width: 6px;
-      height: 6px;
-      background-color: #22c55e;
-      border-radius: 50%;
-    }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-    /* Navigation Menu Links */
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background-color: rgba(255, 255, 255, 0.03);
-      padding: 4px;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
+        .glass-card:hover {
+            border-color: rgba(59, 130, 246, 0.6);
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.2);
+            transform: translateY(-4px);
+        }
 
-    .nav-item {
-      color: #94a3b8;
-      text-decoration: none;
-      padding: 8px 16px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      border-radius: 8px;
-      transition: all 0.2s;
-    }
+        .blog-content p { margin-bottom: 1.25rem; line-height: 1.8; color: #cbd5e1; font-size: 1.05rem; }
+        
+        /* Click Ripple Effect */
+        .click-ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.8) 0%, rgba(147, 51, 234, 0.4) 50%, rgba(0,0,0,0) 80%);
+            transform: scale(0);
+            animation: ripple-animation 0.6s ease-out forwards;
+            pointer-events: none;
+            z-index: 9999;
+        }
 
-    .nav-item.active {
-      background-color: #2563eb;
-      color: #ffffff;
-    }
+        @keyframes ripple-animation {
+            to {
+                transform: scale(3.5);
+                opacity: 0;
+            }
+        }
 
-    .nav-item:hover:not(.active) {
-      color: #ffffff;
-    }
-
-    .admin-btn {
-      background-color: transparent;
-      border: 1px solid #d97706;
-      color: #fbbf24;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      cursor: pointer;
-      font-weight: 500;
-    }
-
-    /* ---------------- MEDIUM HERO BANNER (CHIẾM ~1/3 PAGE) ---------------- */
-    .hero-container {
-      width: 100%;
-      margin-bottom: 20px;
-    }
-
-    .hero-card {
-      background: linear-gradient(135deg, #111827 0%, #0b0f19 100%);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 16px;
-      padding: 24px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 24px;
-      min-height: 32vh; /* Vừa vặn tầm 1/3 chiều cao trang web */
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-    }
-
-    .hero-content {
-      flex: 1;
-    }
-
-    .hero-badge {
-      display: inline-block;
-      padding: 4px 12px;
-      background-color: rgba(37, 99, 235, 0.15);
-      border: 1px solid rgba(37, 99, 235, 0.3);
-      color: #60a5fa;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-
-    /* TIÊU ĐỀ BANNER MÀU TRẮNG HẾT */
-    .hero-title {
-      font-size: 2rem;
-      font-weight: 900;
-      font-style: italic;
-      letter-spacing: 0.5px;
-      color: #ffffff !important; /* Đã ép toàn bộ chữ thành màu trắng */
-      margin-bottom: 10px;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-    }
-
-    .hero-subtitle {
-      color: #94a3b8;
-      font-size: 0.95rem;
-      line-height: 1.5;
-      max-width: 550px;
-    }
-
-    /* Tấm ảnh bên phải được khống chế tỉ lệ vừa vặn Medium */
-    .hero-image-box {
-      width: 360px;
-      height: 210px;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      flex-shrink: 0;
-    }
-
-    .hero-image-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    /* ---------------- FOOTER / STATS CARDS ---------------- */
-    .stats-container {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-
-    .stat-card {
-      background: rgba(17, 24, 39, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .stat-icon {
-      font-size: 1.2rem;
-      margin-bottom: 8px;
-    }
-
-    .stat-number {
-      font-size: 1.6rem;
-      font-weight: 800;
-      color: #ffffff !important; /* Chữ số trắng */
-      margin-bottom: 4px;
-    }
-
-    .stat-label {
-      font-size: 0.75rem;
-      color: #ffffff !important; /* Chữ nhãn bên dưới màu trắng hoàn toàn */
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      opacity: 0.9;
-    }
-  </style>
+        .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col selection:bg-blue-500 selection:text-white">
 
-  <!-- NAVBAR / HEADER -->
-  <header class="navbar">
-    <div class="brand-container">
-      <div class="logo-box">
-        <!-- Đường dẫn logo dự án của bạn -->
-        <img src="https://ththstem.github.io/STEM_THTHHDSP_PAGE/assets/logo.png" alt="CLB STEM Logo" onerror="this.src='logo-stem.jpg'" />
-      </div>
-      <div>
-        <div class="brand-title">CLB STEM THTH ĐHSP</div>
-        <div class="status-tag">
-          <span class="status-dot"></span> Cập nhật: 15:46:39 – 25/7/2026
+    <!-- CANVAS BACKGROUND CHUYỂN ĐỘNG -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- HEADER RỘNG & NỔI BẬT - TOÀN BỘ CHỮ TRẮNG -->
+    <header class="bg-slate-950/90 border-b border-slate-800/80 sticky top-0 z-40 backdrop-blur-2xl shadow-[0_4px_30px_rgba(0,0,0,0.5)] text-white">
+        <div class="max-w-[95%] mx-auto px-4 py-4 flex flex-wrap justify-between items-center gap-6">
+            
+            <!-- LOGO & BRAND -->
+            <div class="flex items-center gap-4 cursor-pointer group" onclick="navigateTo('home')">
+                <div class="w-14 h-14 bg-blue-500/10 rounded-2xl p-2 flex items-center justify-center border border-blue-500/40 group-hover:scale-105 group-hover:border-blue-400 transition duration-300 overflow-hidden shrink-0 shadow-[0_0_20px_rgba(59,130,246,0.3)]">
+                    <img src="STEM_THTHDHSP_LOGO.png" alt="CLB STEM Logo" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/150?text=STEM'">
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-3xl lg:text-[1.85rem] leading-none font-['Shrikhand',cursive] text-white tracking-wide whitespace-nowrap flex items-center gap-2">
+                        CLB STEM <span class="text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">THTH ĐHSP</span>
+                    </h1>
+                    <div class="flex items-center gap-2 text-xs text-white mt-1.5 font-medium">
+                        <span id="status-mode" class="text-white flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            Cập nhật: <span id="last-updated-time" class="text-white">Đang đồng bộ...</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NAVBAR TABS -->
+            <nav class="flex bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800/80 shadow-inner backdrop-blur-md">
+                <button onclick="navigateTo('home')" id="nav-home" class="px-6 py-2.5 rounded-xl text-sm font-bold transition flex items-center gap-2 text-white">
+                    <i class="fa-solid fa-house text-xs text-white"></i> Trang Chủ
+                </button>
+                <button onclick="navigateTo('stem')" id="nav-stem" class="px-6 py-2.5 rounded-xl text-sm font-bold text-white hover:text-white transition flex items-center gap-2">
+                    <i class="fa-solid fa-camera text-xs text-white"></i> Hoạt Động Gần Đây
+                </button>
+                <button onclick="navigateTo('sp')" id="nav-sp" class="px-6 py-2.5 rounded-xl text-sm font-bold text-white hover:text-white transition flex items-center gap-2">
+                    <i class="fa-solid fa-microchip text-xs text-white"></i> Sản Phẩm Kỹ Thuật
+                </button>
+            </nav>
+
+            <!-- ACTION BUTTON ADMIN -->
+            <div class="flex items-center gap-3">
+                <button id="btn-auth" onclick="toggleAdminLogin()" class="px-5 py-2.5 bg-amber-500/10 border border-amber-500/40 text-white hover:bg-amber-500 hover:text-white text-xs font-bold rounded-xl flex items-center gap-2 transition duration-300 shadow-lg shadow-amber-500/10">
+                    <i class="fa-solid fa-lock text-white" id="admin-auth-icon"></i> <span id="admin-auth-text" class="text-white">Admin Login</span>
+                </button>
+            </div>
         </div>
-      </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-[95%] mx-auto px-4 py-8 flex-1 w-full relative z-10">
+        <div id="app-content">
+            <div class="text-center py-20 text-slate-500">
+                <i class="fa-solid fa-circle-notch fa-spin text-3xl mb-3 text-blue-500"></i>
+                <p class="text-sm">Đang tải dữ liệu từ Firebase...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER RỘNG & HOÀNH TRÁNG - TOÀN BỘ CHỮ TRẮNG -->
+    <footer class="border-t border-slate-800/80 bg-slate-950/95 backdrop-blur-2xl pt-14 pb-8 text-white text-sm relative z-10 mt-12">
+        <div class="max-w-[95%] mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
+            <div class="space-y-4 md:col-span-1">
+                <div class="flex items-center gap-3.5">
+                    <img src="STEM_THTHDHSP_LOGO.png" class="w-12 h-12 object-contain" onerror="this.src='https://via.placeholder.com/150?text=STEM'">
+                    <span class="text-xl font-['Shrikhand',cursive] text-white tracking-wide">CLB STEM <span class="text-white">THTH ĐHSP</span></span>
+                </div>
+                <p class="text-xs text-white leading-relaxed">
+                    CLB STEM trường Trung học Thực hành Đại học Sư phạm - nơi khơi nguồn đam mê sáng tạo khoa học và công nghệ dành cho học sinh.
+                </p>
+            </div>
+            
+            <div>
+                <h4 class="text-white font-bold text-sm mb-4 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-compass text-white"></i> Khám Phá
+                </h4>
+                <ul class="space-y-2.5 text-xs">
+                    <li><a href="#home" class="text-white hover:underline transition flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white"></i> Trang chủ</a></li>
+                    <li><a href="#stem" class="text-white hover:underline transition flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white"></i> Hoạt động Gần Đây</a></li>
+                    <li><a href="#sp" class="text-white hover:underline transition flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-white"></i> Sản phẩm Kỹ thuật</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-white font-bold text-sm mb-4 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-location-dot text-white"></i> Liên Hệ
+                </h4>
+                <ul class="space-y-2.5 text-xs text-white">
+                    <li class="flex items-start gap-2.5">
+                        <i class="fa-solid fa-building text-white mt-0.5"></i> 
+                        <span class="text-white">280 An Dương Vương, Phường Chợ Quán, TP. HCM</span>
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                        <i class="fa-solid fa-envelope text-white"></i> 
+                        <a href="mailto:ththstem@hcmue.edu.vn" class="text-white hover:underline transition">ththstem@hcmue.edu.vn</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-white font-bold text-sm mb-4 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-share-nodes text-white"></i> Mạng Xã Hội
+                </h4>
+                <div class="flex gap-3">
+                    <a href="https://www.facebook.com/STEMthth?locale=vi_VN" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-center text-white hover:bg-blue-600 transition shadow-md hover:shadow-blue-500/50" title="Facebook CLB STEM">
+                        <i class="fa-brands fa-facebook-f text-base text-white"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-[95%] mx-auto px-4 pt-6 border-t border-slate-900 text-center text-xs text-white flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p class="text-white">© 2026 Câu Lạc Bộ STEM THTH ĐHSP. All rights reserved.</p>
+            <p class="text-[11px] text-white">Được tối ưu giao diện Glassmorphism & High-Performance Canvas</p>
+        </div>
+    </footer>
+
+    <!-- LIGHTBOX POPUP -->
+    <div id="lightbox" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4 backdrop-blur-md cursor-zoom-out" onclick="closeLightbox()">
+        <img id="lightbox-img" src="" class="max-w-full max-h-[90vh] rounded-2xl shadow-2xl object-contain border border-slate-800">
     </div>
 
-    <nav class="nav-links">
-      <a href="#" class="nav-item active">🏠 Trang Chủ</a>
-      <a href="#" class="nav-item">📷 Hoạt Động Gần Đây</a>
-      <a href="#" class="nav-item">⚙️ Sản Phẩm Kỹ Thuật</a>
-    </nav>
-
-    <button class="admin-btn">🔒 Admin Login</button>
-  </header>
-
-  <!-- HERO BANNER (KÍCH THƯỚC MEDIUM ~ 1/3 TRANG) -->
-  <main class="hero-container">
-    <section class="hero-card">
-      <div class="hero-content">
-        <span class="hero-badge">Trang chính thức CLB STEM THTH ĐHSP</span>
-        <h1 class="hero-title">CLB STEM THTH ĐHSP</h1>
-        <p class="hero-subtitle">
-          Chào mừng bạn đến với không gian chia sẻ kiến thức, dự án và các hoạt động của CLB STEM THTH ĐHSP.
-        </p>
-      </div>
-
-      <!-- Tấm ảnh tập thể thiết lập vừa khung Medium -->
-      <div class="hero-image-box">
-        <img src="https://ththstem.github.io/STEM_THTHHDSP_PAGE/assets/team.jpg" alt="Tập thể CLB STEM" onerror="this.src='chup-tap-the.jpg'" />
-      </div>
-    </section>
-  </main>
-
-  <!-- CARDS THỐNG KÊ PHÍA DƯỚI (Màu chữ trắng sạch rõ) -->
-  <footer class="stats-container">
-    <div class="stat-card">
-      <div class="stat-icon">👁️</div>
-      <div class="stat-number">107</div>
-      <div class="stat-label">LƯỢT XEM WEBSITE</div>
+    <!-- MODAL 1: LOGIN ADMIN -->
+    <div id="admin-login-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 shadow-2xl">
+            <h2 class="text-xl font-bold mb-2 text-amber-400 flex items-center gap-2">
+                <i class="fa-solid fa-lock"></i> Đăng Nhập Admin
+            </h2>
+            <p class="text-xs text-slate-400 mb-6">Nhập mã PIN xác thực để kích hoạt quyền quản trị.</p>
+            
+            <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+                <input type="password" id="admin-pin-input" required placeholder="••••" class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 text-center tracking-[1rem] text-xl font-bold">
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('admin-login-modal')" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition">Hủy</button>
+                    <button type="submit" class="px-5 py-2.5 bg-amber-600 hover:bg-amber-500 text-white font-semibold rounded-xl text-xs transition shadow-lg shadow-amber-600/20">Xác nhận</button>
+                </div>
+            </form>
+        </div>
     </div>
 
-    <div class="stat-card">
-      <div class="stat-icon">👥</div>
-      <div class="stat-number">2</div>
-      <div class="stat-label">HOẠT ĐỘNG ĐÃ ĐĂNG</div>
+    <!-- MODAL 2: THÊM / SỬA BÀI ĐĂNG BLOG -->
+    <div id="item-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-3xl w-full p-6 md:p-8 max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h2 id="modal-title" class="text-2xl font-bold text-blue-400">Thêm Bài Viết Mới</h2>
+                <button onclick="closeModal('item-modal')" class="text-slate-500 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <form id="item-form" onsubmit="handleFormSubmit(event)" class="space-y-6">
+                <input type="hidden" id="form-id">
+                <input type="hidden" id="form-category" value="stem">
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Tiêu đề bài viết</label>
+                        <input type="text" id="form-title" required placeholder="Nhập tiêu đề..." class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 font-semibold">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Tag / Chuyên Mục</label>
+                        <select id="form-tag" class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 font-semibold text-xs">
+                            <option value="Hoạt Động Gần Đây">Hoạt Động Gần Đây</option>
+                            <option value="Sản Phẩm Kỹ Thuật">Sản Phẩm Kỹ Thuật</option>
+                            <option value="Sự kiện & Workshop">Sự kiện & Workshop</option>
+                            <option value="CLB STEM">CLB STEM</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="space-y-3 bg-slate-950/50 p-4 rounded-2xl border border-slate-800/80">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Tải Ảnh Bài Đăng</label>
+                    <input type="file" accept="image/*" multiple onchange="uploadMultipleFiles(event)" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-500 cursor-pointer">
+                    <p id="blog-upload-status" class="text-xs font-medium"></p>
+
+                    <div>
+                        <label class="block text-[11px] text-slate-500 mb-1">Hoặc dán thủ công danh sách URL ảnh (mỗi link 1 dòng):</label>
+                        <textarea id="form-image-urls" rows="2" placeholder="https://example.com/image1.jpg" oninput="updatePreviewFromText()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500"></textarea>
+                    </div>
+
+                    <div id="gallery-preview-container" class="grid grid-cols-3 md:grid-cols-4 gap-2 pt-2"></div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Tóm tắt ngắn</label>
+                    <textarea id="form-summary" rows="3" required placeholder="Nhập mô tả tóm tắt..." class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 leading-relaxed"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Nội dung chi tiết Blog</label>
+                    <textarea id="form-content" rows="6" placeholder="Nhập nội dung chi tiết bài viết ở đây..." class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 leading-relaxed"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4 border-t border-slate-800">
+                    <button type="button" onclick="closeModal('item-modal')" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition">Hủy bỏ</button>
+                    <button type="submit" id="btn-submit-post" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-xs transition shadow-lg shadow-blue-600/20">Lưu & Đăng Bài</button>
+                </div>
+            </form>
+        </div>
     </div>
 
-    <div class="stat-card">
-      <div class="stat-icon">⚙️</div>
-      <div class="stat-number">1</div>
-      <div class="stat-label">SẢN PHẨM KỸ THUẬT</div>
+    <!-- MODAL 3: SỬA BANNER TRANG CHỦ -->
+    <div id="hero-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-xl w-full p-6 shadow-2xl">
+            <h2 class="text-xl font-bold mb-4 text-amber-400">✏️ Chỉnh Sửa Banner Trang Chủ</h2>
+            <form onsubmit="handleHeroSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Tiêu đề chính</label>
+                    <input type="text" id="hero-title" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Mô tả tóm tắt</label>
+                    <textarea id="hero-desc" rows="3" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none"></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Danh sách URL Ảnh Slideshow (mỗi URL 1 dòng)</label>
+                    <textarea id="hero-image-urls" rows="3" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none" placeholder="STEM_THTHDHSP_LOGO.png"></textarea>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('hero-modal')" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl text-xs font-semibold">Hủy</button>
+                    <button type="submit" class="px-5 py-2 bg-amber-600 hover:bg-amber-500 text-white font-semibold rounded-xl text-xs shadow-lg">Lưu Banner</button>
+                </div>
+            </form>
+        </div>
     </div>
-  </footer>
 
+    <!-- JAVASCRIPT LOGIC & CANVASES -->
+    <script>
+        // --- 1. MOUSE CLICK RIPPLE EFFECT ---
+        document.addEventListener('click', function(e) {
+            const ripple = document.createElement('div');
+            ripple.className = 'click-ripple';
+            ripple.style.left = `${e.clientX - 25}px`;
+            ripple.style.top = `${e.clientY - 25}px`;
+            ripple.style.width = '50px';
+            ripple.style.height = '50px';
+            document.body.appendChild(ripple);
+
+            setTimeout(() => { ripple.remove(); }, 600);
+        });
+
+        // --- 2. PARTICLE ANIMATED BACKGROUND ---
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.8;
+                this.vy = (Math.random() - 0.5) * 0.8;
+                this.radius = Math.random() * 2 + 1.5;
+                this.alpha = Math.random() * 0.5 + 0.3;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(59, 130, 246, ${this.alpha})`;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = '#3b82f6';
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        const particleCount = Math.min(Math.floor(window.innerWidth / 20), 60);
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < 140) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        const opacity = (1 - dist / 140) * 0.35;
+                        ctx.strokeStyle = `rgba(59, 130, 246, ${opacity})`;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // --- 3. FIREBASE REALTIME DATABASE CONFIG (SINGAPORE REGION) ---
+        const firebaseConfig = {
+            databaseURL: "https://stem-ththdhsp-page-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        const ADMIN_PIN_HASH = "c6f79918cdb313adf1017aece79c61f17fb7ce934ed56a3deb0e7d1d4f1f502a"; // PIN mã hóa
+        
+        let isAdmin = false; 
+        let currentUploadedImages = [];
+        let currentSlideIndex = 0;
+        let slideInterval = null;
+
+        const defaultData = {
+            hero: {
+                title: "CLB STEM THTH ĐHSP",
+                desc: "Chào mừng bạn đến với không gian chia sẻ kiến thức, dự án kỹ thuật và các hoạt động sáng tạo của CLB STEM THTH ĐHSP.",
+                images: ["STEM_THTHDHSP_LOGO.png"]
+            },
+            sp: [],
+            stem: [],
+            totalViews: 100
+        };
+
+        let appData = defaultData;
+
+        function incrementTotalViewsOnVisit() {
+            if (!sessionStorage.getItem('has_visited_stem_club')) {
+                sessionStorage.setItem('has_visited_stem_club', 'true');
+                db.ref('stem_club/totalViews').transaction((views) => {
+                    return (views || 100) + 1;
+                });
+            }
+        }
+
+        function updateTimestamp() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('vi-VN') + ' - ' + now.toLocaleDateString('vi-VN');
+            const el = document.getElementById('last-updated-time');
+            if (el) el.innerText = timeStr;
+        }
+
+        // Đồng bộ dữ liệu Firebase
+        db.ref('stem_club').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                appData = { ...defaultData, ...data };
+            } else {
+                appData = defaultData;
+                saveData();
+            }
+            updateTimestamp();
+            updateAdminAuthBtnText();
+            handleRouting();
+        });
+
+        incrementTotalViewsOnVisit();
+
+        function saveData() {
+            db.ref('stem_club').set(appData);
+        }
+
+        // --- ROUTING SYSTEM ---
+        window.addEventListener('hashchange', handleRouting);
+
+        function navigateTo(path) {
+            window.location.hash = path;
+        }
+
+        function handleRouting() {
+            const hash = window.location.hash.replace('#', '') || 'home';
+            const container = document.getElementById('app-content');
+            
+            if (slideInterval) clearInterval(slideInterval);
+
+            const mainCat = hash.split('/')[0];
+            ['home', 'stem', 'sp'].forEach(tab => {
+                const el = document.getElementById(`nav-${tab}`);
+                if (el) {
+                    if (tab === mainCat) {
+                        el.className = "px-6 py-2.5 rounded-xl text-sm font-bold transition active-tab flex items-center gap-2 text-white";
+                    } else {
+                        el.className = "px-6 py-2.5 rounded-xl text-sm font-bold text-white hover:text-white transition flex items-center gap-2";
+                    }
+                }
+            });
+
+            if (hash.startsWith('post/')) {
+                const [_, cat, id] = hash.split('/');
+                renderDetailBlogView(container, cat, id);
+            } else if (hash === 'sp' || hash === 'stem') {
+                renderListView(container, hash);
+            } else {
+                renderHomeView(container);
+            }
+        }
+
+        // --- RENDER HERO BANNER (THU NHỎ ~25%) ---
+        function renderHomeView(container) {
+            const hero = appData.hero || defaultData.hero;
+            const heroImages = hero.images && hero.images.length > 0 ? hero.images : ["STEM_THTHDHSP_LOGO.png"];
+
+            container.innerHTML = `
+                <div class="space-y-12 fade-in">
+                    <!-- HERO BANNER CẮT GIẢM SIZE KHOẢNG 25% -->
+                    <div class="glass-card rounded-3xl p-6 md:p-8 relative overflow-hidden border border-slate-800 shadow-2xl">
+                        ${isAdmin ? `
+                            <button onclick="openHeroModal()" class="absolute top-4 right-4 z-20 px-3 py-1.5 bg-amber-500/20 border border-amber-500/50 text-amber-300 hover:bg-amber-500 hover:text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-lg">
+                                <i class="fa-solid fa-pen-to-square"></i> Sửa Banner
+                            </button>
+                        ` : ''}
+
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                            <div class="lg:col-span-7 space-y-4">
+                                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold">
+                                    <i class="fa-solid fa-sparkles"></i> Chào mừng đến với STEM THTH
+                                </div>
+                                <h2 class="noders-title-main text-2xl md:text-4xl leading-tight">
+                                    ${hero.title}
+                                </h2>
+                                <p class="text-slate-300 text-sm leading-relaxed max-w-2xl">
+                                    ${hero.desc}
+                                </p>
+                                <div class="flex flex-wrap gap-3 pt-2">
+                                    <button onclick="navigateTo('stem')" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-blue-600/30 flex items-center gap-2">
+                                        <i class="fa-solid fa-compass"></i> Khám Phá Hoạt Động
+                                    </button>
+                                    <button onclick="navigateTo('sp')" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition flex items-center gap-2">
+                                        <i class="fa-solid fa-microchip"></i> Sản Phẩm Kỹ Thuật
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="lg:col-span-5 relative">
+                                <div class="relative h-48 md:h-64 w-full rounded-2xl overflow-hidden border border-slate-700/60 shadow-xl bg-slate-950/50">
+                                    ${heroImages.map((img, i) => `
+                                        <img src="${img}" class="hero-slide-img absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out ${i === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}" onerror="this.src='STEM_THTHDHSP_LOGO.png'">
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Slideshow Logic
+            if (heroImages.length > 1) {
+                currentSlideIndex = 0;
+                slideInterval = setInterval(() => {
+                    const slides = document.querySelectorAll('.hero-slide-img');
+                    if (slides.length > 0) {
+                        slides[currentSlideIndex].classList.remove('opacity-100', 'z-10');
+                        slides[currentSlideIndex].classList.add('opacity-0', 'z-0');
+                        currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+                        slides[currentSlideIndex].classList.remove('opacity-0', 'z-0');
+                        slides[currentSlideIndex].classList.add('opacity-100', 'z-10');
+                    }
+                }, 4000);
+            }
+        }
+
+        async function hashPIN(pin) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(pin);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('').toLowerCase();
+        }
+
+        function toggleAdminLogin() {
+            if (isAdmin) {
+                isAdmin = false;
+                updateAdminAuthBtnText();
+                handleRouting();
+                alert("Đã đăng xuất khỏi chế độ Admin!");
+            } else {
+                document.getElementById('admin-pin-input').value = '';
+                openModal('admin-login-modal');
+            }
+        }
+
+        async function handleAdminLogin(e) {
+            e.preventDefault();
+            const rawInput = document.getElementById('admin-pin-input').value;
+            const inputHash = await hashPIN(rawInput.trim());
+
+            if (inputHash === ADMIN_PIN_HASH) {
+                isAdmin = true;
+                closeModal('admin-login-modal');
+                updateAdminAuthBtnText();
+                handleRouting();
+                alert("Đăng nhập Admin thành công!");
+            } else {
+                alert("Mã PIN không chính xác!");
+            }
+        }
+
+        function updateAdminAuthBtnText() {
+            const btnText = document.getElementById('admin-auth-text');
+            const btnIcon = document.getElementById('admin-auth-icon');
+            if (btnText) btnText.innerText = isAdmin ? 'Đăng Xuất Admin' : 'Admin Login';
+            if (btnIcon) btnIcon.className = isAdmin ? 'fa-solid fa-right-from-bracket text-white' : 'fa-solid fa-lock text-white';
+        }
+
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        async function uploadMultipleFiles(event) {
+            const files = event.target.files;
+            if (!files.length) return;
+
+            const statusEl = document.getElementById('blog-upload-status');
+            statusEl.className = "text-xs font-medium text-amber-400";
+            statusEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Đang xử lý ${files.length} ảnh...`;
+
+            for (let i = 0; i < files.length; i++) {
+                const reader = new FileReader();
+                reader.readAsDataURL(files[i]);
+                await new Promise((resolve) => {
+                    reader.onload = (e) => {
+                        currentUploadedImages.push(e.target.result);
+                        resolve();
+                    };
+                });
+            }
+
+            statusEl.className = "text-xs font-medium text-emerald-400";
+            statusEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> Đã tải tất cả ảnh hoàn tất!`;
+            renderPreviewImages();
+        }
+
+        function updatePreviewFromText() {
+            renderPreviewImages();
+        }
+
+        function renderPreviewImages() {
+            const textUrls = document.getElementById('form-image-urls').value.split('\n').map(u => u.trim()).filter(u => u !== '');
+            const allImgs = [...currentUploadedImages, ...textUrls];
+            
+            const container = document.getElementById('gallery-preview-container');
+            container.innerHTML = allImgs.map((img, idx) => `
+                <div class="relative group aspect-video rounded-xl overflow-hidden border border-slate-800 bg-slate-900">
+                    <img src="${img}" class="w-full h-full object-cover" onerror="this.src='STEM_THTHDHSP_LOGO.png'">
+                    <button type="button" onclick="removeImage(${idx})" class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] opacity-80 hover:opacity-100">✕</button>
+                </div>
+            `).join('');
+        }
+
+        function removeImage(index) {
+            if (index < currentUploadedImages.length) {
+                currentUploadedImages.splice(index, 1);
+            } else {
+                const textIdx = index - currentUploadedImages.length;
+                const textUrls = document.getElementById('form-image-urls').value.split('\n').map(u => u.trim()).filter(u => u !== '');
+                textUrls.splice(textIdx, 1);
+                document.getElementById('form-image-urls').value = textUrls.join('\n');
+            }
+            renderPreviewImages();
+        }
+
+        function openItemModal(itemId = null, category = 'stem') {
+            currentUploadedImages = [];
+            document.getElementById('item-form').reset();
+            document.getElementById('blog-upload-status').innerHTML = '';
+            document.getElementById('gallery-preview-container').innerHTML = '';
+            document.getElementById('form-category').value = category;
+            openModal('item-modal');
+        }
+
+        function openHeroModal() {
+            const hero = appData.hero || defaultData.hero;
+            document.getElementById('hero-title').value = hero.title || '';
+            document.getElementById('hero-desc').value = hero.desc || '';
+            document.getElementById('hero-image-urls').value = (hero.images || []).join('\n');
+            openModal('hero-modal');
+        }
+
+        function handleHeroSubmit(e) {
+            e.preventDefault();
+            const title = document.getElementById('hero-title').value.trim();
+            const desc = document.getElementById('hero-desc').value.trim();
+            const rawUrls = document.getElementById('hero-image-urls').value.split('\n').map(u => u.trim()).filter(u => u !== '');
+
+            appData.hero = {
+                title,
+                desc,
+                images: rawUrls.length > 0 ? rawUrls : ["STEM_THTHDHSP_LOGO.png"]
+            };
+
+            saveData();
+            closeModal('hero-modal');
+            handleRouting();
+        }
+    </script>
 </body>
 </html>
