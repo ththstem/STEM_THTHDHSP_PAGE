@@ -476,8 +476,15 @@
         });
         incrementTotalViewsOnVisit();
 
-        function saveData() {
-            db.ref('stem_club').set(appData);
+
+
+     
+     function renderCurrentView() {
+         handleRouting(); // Render lại view theo hash URL hiện tại
+     }
+     
+     function saveData() {
+            return db.ref('stem_club').set(appData);
         }
 
         // --- ROUTING SYSTEM ---
@@ -858,18 +865,26 @@
         }
 
         // --- XỬ LÝ FORM THÊM / SỬA BÀI BÁO ---
-        function handleFormSubmit(e) {
+        async function handleFormSubmit(e) {
             e.preventDefault();
+            
+            // 1. Lấy dữ liệu từ form
             const id = document.getElementById('form-id').value;
             const category = document.getElementById('form-category').value;
             const title = document.getElementById('form-title').value.trim();
             const tag = document.getElementById('form-tag').value;
             const summary = document.getElementById('form-summary').value.trim();
             const content = document.getElementById('form-content').value.trim();
-
-            const textUrls = document.getElementById('form-image-urls').value.split('\n').map(u => u.trim()).filter(u => u !== '');
+        
+            // 2. Xử lý danh sách hình ảnh
+            const textUrls = document.getElementById('form-image-urls').value
+                .split('\n')
+                .map(u => u.trim())
+                .filter(u => u !== '');
+                
             const finalImages = [...currentUploadedImages, ...textUrls];
-
+        
+            // 3. Tạo object bài viết
             const postObj = {
                 id: id ? Number(id) : Date.now(),
                 title,
@@ -879,19 +894,37 @@
                 images: finalImages.length > 0 ? finalImages : ['STEM_THTHDHSP_LOGO.png'],
                 date: new Date().toLocaleDateString('vi-VN')
             };
-
+        
+            // 4. Cập nhật mảng appData cục bộ
             if (!appData[category]) appData[category] = [];
-
+        
             if (id) {
                 const idx = appData[category].findIndex(i => String(i.id) === String(id));
                 if (idx !== -1) appData[category][idx] = postObj;
             } else {
                 appData[category].unshift(postObj);
             }
-
-            saveData();
-            closeModal('item-modal');
-            handleRouting();
+        
+            // 5. Lưu vào Firebase và cập nhật giao diện
+            try {
+                await saveData(); // Đảm bảo hàm saveData() trả về db.ref().set()
+                
+                closeModal('item-modal');
+                
+                // Render lại danh sách/view hiện tại thay vì handleRouting()
+                if (typeof renderCurrentView === 'function') {
+                    renderCurrentView();
+                } else {
+                    handleRouting(); // Fallback nếu bạn chưa tách hàm render
+                }
+        
+                // Reset biến ảnh tạm
+                currentUploadedImages = [];
+                
+            } catch (error) {
+                console.error("Lỗi khi lưu bài viết:", error);
+                alert("Lưu thất bại! Vui lòng kiểm tra kết nối mạng hoặc Firebase Rules.");
+            }
         }
 
         function editPost(category, id) {
