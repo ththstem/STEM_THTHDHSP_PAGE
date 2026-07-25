@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CLB STEM THTH ĐHSP</title>
   <style>
-    /* ---------------- BASE STYLES ---------------- */
+    /* ================= 1. RESET & BASE ================= */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -14,64 +14,61 @@
     }
 
     body {
-      background-color: #0b0f19;
+      background-color: #070a12;
       color: #ffffff;
-      min-height: 100vh;
+      padding: 16px;
     }
 
-    /* ---------------- HEADER / NAVBAR ---------------- */
-    .navbar {
+    /* ================= 2. HEADER / NAVBAR ================= */
+    .header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 32px;
-      background-color: #0b0f19;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 12px 24px;
+      background-color: rgba(13, 18, 30, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      margin-bottom: 20px;
     }
 
-    .brand-container {
+    .brand-section {
       display: flex;
       align-items: center;
       gap: 12px;
     }
 
-    /* FIX LOGO: Fit sát ván khung tròn vuông, che phủ hoàn toàn không bị hở viền trắng */
+    /* LOGO: Fit kín đét khung tròn vuông, triệt tiêu viền trắng thừa */
     .logo-box {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px; /* Bo góc tròn vuông */
+      width: 44px;
+      height: 44px;
+      border-radius: 10px; /* Bo góc tròn vuông */
       border: 1.5px solid #2563eb;
-      overflow: hidden; /* Cắt ảnh dư ra khỏi bo góc */
+      overflow: hidden !important; /* Cắt sạch nền trắng chìa ra ngoài */
+      background-color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #000;
+      flex-shrink: 0;
     }
 
     .logo-box img {
       width: 100%;
       height: 100%;
-      object-fit: cover; /* Fit kín đét khung vuông */
+      object-fit: cover; /* Tràn kín khung */
+      display: block;
     }
 
-    /* FIX TITLE HEADER: Chữ trắng sáng hoặc đổi gradient */
+    /* TẤT CẢ CHỮ HEADER ĐỀU MÀU TRẮNG tinh tế */
     .brand-title {
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       font-weight: 800;
       font-style: italic;
+      color: #ffffff !important; /* Đã ép toàn bộ thành màu trắng */
       letter-spacing: 0.5px;
-      
-      /* PHƯƠNG ÁN 1: Chữ trắng tinh có bóng mờ */
-      color: #ffffff;
       text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-
-      /* PHƯƠNG ÁN 2: Bỏ comment 3 dòng dưới nếu muốn đổi sang Gradient Cyan/Blue cực cháy */
-      /* background: linear-gradient(90deg, #ffffff 30%, #38bdf8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent; */
     }
 
-    .status-tag {
+    .status-text {
       font-size: 0.75rem;
       color: #94a3b8;
       display: flex;
@@ -81,178 +78,207 @@
     }
 
     .status-dot {
-      width: 6px;
-      height: 6px;
+      width: 7px;
+      height: 7px;
       background-color: #22c55e;
       border-radius: 50%;
     }
 
-    /* Navigation Menu Links */
+    /* Nav Links & Buttons */
     .nav-links {
       display: flex;
-      align-items: center;
-      gap: 8px;
-      background-color: rgba(255, 255, 255, 0.03);
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.04);
       padding: 4px;
       border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .nav-item {
+    .nav-btn {
       color: #94a3b8;
       text-decoration: none;
       padding: 8px 16px;
-      font-size: 0.875rem;
-      font-weight: 500;
+      font-size: 0.85rem;
+      font-weight: 600;
       border-radius: 8px;
-      transition: all 0.2s;
     }
 
-    .nav-item.active {
+    .nav-btn.active {
       background-color: #2563eb;
       color: #ffffff;
     }
 
-    .nav-item:hover:not(.active) {
-      color: #ffffff;
-    }
-
     .admin-btn {
-      background-color: transparent;
+      background: transparent;
       border: 1px solid #d97706;
       color: #fbbf24;
       padding: 8px 16px;
       border-radius: 8px;
-      font-size: 0.875rem;
-      cursor: pointer;
-      font-weight: 500;
-    }
-
-    /* ---------------- HERO BANNER (ĐÃ CHỈNH GỌN NHƯ NODERS) ---------------- */
-    .hero-container {
-      max-width: 1100px;
-      margin: 32px auto;
-      padding: 0 16px;
-    }
-
-    .hero-card {
-      background: linear-gradient(180deg, #111827 0%, #0b0f19 100%);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      padding: 48px 32px;
-      text-align: center;
-      position: relative;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-    }
-
-    .hero-badge {
-      display: inline-block;
-      padding: 6px 16px;
-      background-color: rgba(37, 99, 235, 0.15);
-      border: 1px solid rgba(37, 99, 235, 0.3);
-      color: #60a5fa;
-      border-radius: 20px;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* ================= 3. MINI BANNER HERO (BỐ CỤC GỐC THU NHỎ) ================= */
+    .hero-banner {
+      background: linear-gradient(135deg, #0d121e 0%, #080c16 100%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 24px 32px; /* Thu hẹp padding cực mini */
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
       margin-bottom: 20px;
     }
 
-    /* TIÊU ĐỀ BANNER LỚN CHUẨN GRADIENT STYLES */
+    .hero-left {
+      flex: 1;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      padding: 4px 12px;
+      background: rgba(37, 99, 235, 0.15);
+      border: 1px solid rgba(37, 99, 235, 0.3);
+      color: #60a5fa;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    /* TẤT CẢ CHỮ TIÊU ĐỀ BANNER CŨNG TRẮNG TOÀN BỘ */
     .hero-title {
-      font-size: 3rem;
+      font-size: 1.85rem; /* Cỡ chữ tiêu đề thu nhỏ vừa vặn */
       font-weight: 900;
       font-style: italic;
-      letter-spacing: 1px;
-      margin-bottom: 16px;
-      
-      /* Gradient màu nổi bật sắc nét */
-      background: linear-gradient(90deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.3));
+      color: #ffffff !important; /* Chữ trắng sạch sẽ */
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+      text-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
     }
 
-    .hero-subtitle {
+    .hero-desc {
       color: #94a3b8;
-      font-size: 1.05rem;
-      max-width: 650px;
-      margin: 0 auto 32px auto;
-      line-height: 1.6;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      max-width: 520px;
     }
 
-    /* Các nút hành động phía dưới banner */
-    .hero-actions {
-      display: flex;
-      justify-content: center;
+    /* Tấm ảnh bên phải được khống chế kích thước MINI */
+    .hero-right-img {
+      width: 320px;        /* Cố định chiều rộng mini */
+      height: 200px;       /* Cố định chiều cao mini */
+      object-fit: cover;   /* Cắt ảnh gọn gàng không bị méo */
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+    }
+
+    /* ================= 4. THỐNG KÊ CARDS (STATS) ================= */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 16px;
     }
 
-    .btn-primary {
-      background: linear-gradient(90deg, #2563eb, #0284c7);
-      color: white;
-      padding: 12px 28px;
-      border-radius: 10px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.95rem;
-      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+    .stat-card {
+      background: rgba(13, 18, 30, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
     }
 
-    .btn-secondary {
-      background-color: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: white;
-      padding: 12px 28px;
+    .stat-icon {
+      width: 36px;
+      height: 36px;
+      background: rgba(37, 99, 235, 0.15);
       border-radius: 10px;
-      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 10px auto;
+      font-size: 1.1rem;
+    }
+
+    .stat-number {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: #94a3b8;
       font-weight: 600;
-      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
     }
   </style>
 </head>
 <body>
 
-  <!-- NAVBAR / HEADER -->
-  <header class="navbar">
-    <div class="brand-container">
+  <!-- 1. HEADER (Chữ trắng hoàn toàn) -->
+  <header class="header">
+    <div class="brand-section">
       <div class="logo-box">
-        <!-- Đặt file ảnh logo của bạn vào đường dẫn dưới -->
-        <img src="logo-stem.jpg" alt="CLB STEM Logo" />
+        <!-- Thay link ảnh logo gốc của bạn vào đây -->
+        <img src="logo.jpg" alt="Logo STEM" />
       </div>
       <div>
         <div class="brand-title">CLB STEM THTH ĐHSP</div>
-        <div class="status-tag">
-          <span class="status-dot"></span> Cập nhật: 15:39:31 - 25/7/2026
+        <div class="status-text">
+          <span class="status-dot"></span> Cập nhật: 15:46:39 – 25/7/2026
         </div>
       </div>
     </div>
 
     <nav class="nav-links">
-      <a href="#" class="nav-item active">🏠 Trang Chủ</a>
-      <a href="#" class="nav-item">📷 Hoạt Động Gần Đây</a>
-      <a href="#" class="nav-item">⚙️ Sản Phẩm Kỹ Thuật</a>
+      <a href="#" class="nav-btn active">🏠 Trang Chủ</a>
+      <a href="#" class="nav-btn">📷 Hoạt Động Gần Đây</a>
+      <a href="#" class="nav-btn">⚙️ Sản Phẩm Kỹ Thuật</a>
     </nav>
 
     <button class="admin-btn">🔒 Admin Login</button>
   </header>
 
-  <!-- HERO BANNER (Được thu gọn vừa vặn tỷ lệ chuẩn như The Noders) -->
-  <main class="hero-container">
-    <section class="hero-card">
-      <span class="hero-badge">Trang chính thức CLB STEM THTH ĐHSP</span>
-      
+  <!-- 2. BANNER HERO MINI (Đúng bố cục gốc, thu gọn kích thước + chữ trắng) -->
+  <section class="hero-banner">
+    <div class="hero-left">
+      <span class="hero-tag">Trang chính thức CLB STEM THTH ĐHSP</span>
       <h1 class="hero-title">CLB STEM THTH ĐHSP</h1>
-      
-      <p class="hero-subtitle">
-        Chào mừng bạn đến với không gian chia sẻ kiến thức, dự án kỹ thuật và các hoạt động sáng tạo công nghệ của CLB STEM THTH ĐHSP.
+      <p class="hero-desc">
+        Chào mừng bạn đến với không gian chia sẻ kiến thức, dự án và các hoạt động của CLB STEM THTH ĐHSP.
       </p>
+    </div>
+    
+    <!-- Ảnh tập thể thu nhỏ cực xinh xắn -->
+    <img class="hero-right-img" src="chup-tap-the.jpg" alt="CLB STEM Tập thể" />
+  </section>
 
-      <div class="hero-actions">
-        <a href="#" class="btn-primary">Khám phá sản phẩm →</a>
-        <a href="#" class="btn-secondary">Xem hoạt động</a>
-      </div>
-    </section>
-  </main>
+  <!-- 3. THỐNG KÊ (Hàng 3 card bên dưới) -->
+  <section class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">👁️</div>
+      <div class="stat-number">107</div>
+      <div class="stat-label">Lượt xem Website</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">👥</div>
+      <div class="stat-number">2</div>
+      <div class="stat-label">Hoạt động đã đăng</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">🧩</div>
+      <div class="stat-number">1</div>
+      <div class="stat-label">Sản phẩm kỹ thuật</div>
+    </div>
+  </section>
 
 </body>
 </html>
