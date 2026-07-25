@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,62 +13,99 @@
     <!-- Tailwind CSS & FontAwesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- FIREBASE SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .active-tab { background-color: #3b82f6; color: white; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #030712;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(147, 51, 234, 0.15) 0px, transparent 50%),
+                radial-gradient(at 50% 50%, rgba(15, 23, 42, 0.5) 0px, transparent 100%);
+            background-attachment: fixed;
+        }
+
+        /* Styling hiệu ứng chữ nổi 3D & Neon Glowing Header */
+        .3d-glow-text {
+            color: #ffffff;
+            text-shadow: 
+                0 0 10px rgba(59, 130, 246, 0.5),
+                0 0 20px rgba(59, 130, 246, 0.3),
+                0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .heading-emboss {
+            background: linear-gradient(135deg, #ffffff 0%, #93c5fd 50%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.5));
+        }
+
+        .active-tab { 
+            background: linear-gradient(135deg, #2563eb, #1d4ed8); 
+            color: white; 
+            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4); 
+        }
+
         .aspect-16-9 { aspect-ratio: 16 / 9; }
         .blog-content p { margin-bottom: 1.25rem; line-height: 1.8; color: #cbd5e1; font-size: 1.05rem; }
+        
+        /* Smooth Fade Animation */
+        .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-blue-500 selection:text-white">
+<body class="text-slate-100 min-h-screen flex flex-col selection:bg-blue-500 selection:text-white">
 
     <!-- HEADER -->
     <header class="bg-slate-900/80 border-b border-slate-800/80 sticky top-0 z-40 backdrop-blur-xl">
         <div class="max-w-7xl mx-auto px-4 py-3.5 flex flex-wrap justify-between items-center gap-4">
             
             <!-- LOGO & BRAND -->
-            <div class="flex items-center gap-3.5 cursor-pointer group" onclick="switchCategory('home')">
-                <div class="w-12 h-12 bg-white rounded-2xl p-1.5 flex items-center justify-center shadow-md border border-slate-800 group-hover:scale-105 transition duration-300 overflow-hidden shrink-0">
+            <div class="flex items-center gap-3.5 cursor-pointer group" onclick="navigateTo('home')">
+                <div class="w-12 h-12 bg-white/10 rounded-2xl p-1.5 flex items-center justify-center shadow-lg border border-slate-700/50 group-hover:scale-105 group-hover:border-blue-500/50 transition duration-300 overflow-hidden shrink-0 backdrop-blur-md">
                     <img src="STEM_THTHDHSP_LOGO.png" alt="CLB STEM THTH ĐHSP Logo" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/150?text=STEM'">
                 </div>
                 <div>
-                    <h1 class="font-extrabold text-xl text-blue-500 leading-tight tracking-tight group-hover:text-blue-400 transition flex items-center gap-2">
+                    <h1 class="font-black text-xl heading-emboss leading-tight tracking-tight flex items-center gap-2">
                         CLB STEM THTH ĐHSP
                     </h1>
-                    <div class="flex items-center gap-2 text-xs text-slate-400 mt-1">
+                    <div class="flex items-center gap-2 text-xs text-slate-400 mt-0.5">
                         <span id="status-mode" class="text-slate-400 flex items-center gap-1.5">
                             <i class="fa-solid fa-clock text-emerald-400"></i>
-                            Cập nhật lần cuối: <span id="last-updated-time">Vừa xong</span>
+                            Cập nhật: <span id="last-updated-time">Đang đồng bộ...</span>
                         </span>
                     </div>
                 </div>
             </div>
 
             <!-- NAVBAR TABS -->
-            <nav class="flex bg-slate-900 p-1.5 rounded-2xl border border-slate-800 shadow-inner">
-                <button onclick="switchCategory('home')" id="nav-home" class="px-5 py-2 rounded-xl text-sm font-semibold transition active-tab flex items-center gap-2">
+            <nav class="flex bg-slate-950/80 p-1.5 rounded-2xl border border-slate-800/80 shadow-inner backdrop-blur-md">
+                <button onclick="navigateTo('home')" id="nav-home" class="px-5 py-2 rounded-xl text-sm font-bold transition flex items-center gap-2">
                     <i class="fa-solid fa-house text-xs"></i> Trang Chủ
                 </button>
-                <button onclick="switchCategory('sp')" id="nav-sp" class="px-5 py-2 rounded-xl text-sm font-semibold text-slate-400 hover:text-white transition flex items-center gap-2">
+                <button onclick="navigateTo('sp')" id="nav-sp" class="px-5 py-2 rounded-xl text-sm font-bold text-slate-400 hover:text-white transition flex items-center gap-2">
                     <i class="fa-solid fa-microchip text-xs"></i> Sản Phẩm Kỹ Thuật
                 </button>
-                <button onclick="switchCategory('stem')" id="nav-stem" class="px-5 py-2 rounded-xl text-sm font-semibold text-slate-400 hover:text-white transition flex items-center gap-2">
-                    <i class="fa-solid fa-camera text-xs"></i> Các hoạt động CLB
+                <button onclick="navigateTo('stem')" id="nav-stem" class="px-5 py-2 rounded-xl text-sm font-bold text-slate-400 hover:text-white transition flex items-center gap-2">
+                    <i class="fa-solid fa-camera text-xs"></i> Các Hoạt Động CLB
                 </button>
             </nav>
 
             <!-- ACTION BUTTONS -->
             <div class="flex items-center gap-3">
-                <button id="btn-auth" onclick="toggleAdminLogin()" class="px-4 py-2 bg-amber-600/20 border border-amber-500/30 text-amber-400 hover:bg-amber-600 hover:text-white text-xs font-bold rounded-xl flex items-center gap-2 transition duration-300">
+                <button id="btn-auth" onclick="toggleAdminLogin()" class="px-4 py-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500 hover:text-white text-xs font-bold rounded-xl flex items-center gap-2 transition duration-300 shadow-sm">
                     <i class="fa-solid fa-key"></i> <span id="admin-auth-text">Admin Login</span>
                 </button>
-                <button onclick="exportJSON()" class="px-4 py-2 bg-slate-800 border border-slate-700 text-slate-300 hover:text-white hover:border-slate-600 text-xs font-bold rounded-xl flex items-center gap-2 transition duration-300">
+                <button onclick="exportJSON()" class="px-4 py-2 bg-slate-800/80 border border-slate-700/80 text-slate-300 hover:text-white hover:border-slate-600 text-xs font-bold rounded-xl flex items-center gap-2 transition duration-300">
                     <i class="fa-solid fa-download"></i> Data JSON
                 </button>
             </div>
@@ -76,7 +113,7 @@
     </header>
 
     <!-- MAIN CONTAINER -->
-    <main class="max-w-7xl mx-auto px-4 py-10 flex-1 w-full">
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-1 w-full">
         <div id="app-content">
             <div class="text-center py-20 text-slate-500">
                 <i class="fa-solid fa-circle-notch fa-spin text-3xl mb-3 text-blue-500"></i>
@@ -85,9 +122,50 @@
         </div>
     </main>
 
-    <!-- FOOTER -->
-    <footer class="border-t border-slate-900 bg-slate-950 py-8 text-center text-xs text-slate-600">
-        <p>© 2026 Câu Lạc Bộ STEM Trường Trung Học Thực Hành – Đại Học Sư Phạm.</p>
+    <!-- FOOTER CHÂN TRANG ĐẦY ĐỦ -->
+    <footer class="border-t border-slate-800/80 bg-slate-950/90 backdrop-blur-xl pt-12 pb-8 text-slate-400 text-sm">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div class="space-y-4 md:col-span-1">
+                <div class="flex items-center gap-3">
+                    <img src="STEM_THTHDHSP_LOGO.png" class="w-10 h-10 object-contain" onerror="this.src='https://via.placeholder.com/150?text=STEM'">
+                    <span class="font-extrabold text-white text-base tracking-tight">CLB STEM THTH ĐHSP</span>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                    Nơi khơi nguồn đam mê sáng tạo khoa học, công nghệ, kỹ thuật và toán học dành cho học sinh Trường Trung Học Thực Hành - Đại Học Sư Phạm.
+                </p>
+            </div>
+            
+            <div>
+                <h4 class="text-white font-bold text-sm mb-3 uppercase tracking-wider">Khám Phá</h4>
+                <ul class="space-y-2 text-xs">
+                    <li><a href="#home" class="hover:text-blue-400 transition">Trang chủ</a></li>
+                    <li><a href="#sp" class="hover:text-blue-400 transition">Sản phẩm Kỹ thuật</a></li>
+                    <li><a href="#stem" class="hover:text-blue-400 transition">Hoạt động CLB</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-white font-bold text-sm mb-3 uppercase tracking-wider">Liên Hệ</h4>
+                <ul class="space-y-2 text-xs">
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-blue-500"></i> 280 An Dương Vương, P.4, Q.5, TP.HCM</li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-envelope text-blue-500"></i> stemclub.thth@gmail.com</li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-phone text-blue-500"></i> (028) 3835 2020</li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-white font-bold text-sm mb-3 uppercase tracking-wider">Mạng Xã Hội</h4>
+                <div class="flex gap-3">
+                    <a href="#" class="w-9 h-9 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-center text-slate-300 hover:text-white hover:bg-blue-600 transition"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" class="w-9 h-9 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-center text-slate-300 hover:text-white hover:bg-rose-600 transition"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="#" class="w-9 h-9 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-center text-slate-300 hover:text-white hover:bg-sky-500 transition"><i class="fa-brands fa-github"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 pt-6 border-t border-slate-900 text-center text-xs text-slate-500">
+            <p>© 2026 Câu Lạc Bộ STEM Trường Trung Học Thực Hành – Đại Học Sư Phạm. All rights reserved.</p>
+        </div>
     </footer>
 
     <!-- LIGHTBOX POPUP -->
@@ -172,7 +250,7 @@
         </div>
     </div>
 
-    <!-- MODAL 3: SỬA BANNER TRANG CHỦ -->
+    <!-- MODAL 3: SỬA BANNER TRANG CHỦ & SLIDESHOW -->
     <div id="hero-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-xl w-full p-6 shadow-2xl">
             <h2 class="text-xl font-bold mb-4 text-amber-400">✏️ Chỉnh Sửa Banner Trang Chủ</h2>
@@ -186,12 +264,8 @@
                     <textarea id="hero-desc" rows="3" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none"></textarea>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Tải Ảnh Banner Từ Máy Tính hoặc Dán Link URL</label>
-                    <input type="file" accept="image/*" onchange="uploadFileToCloudinary(event, 'hero-image-url', 'hero-upload-status')" class="mb-2 w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:bg-amber-600 file:text-white cursor-pointer">
-                    
-                    <p id="hero-upload-status" class="text-xs mb-2 font-medium"></p>
-
-                    <input type="text" id="hero-image-url" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" placeholder="Đường dẫn URL ảnh sẽ xuất hiện ở đây...">
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Danh sách URL Ảnh Slideshow (mỗi URL 1 dòng)</label>
+                    <textarea id="hero-image-urls" rows="3" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none" placeholder="STEM_THTHDHSP_LOGO.png"></textarea>
                 </div>
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeModal('hero-modal')" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl text-xs font-semibold">Hủy</button>
@@ -203,10 +277,6 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        // CONFIG CLOUDINARY UPLOAD API
-        const CLOUD_NAME = "demo"; 
-        const UPLOAD_PRESET = "docs_upload_example_us_preset"; 
-
         // FIREBASE REALTIME DATABASE CONFIG
         const firebaseConfig = {
             databaseURL: "https://stem-ththdhsp-page-default-rtdb.asia-southeast1.firebasedatabase.app/"
@@ -216,23 +286,30 @@
 
         const ADMIN_PIN_HASH = "c6f79918cdb313adf1017aece79c61f17fb7ce934ed56a3deb0e7d1d4f1f502a";
         
-        // GIỮ TRẠNG THÁI ADMIN BẰNG LOCALSTORAGE KHÔNG BỊ SIGN OUT KHI RELOAD
         let isAdmin = localStorage.getItem('stem_admin_logged') === 'true';
-        let currentCategory = 'home'; 
-        let currentDetailId = null;
         let currentUploadedImages = [];
+        let currentSlideIndex = 0;
+        let slideInterval = null;
 
         const defaultData = {
             hero: {
                 title: "CLB STEM THTH ĐHSP",
-                desc: "Chào mừng bạn đến với không gian chia sẻ kiến thức, dự án và các hoạt động của CLB STEM THTH ĐHSP.",
+                desc: "Chào mừng bạn đến với không gian chia sẻ kiến thức, dự án kỹ thuật và các hoạt động sáng tạo của CLB STEM THTH ĐHSP.",
                 images: ["STEM_THTHDHSP_LOGO.png"]
             },
             sp: [],
-            stem: []
+            stem: [],
+            totalViews: 100
         };
 
         let appData = defaultData;
+
+        // Tăng đếm tổng lượt xem website
+        function incrementTotalViews() {
+            db.ref('stem_club/totalViews').transaction((views) => {
+                return (views || 100) + 1;
+            });
+        }
 
         function updateTimestamp() {
             const now = new Date();
@@ -241,21 +318,59 @@
             if (el) el.innerText = timeStr;
         }
 
+        // Đọc dữ liệu từ Firebase
         db.ref('stem_club').on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
-                appData = data;
+                appData = { ...defaultData, ...data };
             } else {
                 appData = defaultData;
                 saveData();
             }
             updateTimestamp();
             updateAdminAuthBtnText();
-            render();
+            handleRouting(); // Render theo đường dẫn URL
         });
 
         function saveData() {
             db.ref('stem_club').set(appData);
+        }
+
+        // HỆ THỐNG ROUTING (Dựa trên Hash URL để reload không bị quay về trang chủ)
+        window.addEventListener('hashchange', handleRouting);
+
+        function navigateTo(path) {
+            window.location.hash = path;
+        }
+
+        function handleRouting() {
+            const hash = window.location.hash.replace('#', '') || 'home';
+            const container = document.getElementById('app-content');
+            
+            // Xóa interval slideshow cũ nếu có
+            if (slideInterval) clearInterval(slideInterval);
+
+            // Cập nhật Active tab
+            const mainCat = hash.split('/')[0];
+            ['home', 'sp', 'stem'].forEach(tab => {
+                const el = document.getElementById(`nav-${tab}`);
+                if (el) {
+                    if (tab === mainCat) {
+                        el.className = "px-5 py-2 rounded-xl text-sm font-bold transition active-tab flex items-center gap-2";
+                    } else {
+                        el.className = "px-5 py-2 rounded-xl text-sm font-bold text-slate-400 hover:text-white transition flex items-center gap-2";
+                    }
+                }
+            });
+
+            if (hash.startsWith('post/')) {
+                const [_, cat, id] = hash.split('/');
+                renderDetailBlogView(container, cat, id);
+            } else if (hash === 'sp' || hash === 'stem') {
+                renderListView(container, hash);
+            } else {
+                renderHomeView(container);
+            }
         }
 
         async function hashPIN(pin) {
@@ -270,7 +385,7 @@
                 isAdmin = false;
                 localStorage.setItem('stem_admin_logged', 'false');
                 updateAdminAuthBtnText();
-                render();
+                handleRouting();
                 alert("Đã đăng xuất khỏi chế độ Admin!");
             } else {
                 document.getElementById('admin-pin-input').value = '';
@@ -288,7 +403,7 @@
                 localStorage.setItem('stem_admin_logged', 'true');
                 closeModal('admin-login-modal');
                 updateAdminAuthBtnText();
-                render();
+                handleRouting();
                 alert("Đăng nhập Admin thành công!");
             } else {
                 alert("Mã PIN không chính xác!");
@@ -300,56 +415,8 @@
             if (btnText) btnText.innerText = isAdmin ? 'Đăng xuất Admin' : 'Admin Login';
         }
 
-        function switchCategory(cat) {
-            currentCategory = cat;
-            currentDetailId = null;
-            
-            document.getElementById('nav-home').className = `px-5 py-2 rounded-xl text-sm font-semibold transition ${cat === 'home' ? 'active-tab' : 'text-slate-400 hover:text-white'}`;
-            document.getElementById('nav-sp').className = `px-5 py-2 rounded-xl text-sm font-semibold transition ${cat === 'sp' ? 'active-tab' : 'text-slate-400 hover:text-white'}`;
-            document.getElementById('nav-stem').className = `px-5 py-2 rounded-xl text-sm font-semibold transition ${cat === 'stem' ? 'active-tab' : 'text-slate-400 hover:text-white'}`;
-            
-            render();
-        }
-
-        function goDetail(category, id) {
-            currentCategory = category;
-            currentDetailId = id;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            render();
-        }
-
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-        function uploadFileToCloudinary(event, targetInputId, statusElemId) {
-            const file = event.target.files[0];
-            if (!file) return;
-        
-            const statusEl = document.getElementById(statusElemId);
-            if (statusEl) {
-                statusEl.className = "text-xs mb-2 font-medium text-amber-400";
-                statusEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Đang tải ảnh...`;
-            }
-        
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-        
-            reader.onload = function (e) {
-                document.getElementById(targetInputId).value = e.target.result;
-        
-                if (statusEl) {
-                    statusEl.className = "text-xs mb-2 font-medium text-emerald-400";
-                    statusEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> Đã tải ảnh thành công! Bấm "Lưu Banner" nhé.`;
-                }
-            };
-        
-            reader.onerror = function () {
-                if (statusEl) {
-                    statusEl.className = "text-xs mb-2 font-medium text-rose-500";
-                    statusEl.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Không thể đọc tệp ảnh này!`;
-                }
-            };
-        }
 
         async function uploadMultipleFilesToCloudinary(event) {
             const files = event.target.files;
@@ -404,14 +471,14 @@
             renderPreviewImages();
         }
 
-        function openItemModal(itemId = null) {
+        function openItemModal(itemId = null, category = 'sp') {
             currentUploadedImages = [];
             document.getElementById('item-form').reset();
             document.getElementById('blog-upload-status').innerHTML = '';
             document.getElementById('gallery-preview-container').innerHTML = '';
             
             if (itemId) {
-                const list = appData[currentCategory] || [];
+                const list = appData[category] || [];
                 const item = list.find(i => i.id === itemId);
                 if (item) {
                     document.getElementById('modal-title').innerText = "Chỉnh Sửa Bài Viết";
@@ -432,7 +499,10 @@
 
         function handleFormSubmit(e) {
             e.preventDefault();
-            const id = document.getElementById('form-id').value || `${currentCategory}-${Date.now()}`;
+            const hash = window.location.hash.replace('#', '') || 'sp';
+            const cat = hash.includes('stem') ? 'stem' : 'sp';
+
+            const id = document.getElementById('form-id').value || `${cat}-${Date.now()}`;
             const title = document.getElementById('form-title').value;
             const tag = document.getElementById('form-tag').value;
             const summary = document.getElementById('form-summary').value;
@@ -455,25 +525,25 @@
                 images: finalImages
             };
 
-            if (!appData[currentCategory]) appData[currentCategory] = [];
+            if (!appData[cat]) appData[cat] = [];
 
-            const index = appData[currentCategory].findIndex(i => i.id === id);
+            const index = appData[cat].findIndex(i => i.id === id);
             if (index >= 0) {
-                appData[currentCategory][index] = itemData;
+                appData[cat][index] = itemData;
             } else {
-                appData[currentCategory].unshift(itemData);
+                appData[cat].unshift(itemData);
             }
 
             saveData();
             closeModal('item-modal');
-            render();
+            handleRouting();
         }
 
         function deleteItem(cat, id) {
             if (confirm("Bạn có chắc chắn muốn xóa bài viết này?")) {
                 appData[cat] = appData[cat].filter(i => i.id !== id);
                 saveData();
-                render();
+                handleRouting();
             }
         }
 
@@ -481,23 +551,22 @@
             const hero = appData.hero || defaultData.hero;
             document.getElementById('hero-title').value = hero.title;
             document.getElementById('hero-desc').value = hero.desc;
-            document.getElementById('hero-image-url').value = hero.images ? hero.images[0] : '';
-            document.getElementById('hero-upload-status').innerHTML = '';
+            document.getElementById('hero-image-urls').value = hero.images ? hero.images.join('\n') : '';
             openModal('hero-modal');
         }
 
         function handleHeroSubmit(e) {
             e.preventDefault();
-            const imageUrl = document.getElementById('hero-image-url').value.trim() || "STEM_THTHDHSP_LOGO.png";
+            const textUrls = document.getElementById('hero-image-urls').value.split('\n').map(u => u.trim()).filter(u => u !== '');
             
             appData.hero = {
                 title: document.getElementById('hero-title').value,
                 desc: document.getElementById('hero-desc').value,
-                images: [imageUrl]
+                images: textUrls.length > 0 ? textUrls : ["STEM_THTHDHSP_LOGO.png"]
             };
             saveData();
             closeModal('hero-modal');
-            render();
+            handleRouting();
         }
 
         function openLightbox(src) {
@@ -519,25 +588,19 @@
             downloadAnchor.remove();
         }
 
-        function render() {
-            const container = document.getElementById('app-content');
-            container.innerHTML = '';
-
-            if (currentDetailId) {
-                renderDetailBlogView(container);
-            } else if (currentCategory === 'home') {
-                renderHomeView(container);
-            } else {
-                renderListView(container);
-            }
-        }
-
+        // RENDER TRANG CHỦ (HERO BANNER, SLIDESHOW & DASHBOARD THỐNG KÊ)
         function renderHomeView(container) {
             const hero = appData.hero || defaultData.hero;
+            const images = hero.images && hero.images.length > 0 ? hero.images : ["STEM_THTHDHSP_LOGO.png"];
+            
+            const spCount = (appData.sp || []).length;
+            const stemCount = (appData.stem || []).length;
+            const totalViews = appData.totalViews || 100;
 
             container.innerHTML = `
-                <div class="space-y-14">
-                    <div class="relative rounded-3xl overflow-hidden border border-slate-800 bg-slate-900/60 p-8 md:p-12 shadow-2xl flex flex-col md:flex-row items-center gap-8">
+                <div class="space-y-12 fade-in">
+                    <!-- HERO SECTION -->
+                    <div class="relative rounded-3xl overflow-hidden border border-slate-800 bg-slate-900/60 p-6 md:p-12 shadow-2xl flex flex-col md:flex-row items-center gap-8 backdrop-blur-md">
                         ${isAdmin ? `
                             <button onclick="openHeroModal()" class="absolute top-4 right-4 z-20 px-3.5 py-1.5 bg-amber-600/80 hover:bg-amber-500 text-white rounded-xl text-xs font-semibold backdrop-blur-md transition flex items-center gap-1.5 shadow-lg">
                                 <i class="fa-solid fa-pen-to-square"></i> Sửa Banner
@@ -548,88 +611,145 @@
                             <span class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-full text-xs font-bold uppercase tracking-wider">
                                 <i class="fa-solid fa-sparkles"></i> Welcome to STEM Club
                             </span>
-                            <h1 class="text-3xl md:text-5xl font-black text-white leading-tight tracking-tight">
+                            <h1 class="text-3xl md:text-5xl font-black heading-emboss leading-tight tracking-tight">
                                 ${hero.title}
                             </h1>
-                            <p class="text-slate-400 leading-relaxed text-sm md:text-base">
+                            <p class="text-slate-300 leading-relaxed text-sm md:text-base">
                                 ${hero.desc}
                             </p>
-                            <div class="flex gap-3 pt-2">
-                                <button onclick="switchCategory('sp')" class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-xs shadow-lg shadow-blue-600/25 transition flex items-center gap-2">
+                            <div class="flex flex-wrap gap-3 pt-2">
+                                <button onclick="navigateTo('sp')" class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-xs shadow-lg shadow-blue-600/25 transition flex items-center gap-2">
                                     <i class="fa-solid fa-microchip"></i> Sản Phẩm Kỹ Thuật
                                 </button>
-                                <button onclick="switchCategory('stem')" class="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl font-bold text-xs border border-slate-700 transition flex items-center gap-2">
-                                    <i class="fa-solid fa-newspaper"></i> Các hoạt động CLB
+                                <button onclick="navigateTo('stem')" class="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl font-bold text-xs border border-slate-700 transition flex items-center gap-2">
+                                    <i class="fa-solid fa-newspaper"></i> Các Hoạt Động CLB
                                 </button>
                             </div>
                         </div>
 
+                        <!-- SLIDESHOW CONTAINER -->
                         <div class="md:w-1/2 w-full aspect-16-9 rounded-2xl overflow-hidden border border-slate-800 shadow-2xl relative group bg-slate-950 flex items-center justify-center">
-                            <img src="${hero.images ? hero.images[0] : 'STEM_THTHDHSP_LOGO.png'}" class="w-full h-full object-cover group-hover:scale-105 transition duration-700 cursor-pointer" onclick="openLightbox(this.src)" onerror="this.src='STEM_THTHDHSP_LOGO.png'">
+                            <img id="slideshow-img" src="${images[0]}" class="w-full h-full object-cover transition duration-700 cursor-pointer" onclick="openLightbox(this.src)" onerror="this.src='STEM_THTHDHSP_LOGO.png'">
+                            
+                            ${images.length > 1 ? `
+                                <button onclick="prevSlide()" class="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                                <button onclick="nextSlide()" class="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                            ` : ''}
+                        </div>
+                    </div>
+
+                    <!-- THỐNG KÊ DASHBOARD (STATISTICS) -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-slate-900/60 border border-slate-800/80 p-6 rounded-3xl backdrop-blur-md flex items-center gap-5 hover:border-blue-500/30 transition">
+                            <div class="w-14 h-14 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-2xl flex items-center justify-center text-2xl shrink-0">
+                                <i class="fa-solid fa-camera"></i>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">Hoạt Động CLB</p>
+                                <h3 class="text-3xl font-black text-white mt-1">${stemCount} <span class="text-xs font-normal text-slate-500">Bài viết</span></h3>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900/60 border border-slate-800/80 p-6 rounded-3xl backdrop-blur-md flex items-center gap-5 hover:border-emerald-500/30 transition">
+                            <div class="w-14 h-14 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center text-2xl shrink-0">
+                                <i class="fa-solid fa-microchip"></i>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">Sản Phẩm Kỹ Thuật</p>
+                                <h3 class="text-3xl font-black text-white mt-1">${spCount} <span class="text-xs font-normal text-slate-500">Dự án</span></h3>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900/60 border border-slate-800/80 p-6 rounded-3xl backdrop-blur-md flex items-center gap-5 hover:border-purple-500/30 transition">
+                            <div class="w-14 h-14 bg-purple-500/10 border border-purple-500/20 text-purple-400 rounded-2xl flex items-center justify-center text-2xl shrink-0">
+                                <i class="fa-solid fa-eye"></i>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">Tổng Lượt Xem</p>
+                                <h3 class="text-3xl font-black text-white mt-1">${totalViews} <span class="text-xs font-normal text-slate-500">Lượt</span></h3>
+                            </div>
                         </div>
                     </div>
                 </div>
             `;
+
+            // Tự động chuyển slide ảnh nếu có nhiều hơn 1 ảnh
+            if (images.length > 1) {
+                currentSlideIndex = 0;
+                slideInterval = setInterval(() => {
+                    nextSlide();
+                }, 4000);
+            }
         }
 
-        function renderListView(container) {
-            const list = appData[currentCategory] || [];
+        function nextSlide() {
+            const images = appData.hero.images || ["STEM_THTHDHSP_LOGO.png"];
+            currentSlideIndex = (currentSlideIndex + 1) % images.length;
+            const imgEl = document.getElementById('slideshow-img');
+            if (imgEl) imgEl.src = images[currentSlideIndex];
+        }
+
+        function prevSlide() {
+            const images = appData.hero.images || ["STEM_THTHDHSP_LOGO.png"];
+            currentSlideIndex = (currentSlideIndex - 1 + images.length) % images.length;
+            const imgEl = document.getElementById('slideshow-img');
+            if (imgEl) imgEl.src = images[currentSlideIndex];
+        }
+
+        // RENDER DANH SÁCH BÀI VIẾT
+        function renderListView(container, cat) {
+            const list = appData[cat] || [];
+            const title = cat === 'sp' ? 'Sản Phẩm Kỹ Thuật' : 'Các Hoạt Động CLB';
+            const desc = cat === 'sp' ? 'Tổng hợp các sản phẩm, mô hình và nghiên cứu do CLB chế tạo.' : 'Nhật ký các sự kiện, buổi Workshop và hoạt động STEM.';
 
             let html = `
-                <div class="space-y-8">
-                    <div class="flex justify-between items-center border-b border-slate-900 pb-6">
+                <div class="space-y-8 fade-in">
+                    <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-800 pb-6">
                         <div>
-                            <h2 class="text-3xl font-extrabold text-white">${currentCategory === 'sp' ? 'Sản Phẩm Kỹ Thuật' : 'Các hoạt động CLB'}</h2>
-                            <p class="text-xs text-slate-400 mt-1">Tổng hợp các bài viết chia sẻ dự án và hình ảnh hoạt động</p>
+                            <h2 class="text-3xl font-black heading-emboss">${title}</h2>
+                            <p class="text-slate-400 text-sm mt-1">${desc}</p>
                         </div>
                         ${isAdmin ? `
-                            <button onclick="openItemModal()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-xs transition shadow-lg shadow-blue-600/20 flex items-center gap-2">
+                            <button onclick="openItemModal(null, '${cat}')" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-lg shadow-blue-600/20">
                                 <i class="fa-solid fa-plus"></i> Thêm Bài Viết Mới
                             </button>
                         ` : ''}
                     </div>
 
                     ${list.length === 0 ? `
-                        <div class="text-center py-20 bg-slate-900/40 rounded-3xl border border-slate-800/80">
-                            <i class="fa-regular fa-folder-open text-4xl text-slate-600 mb-3"></i>
-                            <p class="text-slate-400 font-medium text-sm">Chưa có bài viết nào trong mục này.</p>
+                        <div class="text-center py-16 bg-slate-900/40 border border-slate-800 rounded-3xl">
+                            <i class="fa-solid fa-folder-open text-4xl text-slate-600 mb-3"></i>
+                            <p class="text-slate-400 text-sm">Chưa có bài đăng nào trong chuyên mục này.</p>
                         </div>
                     ` : `
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             ${list.map(item => `
-                                <div class="bg-slate-900/80 border border-slate-800/80 hover:border-slate-700/80 rounded-3xl p-5 flex flex-col justify-between transition duration-300 group shadow-lg">
-                                    <div class="space-y-4">
-                                        <div class="aspect-16-9 rounded-2xl overflow-hidden bg-slate-950 relative border border-slate-800/60">
-                                            <img src="${item.images && item.images.length > 0 ? item.images[0] : 'STEM_THTHDHSP_LOGO.png'}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 cursor-pointer" onclick="openLightbox(this.src)" onerror="this.src='STEM_THTHDHSP_LOGO.png'">
-                                            <span class="absolute top-3 left-3 bg-slate-950/80 backdrop-blur-md px-3 py-1 rounded-xl text-[10px] font-bold text-blue-400 border border-slate-800">
-                                                ${item.author || 'CLB STEM'}
-                                            </span>
-                                        </div>
-                                        <div>
-                                            <span class="text-[11px] text-slate-500 font-medium">${item.date || ''}</span>
-                                            <h3 class="font-bold text-lg text-white mt-1 group-hover:text-blue-400 transition line-clamp-2 cursor-pointer" onclick="goDetail('${currentCategory}', '${item.id}')">
-                                                ${item.title}
-                                            </h3>
-                                            <p class="text-xs text-slate-400 mt-2 line-clamp-3 leading-relaxed">
-                                                ${item.summary}
-                                            </p>
-                                        </div>
+                                <div class="bg-slate-900/60 border border-slate-800/80 rounded-3xl overflow-hidden hover:border-slate-700 transition duration-300 flex flex-col group backdrop-blur-md">
+                                    <div class="aspect-video bg-slate-950 overflow-hidden relative">
+                                        <img src="${item.images && item.images.length > 0 ? item.images[0] : 'STEM_THTHDHSP_LOGO.png'}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='STEM_THTHDHSP_LOGO.png'">
+                                        <span class="absolute top-3 left-3 bg-slate-950/80 backdrop-blur-md border border-slate-800 text-blue-400 text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase">
+                                            ${item.author || 'CLB STEM'}
+                                        </span>
                                     </div>
+                                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                                        <div class="space-y-2">
+                                            <p class="text-[11px] text-slate-500 flex items-center gap-1.5"><i class="fa-regular fa-calendar"></i> ${item.date}</p>
+                                            <h3 class="font-bold text-lg text-white group-hover:text-blue-400 transition line-clamp-2 cursor-pointer" onclick="navigateTo('post/${cat}/${item.id}')">${item.title}</h3>
+                                            <p class="text-slate-400 text-xs line-clamp-3 leading-relaxed">${item.summary}</p>
+                                        </div>
+                                        
+                                        <div class="pt-3 border-t border-slate-800/60 flex items-center justify-between">
+                                            <button onclick="navigateTo('post/${cat}/${item.id}')" class="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1.5">
+                                                Xem chi tiết <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                            </button>
 
-                                    <div class="pt-5 mt-4 border-t border-slate-800/60 flex items-center justify-between">
-                                        <button onclick="goDetail('${currentCategory}', '${item.id}')" class="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1.5 transition">
-                                            Xem chi tiết <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                                        </button>
-                                        ${isAdmin ? `
-                                            <div class="flex items-center gap-2">
-                                                <button onclick="openItemModal('${item.id}')" class="p-2 text-slate-400 hover:text-amber-400 transition text-xs" title="Sửa bài viết">
-                                                    <i class="fa-solid fa-pen"></i>
-                                                </button>
-                                                <button onclick="deleteItem('${currentCategory}', '${item.id}')" class="p-2 text-slate-400 hover:text-red-400 transition text-xs" title="Xóa bài viết">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </button>
-                                            </div>
-                                        ` : ''}
+                                            ${isAdmin ? `
+                                                <div class="flex items-center gap-2">
+                                                    <button onclick="openItemModal('${item.id}', '${cat}')" class="text-amber-400 hover:text-amber-300 text-xs p-1"><i class="fa-solid fa-pen"></i></button>
+                                                    <button onclick="deleteItem('${cat}', '${item.id}')" class="text-rose-400 hover:text-rose-300 text-xs p-1"><i class="fa-solid fa-trash"></i></button>
+                                                </div>
+                                            ` : ''}
+                                        </div>
                                     </div>
                                 </div>
                             `).join('')}
@@ -637,68 +757,69 @@
                     `}
                 </div>
             `;
-
             container.innerHTML = html;
         }
 
-        function renderDetailBlogView(container) {
-            const list = appData[currentCategory] || [];
-            const item = list.find(i => i.id === currentDetailId);
+        // RENDER CHI TIẾT BÀI VIẾT (BLOG DETAIL)
+        function renderDetailBlogView(container, cat, id) {
+            const list = appData[cat] || [];
+            const item = list.find(i => i.id === id);
 
             if (!item) {
                 container.innerHTML = `
                     <div class="text-center py-20">
-                        <p class="text-slate-400">Không tìm thấy bài viết này!</p>
-                        <button onclick="switchCategory('${currentCategory}')" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold">Quay lại</button>
+                        <p class="text-slate-400 text-base mb-4">Không tìm thấy bài viết này!</p>
+                        <button onclick="navigateTo('${cat}')" class="px-5 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold">Quay lại danh sách</button>
                     </div>
                 `;
                 return;
             }
 
+            // Đếm lượt xem khi mở bài viết
+            incrementTotalViews();
+
             container.innerHTML = `
-                <div class="max-w-4xl mx-auto space-y-8">
-                    <button onclick="switchCategory('${currentCategory}')" class="px-4 py-2 bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 rounded-xl text-xs font-bold flex items-center gap-2 transition">
-                        <i class="fa-solid fa-arrow-left"></i> Quay lại danh sách
+                <div class="max-w-4xl mx-auto space-y-8 fade-in">
+                    <button onclick="navigateTo('${cat}')" class="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 hover:text-white rounded-xl text-xs font-bold transition inline-flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i> Quay lại ${cat === 'sp' ? 'Sản phẩm Kỹ thuật' : 'Hoạt động CLB'}
                     </button>
 
                     <div class="space-y-4">
-                        <div class="flex items-center gap-3">
-                            <span class="px-3 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-full text-xs font-bold">
-                                ${item.author || 'CLB STEM'}
-                            </span>
-                            <span class="text-xs text-slate-500">${item.date || ''}</span>
-                        </div>
-                        <h1 class="text-3xl md:text-4xl font-extrabold text-white leading-tight">
-                            ${item.title}
-                        </h1>
-                        <p class="text-slate-400 text-sm md:text-base font-medium leading-relaxed italic border-l-2 border-blue-500 pl-4 py-1">
-                            ${item.summary}
+                        <span class="px-3 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-full text-xs font-bold uppercase tracking-wider">
+                            ${item.author || 'CLB STEM'}
+                        </span>
+                        <h1 class="text-3xl md:text-5xl font-black text-white leading-tight">${item.title}</h1>
+                        <p class="text-xs text-slate-500 flex items-center gap-2">
+                            <i class="fa-regular fa-calendar"></i> Đăng ngày: ${item.date}
                         </p>
                     </div>
 
                     ${item.images && item.images.length > 0 ? `
-                        <div class="space-y-4">
-                            <div class="aspect-16-9 rounded-3xl overflow-hidden border border-slate-800 bg-slate-950 shadow-2xl">
-                                <img src="${item.images[0]}" class="w-full h-full object-cover cursor-pointer" onclick="openLightbox(this.src)" onerror="this.src='STEM_THTHDHSP_LOGO.png'">
-                            </div>
-                            
-                            ${item.images.length > 1 ? `
-                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                    ${item.images.slice(1).map(img => `
-                                        <div class="aspect-video rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 cursor-pointer group">
-                                            <img src="${img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onclick="openLightbox(this.src)" onerror="this.src='STEM_THTHDHSP_LOGO.png'">
-                                        </div>
-                                    `).join('')}
+                        <div class="grid grid-cols-1 ${item.images.length > 1 ? 'md:grid-cols-2' : ''} gap-4">
+                            ${item.images.map(img => `
+                                <div class="aspect-video bg-slate-950 rounded-2xl overflow-hidden border border-slate-800 shadow-xl cursor-pointer" onclick="openLightbox('${img}')">
+                                    <img src="${img}" class="w-full h-full object-cover hover:scale-105 transition duration-500" onerror="this.src='STEM_THTHDHSP_LOGO.png'">
                                 </div>
-                            ` : ''}
+                            `).join('')}
                         </div>
                     ` : ''}
 
-                    <div class="blog-content bg-slate-900/40 border border-slate-800/80 rounded-3xl p-6 md:p-8 space-y-4">
-                        ${(item.content || item.summary).split('\n').map(p => `<p>${p}</p>`).join('')}
+                    <div class="bg-slate-900/40 border border-slate-800/80 p-6 md:p-8 rounded-3xl space-y-6 backdrop-blur-md">
+                        <div class="p-4 bg-blue-500/5 border-l-4 border-blue-500 rounded-r-2xl">
+                            <p class="text-sm font-semibold text-blue-200 leading-relaxed italic">${item.summary}</p>
+                        </div>
+
+                        <div class="blog-content text-slate-300 leading-relaxed space-y-4 text-base">
+                            ${(item.content || '').split('\n').map(p => p.trim() ? `<p>${p}</p>` : '').join('')}
+                        </div>
                     </div>
                 </div>
             `;
+        }
+
+        // LẦN ĐẦU KHỞI CHẠY KHÔNG CÓ HASH -> MẶC ĐỊNH LÀ #home
+        if (!window.location.hash) {
+            window.location.hash = 'home';
         }
     </script>
 </body>
