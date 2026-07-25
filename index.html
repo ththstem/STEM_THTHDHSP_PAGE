@@ -446,20 +446,34 @@
             const el = document.getElementById('last-updated-time');
             if (el) el.innerText = timeStr;
         }
-
+        //code loi
+        // db.ref('stem_club').on('value', (snapshot) => {
+        //     const data = snapshot.val();
+        //     if (data) {
+        //         appData = { ...defaultData, ...data };
+        //     } else {
+        //         appData = defaultData;
+        //         saveData();
+        //     }
+        //     updateTimestamp();
+        //     updateAdminAuthBtnText();
+        //     handleRouting();
+        // });
         db.ref('stem_club').on('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                appData = { ...defaultData, ...data };
-            } else {
-                appData = defaultData;
-                saveData();
-            }
-            updateTimestamp();
-            updateAdminAuthBtnText();
-            handleRouting();
+          const data = snapshot.val();
+          if (data) {
+            appData = { ...defaultData, ...data };
+          } else {
+            appData = defaultData;
+          }
+          updateTimestamp();
+          updateAdminAuthBtnText();
+          
+          // Thay vì handleRouting(), hãy gọi hàm render lại view hiện tại
+          renderCurrentView(); 
+        }, (error) => {
+          console.error("Lỗi đọc dữ liệu từ Firebase:", error);
         });
-
         incrementTotalViewsOnVisit();
 
         function saveData() {
