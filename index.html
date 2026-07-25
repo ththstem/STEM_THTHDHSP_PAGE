@@ -422,7 +422,6 @@
 
         const ADMIN_PIN_HASH = "c6f79918cdb313adf1017aece79c61f17fb7ce934ed56a3deb0e7d1d4f1f502a"; // PIN mã hóa
         
-        // MẶC ĐỊNH LUÔN LÀ ĐĂNG XUẤT (FALSE) KHI MỚI VÀO TRANG HOẶC LOAD LẠI TRANG
         let isAdmin = false; 
         let currentUploadedImages = [];
         let currentSlideIndex = 0;
@@ -718,37 +717,49 @@
 
             container.innerHTML = `
                 <div class="fade-in space-y-12">
-                    <!-- HERO BANNER -->
-                    <section class="glass-card rounded-3xl p-6 md:p-10 relative overflow-hidden flex flex-col md:flex-row items-center gap-8 border border-slate-800">
-                        <div class="flex-1 space-y-4 z-10">
-                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold">
-                                <i class="fa-solid fa-sparkles"></i> Trang chính thức CLB STEM THTH ĐHSP
+                    <!-- HERO COVER BANNER GỌN GÀNG (CHỮ NẰM ĐÈ LÊN NỀN ẢNH) -->
+                    <section class="relative rounded-3xl overflow-hidden min-h-[320px] md:min-h-[380px] flex items-center p-6 md:p-12 border border-slate-800 shadow-2xl group">
+                        <!-- BG IMAGE SLIDESHOW -->
+                        <div class="absolute inset-0 z-0">
+                            <img id="hero-slideshow-img" src="${heroImgs[0]}" class="w-full h-full object-cover object-center transition duration-1000 scale-100 group-hover:scale-105" onerror="this.src='STEM_THTHDHSP_LOGO.png'">
+                            <!-- GRADIENT OVERLAY CHE MỜ TỪ TRÁI SANG PHẢI MANG LẠI HIỆU ỨNG TẬN DỤNG CẢ NỀN -->
+                            <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/85 to-transparent"></div>
+                            <div class="absolute inset-0 bg-slate-950/30"></div>
+                        </div>
+
+                        <!-- CONTENT OVERLAY -->
+                        <div class="relative z-10 max-w-2xl space-y-4">
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/40 text-blue-300 text-xs font-semibold backdrop-blur-md">
+                                <i class="fa-solid fa-sparkles text-blue-400"></i> Trang chính thức CLB STEM THTH ĐHSP
                             </div>
                             <h1 class="text-3xl md:text-5xl font-extrabold text-white leading-tight noders-title-main">
                                 ${appData.hero?.title || 'CLB STEM THTH ĐHSP'}
                             </h1>
-                            <p class="text-slate-300 text-sm md:text-base leading-relaxed">
+                            <p class="text-slate-300 text-sm md:text-base leading-relaxed max-w-xl font-medium drop-shadow-sm">
                                 ${appData.hero?.desc || 'Chào mừng bạn đến với không gian chia sẻ kiến thức, dự án kỹ thuật và các hoạt động sáng tạo của CLB STEM THTH ĐHSP.'}
                             </p>
-                            ${isAdmin ? `
-                                <button onclick="openHeroModal()" class="mt-2 px-4 py-2 bg-amber-500/20 border border-amber-500/40 text-amber-300 hover:bg-amber-500 hover:text-white rounded-xl text-xs font-bold transition flex items-center gap-2">
-                                    <i class="fa-solid fa-pen-to-square"></i> Chỉnh Sửa Banner
+                            
+                            <div class="flex flex-wrap items-center gap-3 pt-2">
+                                <button onclick="navigateTo('stem')" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-blue-600/30 flex items-center gap-2">
+                                    <i class="fa-solid fa-compass"></i> Khám Phá Hoạt Động
                                 </button>
-                            ` : ''}
+                                ${isAdmin ? `
+                                    <button onclick="openHeroModal()" class="px-4 py-2.5 bg-amber-500/20 border border-amber-500/40 text-amber-300 hover:bg-amber-500 hover:text-white rounded-xl text-xs font-bold transition backdrop-blur-md flex items-center gap-2">
+                                        <i class="fa-solid fa-pen-to-square"></i> Chỉnh Sửa Banner
+                                    </button>
+                                ` : ''}
+                            </div>
                         </div>
 
-                        <!-- SLIDESHOW BANNER -->
-                        <div class="w-full md:w-5/12 aspect-video md:aspect-square rounded-2xl overflow-hidden relative group border border-slate-700/60 shadow-2xl bg-slate-950">
-                            <img id="hero-slideshow-img" src="${heroImgs[0]}" class="w-full h-full object-cover transition duration-700 cursor-pointer" onclick="openLightbox(this.src)" onerror="this.src='STEM_THTHDHSP_LOGO.png'">
-                            ${heroImgs.length > 1 ? `
-                                <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
-                                    ${heroImgs.map((_, idx) => `<span class="w-2 h-2 rounded-full bg-white/40 border border-black/20 ${idx === 0 ? '!bg-blue-500 w-5' : ''} transition-all"></span>`).join('')}
-                                </div>
-                            ` : ''}
-                        </div>
+                        <!-- SLIDESHOW INDICATORS -->
+                        ${heroImgs.length > 1 ? `
+                            <div class="absolute bottom-4 right-6 flex gap-1.5 z-20 bg-slate-900/60 p-2 rounded-full border border-slate-700/50 backdrop-blur-md">
+                                ${heroImgs.map((_, idx) => `<span class="w-2 h-2 rounded-full bg-white/40 ${idx === 0 ? '!bg-blue-500 w-5' : ''} transition-all duration-300"></span>`).join('')}
+                            </div>
+                        ` : ''}
                     </section>
 
-                    <!-- STATS CONTAINER (ĐÃ ĐẢO HOẠT ĐỘNG LÊN TRƯỚC SẢN PHẨM) -->
+                    <!-- STATS CONTAINER -->
                     <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="glass-card rounded-2xl p-6 flex flex-col items-center justify-center text-center border border-slate-800">
                             <div class="w-12 h-12 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-xl mb-3 shadow-[0_0_15px_rgba(59,130,246,0.3)]">
@@ -771,11 +782,11 @@
                                 <i class="fa-solid fa-microchip"></i>
                             </div>
                             <span class="text-3xl font-extrabold text-white tracking-tight">${spCount}</span>
-                            <span class="text-xs font-bold uppercase tracking-wider text-slate-400 mt-1">SẢN PHẨM KỸ THUẬT</span>
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-400 mt-1">SẢN PHẨM KĨ THUẬT</span>
                         </div>
                     </section>
 
-                    <!-- RECENT ACTIVITIES PREVIEW (ĐƯA HOẠT ĐỘNG GẦN ĐÂY LÊN TRÊN) -->
+                    <!-- RECENT ACTIVITIES PREVIEW -->
                     <section class="space-y-6">
                         <div class="flex justify-between items-end border-b border-slate-800 pb-4">
                             <div>
@@ -793,7 +804,7 @@
                         </div>
                     </section>
 
-                    <!-- RECENT PROJECTS PREVIEW (NẰM Ở DƯỚI) -->
+                    <!-- RECENT PROJECTS PREVIEW -->
                     <section class="space-y-6">
                         <div class="flex justify-between items-end border-b border-slate-800 pb-4">
                             <div>
