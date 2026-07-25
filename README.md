@@ -36,7 +36,7 @@ Website bao gồm các chuyên mục chính / *The website features the followin
 ##  Tác giả & Đóng góp | Authors & Credits
 
 Dự án được phát triển và duy trì bởi / *Developed and maintained by:*
-* **Lại Lý Thủy Tiên**
+* **Lai Lý Thủy Tiên**
 * **Nguyễn Hà Phương**
 
 ---
