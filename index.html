@@ -47,7 +47,7 @@
             pointer-events: none;
         }
 
-        /* Noders Style Typography & Styling */
+        /* Typography & Styling */
         .noders-title-main {
             font-family: var(--font-shrikhand);
             color: #ffffff;
@@ -56,7 +56,7 @@
         }
 
         .active-tab { 
-            background: #2563eb; 
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); 
             color: white; 
             box-shadow: 0 0 20px rgba(37, 99, 235, 0.5); 
         }
@@ -106,22 +106,22 @@
     <!-- CANVAS BACKGROUND CHUYỂN ĐỘNG -->
     <canvas id="particle-canvas"></canvas>
 
-    <!-- HEADER -->
-    <header class="bg-slate-950/80 border-b border-slate-800/80 sticky top-0 z-40 backdrop-blur-xl">
-        <div class="max-w-7xl mx-auto px-4 py-3.5 flex flex-wrap justify-between items-center gap-4">
+    <!-- HEADER RỘNG & NỔI BẬT -->
+    <header class="bg-slate-950/90 border-b border-slate-800/80 sticky top-0 z-40 backdrop-blur-2xl shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
+        <div class="max-w-[95%] mx-auto px-4 py-4 flex flex-wrap justify-between items-center gap-6">
             
             <!-- LOGO & BRAND -->
-            <div class="flex items-center gap-3.5 cursor-pointer group" onclick="navigateTo('home')">
-                <div class="w-12 h-12 bg-blue-500/10 rounded-2xl p-1.5 flex items-center justify-center border border-blue-500/30 group-hover:scale-105 group-hover:border-blue-400 transition duration-300 overflow-hidden shrink-0 shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+            <div class="flex items-center gap-4 cursor-pointer group" onclick="navigateTo('home')">
+                <div class="w-14 h-14 bg-blue-500/10 rounded-2xl p-2 flex items-center justify-center border border-blue-500/40 group-hover:scale-105 group-hover:border-blue-400 transition duration-300 overflow-hidden shrink-0 shadow-[0_0_20px_rgba(59,130,246,0.3)]">
                     <img src="STEM_THTHDHSP_LOGO.png" alt="CLB STEM Logo" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/150?text=STEM'">
                 </div>
                 <div>
-                    <h1 class="text-lg sm:text-2xl lg:text-[1.65rem] leading-none font-['Shrikhand',cursive] text-slate-100 whitespace-nowrap flex items-center gap-1.5">
-                        CLB STEM <span class="text-blue-500">THTH ĐHSP</span>
+                    <h1 class="text-xl sm:text-3xl lg:text-[1.85rem] leading-none font-['Shrikhand',cursive] text-slate-100 tracking-wide whitespace-nowrap flex items-center gap-2">
+                        CLB STEM <span class="text-blue-500 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]">THTH ĐHSP</span>
                     </h1>
-                    <div class="flex items-center gap-2 text-xs text-slate-400 mt-1">
-                        <span id="status-mode" class="text-slate-400 flex items-center gap-1.5">
-                            <i class="fa-solid fa-clock text-emerald-400"></i>
+                    <div class="flex items-center gap-2 text-xs text-slate-400 mt-1.5 font-medium">
+                        <span id="status-mode" class="text-slate-400 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                             Cập nhật: <span id="last-updated-time">Đang đồng bộ...</span>
                         </span>
                     </div>
@@ -129,32 +129,29 @@
             </div>
 
             <!-- NAVBAR TABS -->
-            <nav class="flex bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800 shadow-inner backdrop-blur-md">
-                <button onclick="navigateTo('home')" id="nav-home" class="px-5 py-2 rounded-xl text-sm font-bold transition flex items-center gap-2">
+            <nav class="flex bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800/80 shadow-inner backdrop-blur-md">
+                <button onclick="navigateTo('home')" id="nav-home" class="px-6 py-2.5 rounded-xl text-sm font-bold transition flex items-center gap-2">
                     <i class="fa-solid fa-house text-xs"></i> Trang Chủ
                 </button>
-                <button onclick="navigateTo('sp')" id="nav-sp" class="px-5 py-2 rounded-xl text-sm font-bold text-slate-400 hover:text-white transition flex items-center gap-2">
-                    <i class="fa-solid fa-microchip text-xs"></i> Sản Phẩm Kỹ Thuật
-                </button>
-                <button onclick="navigateTo('stem')" id="nav-stem" class="px-5 py-2 rounded-xl text-sm font-bold text-slate-400 hover:text-white transition flex items-center gap-2">
+                <button onclick="navigateTo('stem')" id="nav-stem" class="px-6 py-2.5 rounded-xl text-sm font-bold text-slate-400 hover:text-white transition flex items-center gap-2">
                     <i class="fa-solid fa-camera text-xs"></i> Hoạt Động Gần Đây
+                </button>
+                <button onclick="navigateTo('sp')" id="nav-sp" class="px-6 py-2.5 rounded-xl text-sm font-bold text-slate-400 hover:text-white transition flex items-center gap-2">
+                    <i class="fa-solid fa-microchip text-xs"></i> Sản Phẩm Kỹ Thuật
                 </button>
             </nav>
 
-            <!-- ACTION BUTTONS -->
+            <!-- ACTION BUTTON ADMIN -->
             <div class="flex items-center gap-3">
-                <button id="btn-auth" onclick="toggleAdminLogin()" class="px-4 py-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500 hover:text-white text-xs font-bold rounded-xl flex items-center gap-2 transition duration-300 shadow-sm">
-                    <i class="fa-solid fa-key"></i> <span id="admin-auth-text">Admin Login</span>
-                </button>
-                <button onclick="exportJSON()" class="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-slate-700 text-xs font-bold rounded-xl flex items-center gap-2 transition duration-300">
-                    <i class="fa-solid fa-download"></i> Data JSON
+                <button id="btn-auth" onclick="toggleAdminLogin()" class="px-5 py-2.5 bg-amber-500/10 border border-amber-500/40 text-amber-400 hover:bg-amber-500 hover:text-white text-xs font-bold rounded-xl flex items-center gap-2 transition duration-300 shadow-lg shadow-amber-500/10">
+                    <i class="fa-solid fa-lock" id="admin-auth-icon"></i> <span id="admin-auth-text">Admin Login</span>
                 </button>
             </div>
         </div>
     </header>
 
     <!-- MAIN CONTAINER -->
-    <main class="max-w-7xl mx-auto px-4 py-8 flex-1 w-full relative z-10">
+    <main class="max-w-[95%] mx-auto px-4 py-8 flex-1 w-full relative z-10">
         <div id="app-content">
             <div class="text-center py-20 text-slate-500">
                 <i class="fa-solid fa-circle-notch fa-spin text-3xl mb-3 text-blue-500"></i>
@@ -163,36 +160,40 @@
         </div>
     </main>
 
-    <!-- FOOTER -->
-    <footer class="border-t border-slate-800/80 bg-slate-950/90 backdrop-blur-xl pt-12 pb-8 text-slate-400 text-sm relative z-10">
-        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+    <!-- FOOTER RỘNG & HOÀNH TRÁNG -->
+    <footer class="border-t border-slate-800/80 bg-slate-950/95 backdrop-blur-2xl pt-14 pb-8 text-slate-400 text-sm relative z-10 mt-12">
+        <div class="max-w-[95%] mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
             <div class="space-y-4 md:col-span-1">
-                <div class="flex items-center gap-3">
-                    <img src="STEM_THTHDHSP_LOGO.png" class="w-10 h-10 object-contain" onerror="this.src='https://via.placeholder.com/150?text=STEM'">
-                    <span class="text-lg font-['Shrikhand',cursive] text-white tracking-wide">CLB STEM <span class="text-blue-500">THTH ĐHSP</span></span>
+                <div class="flex items-center gap-3.5">
+                    <img src="STEM_THTHDHSP_LOGO.png" class="w-12 h-12 object-contain" onerror="this.src='https://via.placeholder.com/150?text=STEM'">
+                    <span class="text-xl font-['Shrikhand',cursive] text-white tracking-wide">CLB STEM <span class="text-blue-500">THTH ĐHSP</span></span>
                 </div>
                 <p class="text-xs text-slate-400 leading-relaxed">
-                    CLB STEM trường Trung học Thực hành Đại học Sư phạm - nơi khơi nguồn đam mê sáng tạo khoa học dành cho học sinh.
+                    CLB STEM trường Trung học Thực hành Đại học Sư phạm - nơi khơi nguồn đam mê sáng tạo khoa học và công nghệ dành cho học sinh.
                 </p>
             </div>
             
             <div>
-                <h4 class="text-white font-bold text-sm mb-3 uppercase tracking-wider">Khám Phá</h4>
-                <ul class="space-y-2 text-xs">
-                    <li><a href="#home" class="hover:text-blue-400 transition">Trang chủ</a></li>
-                    <li><a href="#sp" class="hover:text-blue-400 transition">Sản phẩm Kỹ thuật</a></li>
-                    <li><a href="#stem" class="hover:text-blue-400 transition">Hoạt động Gần Đây</a></li>
+                <h4 class="text-white font-bold text-sm mb-4 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-compass text-blue-500"></i> Khám Phá
+                </h4>
+                <ul class="space-y-2.5 text-xs">
+                    <li><a href="#home" class="hover:text-blue-400 transition flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-slate-600"></i> Trang chủ</a></li>
+                    <li><a href="#stem" class="hover:text-blue-400 transition flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-slate-600"></i> Hoạt động Gần Đây</a></li>
+                    <li><a href="#sp" class="hover:text-blue-400 transition flex items-center gap-2"><i class="fa-solid fa-angle-right text-[10px] text-slate-600"></i> Sản phẩm Kỹ thuật</a></li>
                 </ul>
             </div>
 
             <div>
-                <h4 class="text-white font-bold text-sm mb-3 uppercase tracking-wider">Liên Hệ</h4>
-                <ul class="space-y-2 text-xs">
-                    <li class="flex items-start gap-2">
-                        <i class="fa-solid fa-location-dot text-blue-500 mt-0.5"></i> 
+                <h4 class="text-white font-bold text-sm mb-4 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-location-dot text-blue-500"></i> Liên Hệ
+                </h4>
+                <ul class="space-y-2.5 text-xs">
+                    <li class="flex items-start gap-2.5">
+                        <i class="fa-solid fa-building text-blue-500 mt-0.5"></i> 
                         <span>280 An Dương Vương, Phường Chợ Quán, TP. HCM</span>
                     </li>
-                    <li class="flex items-center gap-2">
+                    <li class="flex items-center gap-2.5">
                         <i class="fa-solid fa-envelope text-blue-500"></i> 
                         <a href="mailto:ththstem@hcmue.edu.vn" class="hover:text-blue-400 transition">ththstem@hcmue.edu.vn</a>
                     </li>
@@ -200,17 +201,20 @@
             </div>
 
             <div>
-                <h4 class="text-white font-bold text-sm mb-3 uppercase tracking-wider">LIÊN KẾT</h4>
+                <h4 class="text-white font-bold text-sm mb-4 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-share-nodes text-blue-500"></i> Mạng Xã Hội
+                </h4>
                 <div class="flex gap-3">
-                    <a href="https://www.facebook.com/STEMthth?locale=vi_VN" target="_blank" rel="noopener noreferrer" class="w-9 h-9 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-center text-slate-300 hover:text-white hover:bg-blue-600 transition shadow-md hover:shadow-blue-500/50" title="Facebook CLB STEM">
-                        <i class="fa-brands fa-facebook-f"></i>
+                    <a href="https://www.facebook.com/STEMthth?locale=vi_VN" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-center text-slate-300 hover:text-white hover:bg-blue-600 transition shadow-md hover:shadow-blue-500/50" title="Facebook CLB STEM">
+                        <i class="fa-brands fa-facebook-f text-base"></i>
                     </a>
                 </div>
             </div>
         </div>
 
-        <div class="max-w-7xl mx-auto px-4 pt-6 border-t border-slate-900 text-center text-xs text-slate-500">
-            <p>© 2026 Câu Lạc Bộ STEM. All rights reserved.</p>
+        <div class="max-w-[95%] mx-auto px-4 pt-6 border-t border-slate-900 text-center text-xs text-slate-500 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>© 2026 Câu Lạc Bộ STEM THTH ĐHSP. All rights reserved.</p>
+            <p class="text-[11px] text-slate-600">Được tối ưu giao diện Glassmorphism & High-Performance Canvas</p>
         </div>
     </footer>
 
@@ -225,7 +229,7 @@
             <h2 class="text-xl font-bold mb-2 text-amber-400 flex items-center gap-2">
                 <i class="fa-solid fa-lock"></i> Đăng Nhập Admin
             </h2>
-            <p class="text-xs text-slate-400 mb-6">Nhập mã PIN xác thực để chỉnh sửa nội dung bài viết.</p>
+            <p class="text-xs text-slate-400 mb-6">Nhập mã PIN xác thực để kích hoạt quyền quản trị.</p>
             
             <form onsubmit="handleAdminLogin(event)" class="space-y-4">
                 <input type="password" id="admin-pin-input" required placeholder="••••" class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 text-center tracking-[1rem] text-xl font-bold">
@@ -247,7 +251,7 @@
 
             <form id="item-form" onsubmit="handleFormSubmit(event)" class="space-y-6">
                 <input type="hidden" id="form-id">
-                <input type="hidden" id="form-category" value="sp">
+                <input type="hidden" id="form-category" value="stem">
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="md:col-span-2">
@@ -257,8 +261,8 @@
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Tag / Chuyên Mục</label>
                         <select id="form-tag" class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 font-semibold text-xs">
-                            <option value="Sản Phẩm Kỹ Thuật">Sản Phẩm Kỹ Thuật</option>
                             <option value="Hoạt Động Gần Đây">Hoạt Động Gần Đây</option>
+                            <option value="Sản Phẩm Kỹ Thuật">Sản Phẩm Kỹ Thuật</option>
                             <option value="Sự kiện & Workshop">Sự kiện & Workshop</option>
                             <option value="CLB STEM">CLB STEM</option>
                         </select>
@@ -418,7 +422,8 @@
 
         const ADMIN_PIN_HASH = "c6f79918cdb313adf1017aece79c61f17fb7ce934ed56a3deb0e7d1d4f1f502a"; // PIN mã hóa
         
-        let isAdmin = localStorage.getItem('stem_admin_logged') === 'true';
+        // MẶC ĐỊNH LUÔN LÀ ĐĂNG XUẤT (FALSE) KHI MỚI VÀO TRANG HOẶC LOAD LẠI TRANG
+        let isAdmin = false; 
         let currentUploadedImages = [];
         let currentSlideIndex = 0;
         let slideInterval = null;
@@ -486,13 +491,13 @@
             if (slideInterval) clearInterval(slideInterval);
 
             const mainCat = hash.split('/')[0];
-            ['home', 'sp', 'stem'].forEach(tab => {
+            ['home', 'stem', 'sp'].forEach(tab => {
                 const el = document.getElementById(`nav-${tab}`);
                 if (el) {
                     if (tab === mainCat) {
-                        el.className = "px-5 py-2 rounded-xl text-sm font-bold transition active-tab flex items-center gap-2";
+                        el.className = "px-6 py-2.5 rounded-xl text-sm font-bold transition active-tab flex items-center gap-2";
                     } else {
-                        el.className = "px-5 py-2 rounded-xl text-sm font-bold text-slate-400 hover:text-white transition flex items-center gap-2";
+                        el.className = "px-6 py-2.5 rounded-xl text-sm font-bold text-slate-400 hover:text-white transition flex items-center gap-2";
                     }
                 }
             });
@@ -517,7 +522,6 @@
         function toggleAdminLogin() {
             if (isAdmin) {
                 isAdmin = false;
-                localStorage.setItem('stem_admin_logged', 'false');
                 updateAdminAuthBtnText();
                 handleRouting();
                 alert("Đã đăng xuất khỏi chế độ Admin!");
@@ -534,7 +538,6 @@
 
             if (inputHash === ADMIN_PIN_HASH) {
                 isAdmin = true;
-                localStorage.setItem('stem_admin_logged', 'true');
                 closeModal('admin-login-modal');
                 updateAdminAuthBtnText();
                 handleRouting();
@@ -546,7 +549,9 @@
 
         function updateAdminAuthBtnText() {
             const btnText = document.getElementById('admin-auth-text');
-            if (btnText) btnText.innerText = isAdmin ? 'Đăng xuất Admin' : 'Admin Login';
+            const btnIcon = document.getElementById('admin-auth-icon');
+            if (btnText) btnText.innerText = isAdmin ? 'Đăng Xuất Admin' : 'Admin Login';
+            if (btnIcon) btnIcon.className = isAdmin ? 'fa-solid fa-right-from-bracket' : 'fa-solid fa-lock';
         }
 
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
@@ -605,7 +610,7 @@
             renderPreviewImages();
         }
 
-        function openItemModal(itemId = null, category = 'sp') {
+        function openItemModal(itemId = null, category = 'stem') {
             currentUploadedImages = [];
             document.getElementById('item-form').reset();
             document.getElementById('blog-upload-status').innerHTML = '';
@@ -619,7 +624,7 @@
                     document.getElementById('modal-title').innerText = "Chỉnh Sửa Bài Viết";
                     document.getElementById('form-id').value = item.id;
                     document.getElementById('form-title').value = item.title;
-                    document.getElementById('form-tag').value = item.tag || (category === 'sp' ? 'Sản Phẩm Kỹ Thuật' : 'Hoạt Động Gần Đây');
+                    document.getElementById('form-tag').value = item.tag || (category === 'stem' ? 'Hoạt Động Gần Đây' : 'Sản Phẩm Kỹ Thuật');
                     document.getElementById('form-summary').value = item.summary;
                     document.getElementById('form-content').value = item.content || '';
                     document.getElementById('form-image-urls').value = (item.images || []).join('\n');
@@ -628,14 +633,14 @@
             } else {
                 document.getElementById('modal-title').innerText = "Thêm Bài Viết Mới";
                 document.getElementById('form-id').value = '';
-                document.getElementById('form-tag').value = category === 'sp' ? 'Sản Phẩm Kỹ Thuật' : 'Hoạt Động Gần Đây';
+                document.getElementById('form-tag').value = category === 'stem' ? 'Hoạt Động Gần Đây' : 'Sản Phẩm Kỹ Thuật';
             }
             openModal('item-modal');
         }
 
         function handleFormSubmit(e) {
             e.preventDefault();
-            const id = document.getElementById('form-id').value || 'item_' + Date.now();
+            const id = document.getElementById('form-id').value;
             const category = document.getElementById('form-category').value;
             const title = document.getElementById('form-title').value.trim();
             const tag = document.getElementById('form-tag').value;
@@ -644,48 +649,43 @@
             
             const textUrls = document.getElementById('form-image-urls').value.split('\n').map(u => u.trim()).filter(u => u !== '');
             const images = [...currentUploadedImages, ...textUrls];
-
-            if (images.length === 0) {
-                images.push('STEM_THTHDHSP_LOGO.png');
-            }
-
-            const itemObj = {
-                id,
-                title,
-                tag,
-                summary,
-                content,
-                images,
-                date: new Date().toLocaleDateString('vi-VN')
-            };
+            if (!images.length) images.push('STEM_THTHDHSP_LOGO.png');
 
             if (!appData[category]) appData[category] = [];
-            
-            const existingIndex = appData[category].findIndex(i => i.id === id);
-            if (existingIndex > -1) {
-                appData[category][existingIndex] = { ...appData[category][existingIndex], ...itemObj };
+
+            if (id) {
+                const idx = appData[category].findIndex(i => i.id === id);
+                if (idx !== -1) {
+                    appData[category][idx] = { ...appData[category][idx], title, tag, summary, content, images };
+                }
             } else {
-                appData[category].unshift(itemObj);
+                const newItem = {
+                    id: Date.now().toString(),
+                    title,
+                    tag,
+                    summary,
+                    content,
+                    images,
+                    date: new Date().toLocaleDateString('vi-VN')
+                };
+                appData[category].unshift(newItem);
             }
 
             saveData();
             closeModal('item-modal');
-            alert('Lưu bài viết thành công!');
         }
 
         function deleteItem(category, id) {
             if (confirm("Bạn có chắc chắn muốn xóa bài viết này không?")) {
-                appData[category] = appData[category].filter(item => item.id !== id);
+                appData[category] = (appData[category] || []).filter(i => i.id !== id);
                 saveData();
-                alert("Đã xóa bài viết!");
             }
         }
 
         function openHeroModal() {
-            const hero = appData.hero || defaultData.hero;
-            document.getElementById('hero-title').value = hero.title || '';
-            document.getElementById('hero-desc').value = hero.desc || '';
-            document.getElementById('hero-image-urls').value = (hero.images || []).join('\n');
+            document.getElementById('hero-title').value = appData.hero.title || '';
+            document.getElementById('hero-desc').value = appData.hero.desc || '';
+            document.getElementById('hero-image-urls').value = (appData.hero.images || []).join('\n');
             openModal('hero-modal');
         }
 
@@ -693,17 +693,11 @@
             e.preventDefault();
             const title = document.getElementById('hero-title').value.trim();
             const desc = document.getElementById('hero-desc').value.trim();
-            const textUrls = document.getElementById('hero-image-urls').value.split('\n').map(u => u.trim()).filter(u => u !== '');
-
-            appData.hero = {
-                title,
-                desc,
-                images: textUrls.length ? textUrls : ["STEM_THTHDHSP_LOGO.png"]
-            };
-
+            const images = document.getElementById('hero-image-urls').value.split('\n').map(u => u.trim()).filter(u => u !== '');
+            
+            appData.hero = { title, desc, images: images.length ? images : ["STEM_THTHDHSP_LOGO.png"] };
             saveData();
             closeModal('hero-modal');
-            alert('Cập nhật Banner thành công!');
         }
 
         function openLightbox(src) {
@@ -715,139 +709,201 @@
             document.getElementById('lightbox').classList.add('hidden');
         }
 
-        function exportJSON() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
-            const dlAnchorElem = document.createElement('a');
-            dlAnchorElem.setAttribute("href", dataStr);
-            dlAnchorElem.setAttribute("download", `stem_club_data_${Date.now()}.json`);
-            document.body.appendChild(dlAnchorElem);
-            dlAnchorElem.click();
-            dlAnchorElem.remove();
-        }
-
-        // RENDER VIEWS
+        // --- RENDER VIEWS ---
         function renderHomeView(container) {
-            const hero = appData.hero || defaultData.hero;
-            const heroImages = (hero.images && hero.images.length) ? hero.images : ["STEM_THTHDHSP_LOGO.png"];
-            
-            const latestSp = (appData.sp || []).slice(0, 3);
-            const latestStem = (appData.stem || []).slice(0, 3);
+            const spCount = (appData.sp || []).length;
+            const stemCount = (appData.stem || []).length;
+            const totalViews = appData.totalViews || 100;
+            const heroImgs = appData.hero?.images?.length ? appData.hero.images : ["STEM_THTHDHSP_LOGO.png"];
 
             container.innerHTML = `
-                <div class="space-y-12 fade-in">
-                    <!-- HERO SECTION -->
-                    <div class="relative rounded-3xl overflow-hidden glass-card border border-slate-800 p-8 md:p-12">
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center relative z-10">
-                            <div class="space-y-6">
-                                ${isAdmin ? `<button onclick="openHeroModal()" class="px-3 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-lg text-xs font-semibold mb-2 hover:bg-amber-500 hover:text-white transition"><i class="fa-solid fa-pen"></i> Chỉnh sửa Banner</button>` : ''}
-                                <h1 class="noders-title-main text-3xl sm:text-5xl lg:text-6xl font-black leading-tight">
-                                    ${hero.title}
-                                </h1>
-                                <p class="text-slate-300 text-base md:text-lg leading-relaxed">
-                                    ${hero.desc}
-                                </p>
-                                <div class="flex flex-wrap gap-4 pt-2">
-                                    <button onclick="navigateTo('sp')" class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl text-sm transition shadow-lg shadow-blue-600/30 flex items-center gap-2">
-                                         Khám phá sản phẩm <i class="fa-solid fa-arrow-right text-xs"></i>
-                                    </button>
-                                    <button onclick="navigateTo('stem')" class="px-6 py-3 bg-slate-900 border border-slate-700 hover:border-slate-500 text-slate-200 font-bold rounded-2xl text-sm transition flex items-center gap-2">
-                                        <i class="fa-solid fa-camera"></i> Hoạt động gần đây
-                                    </button>
-                                </div>
+                <div class="fade-in space-y-12">
+                    <!-- HERO BANNER -->
+                    <section class="glass-card rounded-3xl p-6 md:p-10 relative overflow-hidden flex flex-col md:flex-row items-center gap-8 border border-slate-800">
+                        <div class="flex-1 space-y-4 z-10">
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold">
+                                <i class="fa-solid fa-sparkles"></i> Trang chính thức CLB STEM THTH ĐHSP
                             </div>
-                            
-                            <!-- SLIDESHOW HERO -->
-                            <div class="relative aspect-video rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 shadow-2xl group cursor-pointer" onclick="openLightbox(document.getElementById('hero-slide-img').src)">
-                                <img id="hero-slide-img" src="${heroImages[0]}" class="w-full h-full object-cover transition duration-700">
-                                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- DANH MỤC NỔI BẬT: SẢN PHẨM KỸ THUẬT & HOẠT ĐỘNG GẦN ĐÂY -->
-                    <div class="space-y-12">
-                        <!-- SẢN PHẨM KỸ THUẬT -->
-                        <div class="space-y-6">
-                            <div class="flex justify-between items-end border-b border-slate-800 pb-4">
-                                <div>
-                                    <h2 class="text-2xl font-bold text-white flex items-center gap-3">
-                                        <i class="fa-solid fa-microchip text-blue-500"></i> Sản Phẩm Kỹ Thuật Mới Nhất
-                                    </h2>
-                                    <p class="text-xs text-slate-400 mt-1">Các mô hình, thiết bị sáng tạo và giải pháp kỹ thuật do CLB thực hiện.</p>
-                                </div>
-                                <button onclick="navigateTo('sp')" class="text-xs font-semibold text-blue-400 hover:text-blue-300 transition flex items-center gap-1">
-                                    Xem tất cả <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                            <h1 class="text-3xl md:text-5xl font-extrabold text-white leading-tight noders-title-main">
+                                ${appData.hero?.title || 'CLB STEM THTH ĐHSP'}
+                            </h1>
+                            <p class="text-slate-300 text-sm md:text-base leading-relaxed">
+                                ${appData.hero?.desc || 'Chào mừng bạn đến với không gian chia sẻ kiến thức, dự án kỹ thuật và các hoạt động sáng tạo của CLB STEM THTH ĐHSP.'}
+                            </p>
+                            ${isAdmin ? `
+                                <button onclick="openHeroModal()" class="mt-2 px-4 py-2 bg-amber-500/20 border border-amber-500/40 text-amber-300 hover:bg-amber-500 hover:text-white rounded-xl text-xs font-bold transition flex items-center gap-2">
+                                    <i class="fa-solid fa-pen-to-square"></i> Chỉnh Sửa Banner
                                 </button>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                ${latestSp.length ? latestSp.map(item => renderBlogCard(item, 'sp')).join('') : '<p class="text-slate-500 text-sm italic col-span-3">Chưa có sản phẩm kỹ thuật nào.</p>'}
-                            </div>
+                            ` : ''}
                         </div>
 
-                        <!-- HOẠT ĐỘNG GẦN ĐÂY -->
-                        <div class="space-y-6">
-                            <div class="flex justify-between items-end border-b border-slate-800 pb-4">
-                                <div>
-                                    <h2 class="text-2xl font-bold text-white flex items-center gap-3">
-                                        <i class="fa-solid fa-camera text-blue-500"></i> Hoạt Động Gần Đây
-                                    </h2>
-                                    <p class="text-xs text-slate-400 mt-1">Hình ảnh workshop, sự kiện nổi bật và hoạt động học tập thường xuyên.</p>
+                        <!-- SLIDESHOW BANNER -->
+                        <div class="w-full md:w-5/12 aspect-video md:aspect-square rounded-2xl overflow-hidden relative group border border-slate-700/60 shadow-2xl bg-slate-950">
+                            <img id="hero-slideshow-img" src="${heroImgs[0]}" class="w-full h-full object-cover transition duration-700 cursor-pointer" onclick="openLightbox(this.src)" onerror="this.src='STEM_THTHDHSP_LOGO.png'">
+                            ${heroImgs.length > 1 ? `
+                                <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
+                                    ${heroImgs.map((_, idx) => `<span class="w-2 h-2 rounded-full bg-white/40 border border-black/20 ${idx === 0 ? '!bg-blue-500 w-5' : ''} transition-all"></span>`).join('')}
                                 </div>
-                                <button onclick="navigateTo('stem')" class="text-xs font-semibold text-blue-400 hover:text-blue-300 transition flex items-center gap-1">
-                                    Xem tất cả <i class="fa-solid fa-chevron-right text-[10px]"></i>
-                                </button>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                ${latestStem.length ? latestStem.map(item => renderBlogCard(item, 'stem')).join('') : '<p class="text-slate-500 text-sm italic col-span-3">Chưa có hoạt động nào gần đây.</p>'}
-                            </div>
+                            ` : ''}
                         </div>
-                    </div>
+                    </section>
+
+                    <!-- STATS CONTAINER (ĐÃ ĐẢO HOẠT ĐỘNG LÊN TRƯỚC SẢN PHẨM) -->
+                    <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="glass-card rounded-2xl p-6 flex flex-col items-center justify-center text-center border border-slate-800">
+                            <div class="w-12 h-12 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-xl mb-3 shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+                                <i class="fa-solid fa-eye"></i>
+                            </div>
+                            <span class="text-3xl font-extrabold text-white tracking-tight">${totalViews}</span>
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-400 mt-1">LƯỢT XEM WEBSITE</span>
+                        </div>
+
+                        <div class="glass-card rounded-2xl p-6 flex flex-col items-center justify-center text-center border border-slate-800">
+                            <div class="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-xl mb-3 shadow-[0_0_15px_rgba(168,85,247,0.3)]">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <span class="text-3xl font-extrabold text-white tracking-tight">${stemCount}</span>
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-400 mt-1">HOẠT ĐỘNG ĐÃ ĐĂNG</span>
+                        </div>
+
+                        <div class="glass-card rounded-2xl p-6 flex flex-col items-center justify-center text-center border border-slate-800">
+                            <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xl mb-3 shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+                                <i class="fa-solid fa-microchip"></i>
+                            </div>
+                            <span class="text-3xl font-extrabold text-white tracking-tight">${spCount}</span>
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-400 mt-1">SẢN PHẨM KỸ THUẬT</span>
+                        </div>
+                    </section>
+
+                    <!-- RECENT ACTIVITIES PREVIEW (ĐƯA HOẠT ĐỘNG GẦN ĐÂY LÊN TRÊN) -->
+                    <section class="space-y-6">
+                        <div class="flex justify-between items-end border-b border-slate-800 pb-4">
+                            <div>
+                                <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
+                                    <i class="fa-solid fa-camera text-purple-400"></i> Hoạt Động Gần Đây
+                                </h2>
+                                <p class="text-xs text-slate-400 mt-1">Hình ảnh sinh hoạt, xưởng thực hành & sự kiện</p>
+                            </div>
+                            <button onclick="navigateTo('stem')" class="text-xs font-bold text-blue-400 hover:text-blue-300 transition flex items-center gap-1">
+                                Xem tất cả <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            ${renderCardsList(appData.stem || [], 'stem', 3)}
+                        </div>
+                    </section>
+
+                    <!-- RECENT PROJECTS PREVIEW (NẰM Ở DƯỚI) -->
+                    <section class="space-y-6">
+                        <div class="flex justify-between items-end border-b border-slate-800 pb-4">
+                            <div>
+                                <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
+                                    <i class="fa-solid fa-microchip text-blue-500"></i> Sản Phẩm Kỹ Thuật
+                                </h2>
+                                <p class="text-xs text-slate-400 mt-1">Các mô hình và sản phẩm nghiên cứu ứng dụng</p>
+                            </div>
+                            <button onclick="navigateTo('sp')" class="text-xs font-bold text-blue-400 hover:text-blue-300 transition flex items-center gap-1">
+                                Xem tất cả <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            ${renderCardsList(appData.sp || [], 'sp', 3)}
+                        </div>
+                    </section>
                 </div>
             `;
 
-            // Auto slideshow hero
-            if (heroImages.length > 1) {
+            // Slideshow Automatic Timer
+            if (heroImgs.length > 1) {
                 currentSlideIndex = 0;
                 slideInterval = setInterval(() => {
-                    currentSlideIndex = (currentSlideIndex + 1) % heroImages.length;
-                    const imgEl = document.getElementById('hero-slide-img');
-                    if (imgEl) imgEl.src = heroImages[currentSlideIndex];
+                    currentSlideIndex = (currentSlideIndex + 1) % heroImgs.length;
+                    const imgEl = document.getElementById('hero-slideshow-img');
+                    if (imgEl) imgEl.src = heroImgs[currentSlideIndex];
                 }, 4000);
             }
         }
 
-        function renderListView(container, category) {
-            const list = appData[category] || [];
-            const isSp = category === 'sp';
-            const title = isSp ? "Sản Phẩm Kỹ Thuật" : "Hoạt Động Gần Đây";
-            const desc = isSp ? "Tổng hợp các dự án, mô hình kỹ thuật và sáng chế khoa học." : "Hình ảnh, thông tin sự kiện và hoạt động trải nghiệm gần đây.";
+        function renderListView(container, cat) {
+            const isSp = cat === 'sp';
+            const title = isSp ? 'Sản Phẩm Kỹ Thuật' : 'Hoạt Động Gần Đây';
+            const icon = isSp ? 'fa-microchip text-blue-500' : 'fa-camera text-purple-400';
+            const list = appData[cat] || [];
 
             container.innerHTML = `
-                <div class="space-y-8 fade-in">
-                    <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-800 pb-6">
+                <div class="fade-in space-y-6">
+                    <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-800 pb-4">
                         <div>
-                            <h1 class="text-3xl font-extrabold text-white flex items-center gap-3">
-                                <i class="fa-solid ${isSp ? 'fa-microchip' : 'fa-camera'} text-blue-500"></i> ${title}
-                            </h1>
-                            <p class="text-sm text-slate-400 mt-1">${desc}</p>
+                            <h2 class="text-2xl font-bold text-white flex items-center gap-2.5">
+                                <i class="fa-solid ${icon}"></i> ${title}
+                            </h2>
+                            <p class="text-xs text-slate-400 mt-1">Tổng số ${list.length} bài viết đã đăng</p>
                         </div>
                         ${isAdmin ? `
-                            <button onclick="openItemModal(null, '${category}')" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl text-xs transition shadow-lg shadow-blue-600/30 flex items-center gap-2">
+                            <button onclick="openItemModal(null, '${cat}')" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-blue-600/30 flex items-center gap-2">
                                 <i class="fa-solid fa-plus"></i> Thêm Bài Viết Mới
                             </button>
                         ` : ''}
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        ${list.length ? list.map(item => renderBlogCard(item, category)).join('') : `
-                            <div class="col-span-full text-center py-16 text-slate-500 glass-card rounded-3xl">
-                                <i class="fa-solid fa-folder-open text-4xl mb-3 block"></i>
-                                <p class="text-sm">Chưa có bài viết nào trong mục này.</p>
-                            </div>
-                        `}
-                    </div>
+                    ${list.length === 0 ? `
+                        <div class="glass-card rounded-2xl p-12 text-center text-slate-500 border border-slate-800">
+                            <i class="fa-solid fa-folder-open text-4xl mb-3 text-slate-600"></i>
+                            <p class="text-sm">Chưa có bài viết nào thuộc chuyên mục này.</p>
+                        </div>
+                    ` : `
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            ${renderCardsList(list, cat)}
+                        </div>
+                    `}
                 </div>
             `;
+        }
+
+        function renderCardsList(list, category, maxCount = null) {
+            const displayList = maxCount ? list.slice(0, maxCount) : list;
+            if (!displayList.length) {
+                return `<div class="col-span-full py-8 text-center text-xs text-slate-500">Chưa có dữ liệu bài viết</div>`;
+            }
+
+            return displayList.map(item => {
+                const thumb = item.images && item.images.length ? item.images[0] : 'STEM_THTHDHSP_LOGO.png';
+                return `
+                    <div class="glass-card rounded-2xl overflow-hidden flex flex-col group border border-slate-800">
+                        <div class="aspect-video overflow-hidden relative cursor-pointer" onclick="navigateTo('post/${category}/${item.id}')">
+                            <img src="${thumb}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='STEM_THTHDHSP_LOGO.png'">
+                            <span class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md text-blue-400 border border-blue-500/30 text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider">
+                                ${item.tag || (category === 'stem' ? 'Hoạt động' : 'Sản phẩm')}
+                            </span>
+                        </div>
+                        <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                            <div class="space-y-2">
+                                <div class="text-[11px] text-slate-400 flex items-center gap-2">
+                                    <i class="fa-regular fa-calendar text-slate-500"></i> ${item.date || 'Gần đây'}
+                                </div>
+                                <h3 class="text-base font-bold text-white group-hover:text-blue-400 transition line-clamp-2 cursor-pointer" onclick="navigateTo('post/${category}/${item.id}')">
+                                    ${item.title}
+                                </h3>
+                                <p class="text-xs text-slate-400 line-clamp-3 leading-relaxed">
+                                    ${item.summary}
+                                </p>
+                            </div>
+                            
+                            <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
+                                <button onclick="navigateTo('post/${category}/${item.id}')" class="text-xs font-bold text-blue-400 hover:text-blue-300 transition flex items-center gap-1.5">
+                                    Đọc tiếp <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                                </button>
+                                ${isAdmin ? `
+                                    <div class="flex items-center gap-2">
+                                        <button onclick="openItemModal('${item.id}', '${category}')" class="text-amber-400 hover:text-amber-300 text-xs p-1" title="Sửa"><i class="fa-solid fa-pen"></i></button>
+                                        <button onclick="deleteItem('${category}', '${item.id}')" class="text-red-400 hover:text-red-300 text-xs p-1" title="Xóa"><i class="fa-solid fa-trash"></i></button>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
         function renderDetailBlogView(container, category, id) {
@@ -856,9 +912,10 @@
 
             if (!item) {
                 container.innerHTML = `
-                    <div class="text-center py-20">
-                        <h2 class="text-2xl font-bold text-red-400 mb-2">Không tìm thấy bài viết!</h2>
-                        <button onclick="navigateTo('${category}')" class="px-4 py-2 bg-slate-800 text-white rounded-xl text-xs">Quay lại</button>
+                    <div class="text-center py-20 text-slate-400 space-y-4">
+                        <i class="fa-solid fa-triangle-exclamation text-4xl text-amber-500"></i>
+                        <p class="text-base font-semibold">Bài viết không tồn tại hoặc đã bị xóa.</p>
+                        <button onclick="navigateTo('${category}')" class="px-4 py-2 bg-slate-800 text-xs font-bold rounded-xl hover:bg-slate-700 transition">Quay lại danh sách</button>
                     </div>
                 `;
                 return;
@@ -867,76 +924,60 @@
             const images = item.images || ['STEM_THTHDHSP_LOGO.png'];
 
             container.innerHTML = `
-                <div class="max-w-4xl mx-auto space-y-8 fade-in">
-                    <button onclick="navigateTo('${category}')" class="px-4 py-2 bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition flex items-center gap-2">
-                        <i class="fa-solid fa-arrow-left"></i> Quay lại
+                <div class="fade-in max-w-4xl mx-auto space-y-8">
+                    <!-- NAVIGATION BACK -->
+                    <button onclick="navigateTo('${category}')" class="text-xs font-bold text-slate-400 hover:text-white transition flex items-center gap-2 bg-slate-900/80 px-3.5 py-2 rounded-xl border border-slate-800">
+                        <i class="fa-solid fa-arrow-left"></i> Quay lại ${category === 'stem' ? 'Hoạt Động' : 'Sản Phẩm Kỹ Thuật'}
                     </button>
 
-                    <article class="glass-card rounded-3xl border border-slate-800 p-6 md:p-10 space-y-8">
-                        <div class="space-y-4">
-                            <div class="flex items-center gap-3">
-                                <span class="px-3 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/30 rounded-xl text-xs font-bold">${item.tag || 'CLB STEM'}</span>
-                                <span class="text-xs text-slate-500"><i class="fa-regular fa-calendar"></i> ${item.date || ''}</span>
-                            </div>
-                            <h1 class="text-2xl md:text-4xl font-extrabold text-white leading-tight">${item.title}</h1>
-                            <p class="text-slate-300 text-base md:text-lg font-medium leading-relaxed italic bg-slate-950/40 p-4 rounded-2xl border-l-4 border-blue-500">${item.summary}</p>
-                        </div>
-
-                        <!-- GALLERY GRID -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            ${images.map(img => `
-                                <div class="aspect-video rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 cursor-pointer group" onclick="openLightbox('${img}')">
-                                    <img src="${img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='STEM_THTHDHSP_LOGO.png'">
-                                </div>
-                            `).join('')}
-                        </div>
-
-                        <!-- CONTENT -->
-                        <div class="blog-content text-slate-300 pt-4 border-t border-slate-800/80">
-                            ${(item.content || '').split('\n').map(p => p.trim() ? `<p>${p}</p>` : '').join('')}
-                        </div>
-
-                        ${isAdmin ? `
-                            <div class="pt-6 border-t border-slate-800 flex gap-3">
-                                <button onclick="openItemModal('${item.id}', '${category}')" class="px-4 py-2 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-xl text-xs font-bold hover:bg-amber-500 hover:text-white transition">Chỉnh sửa</button>
-                                <button onclick="deleteItem('${category}', '${item.id}'); navigateTo('${category}');" class="px-4 py-2 bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl text-xs font-bold hover:bg-red-500 hover:text-white transition">Xóa bài viết</button>
-                            </div>
-                        ` : ''}
-                    </article>
-                </div>
-            `;
-        }
-
-        function renderBlogCard(item, category) {
-            const thumb = (item.images && item.images.length) ? item.images[0] : 'STEM_THTHDHSP_LOGO.png';
-
-            return `
-                <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between border border-slate-800 group">
-                    <div>
-                        <div class="aspect-video overflow-hidden bg-slate-950 relative cursor-pointer" onclick="navigateTo('post/${category}/${item.id}')">
-                            <img src="${thumb}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='STEM_THTHDHSP_LOGO.png'">
-                            <span class="absolute top-3 left-3 px-2.5 py-1 bg-slate-950/80 backdrop-blur-md text-blue-400 border border-blue-500/30 rounded-lg text-[10px] font-bold">${item.tag || 'CLB STEM'}</span>
-                        </div>
-                        <div class="p-5 space-y-2">
-                            <div class="text-[11px] text-slate-500"><i class="fa-regular fa-calendar"></i> ${item.date || ''}</div>
-                            <h3 class="text-base font-bold text-white line-clamp-2 hover:text-blue-400 transition cursor-pointer" onclick="navigateTo('post/${category}/${item.id}')">
-                                ${item.title}
-                            </h3>
-                            <p class="text-slate-400 text-xs line-clamp-3 leading-relaxed">${item.summary}</p>
+                    <!-- ARTICLE HEADER -->
+                    <div class="space-y-4 border-b border-slate-800 pb-6">
+                        <span class="inline-block bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-bold px-3 py-1 rounded-lg uppercase tracking-wider">
+                            ${item.tag || (category === 'stem' ? 'Hoạt Động Gần Đây' : 'Sản Phẩm Kỹ Thuật')}
+                        </span>
+                        <h1 class="text-2xl md:text-4xl font-extrabold text-white leading-tight">
+                            ${item.title}
+                        </h1>
+                        <div class="flex items-center gap-4 text-xs text-slate-400">
+                            <span><i class="fa-regular fa-calendar text-slate-500 mr-1.5"></i> ${item.date || 'Gần đây'}</span>
+                            <span><i class="fa-solid fa-user-gear text-slate-500 mr-1.5"></i> CLB STEM THTH ĐHSP</span>
                         </div>
                     </div>
 
-                    <div class="px-5 pb-5 pt-2 flex items-center justify-between border-t border-slate-800/50">
-                        <button onclick="navigateTo('post/${category}/${item.id}')" class="text-xs font-bold text-blue-400 hover:text-blue-300 transition flex items-center gap-1">
-                            Xem chi tiết <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                        </button>
-                        ${isAdmin ? `
-                            <div class="flex gap-2">
-                                <button onclick="openItemModal('${item.id}', '${category}')" class="text-amber-400 hover:text-amber-300 text-xs"><i class="fa-solid fa-pen"></i></button>
-                                <button onclick="deleteItem('${category}', '${item.id}')" class="text-red-400 hover:text-red-300 text-xs"><i class="fa-solid fa-trash"></i></button>
-                            </div>
-                        ` : ''}
+                    <!-- SUMMARY -->
+                    <div class="glass-card p-5 rounded-2xl border-l-4 border-l-blue-500 text-slate-200 text-sm leading-relaxed italic bg-slate-900/60">
+                        ${item.summary}
                     </div>
+
+                    <!-- GALLERY GRID -->
+                    ${images.length ? `
+                        <div class="space-y-3">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Hình ảnh minh họa (${images.length})</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                ${images.map(img => `
+                                    <div class="aspect-video rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 cursor-pointer group" onclick="openLightbox('${img}')">
+                                        <img src="${img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='STEM_THTHDHSP_LOGO.png'">
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <!-- DETAILED CONTENT -->
+                    <div class="blog-content pt-4 text-slate-300 space-y-4 text-base leading-relaxed border-t border-slate-800">
+                        ${(item.content || item.summary).split('\n').map(p => p.trim() ? `<p>${p}</p>` : '').join('')}
+                    </div>
+
+                    ${isAdmin ? `
+                        <div class="pt-6 border-t border-slate-800 flex justify-end gap-3">
+                            <button onclick="openItemModal('${item.id}', '${category}')" class="px-4 py-2 bg-amber-500/20 border border-amber-500/40 text-amber-300 hover:bg-amber-500 hover:text-white rounded-xl text-xs font-bold transition flex items-center gap-2">
+                                <i class="fa-solid fa-pen"></i> Chỉnh sửa bài viết
+                            </button>
+                            <button onclick="deleteItem('${category}', '${item.id}'); navigateTo('${category}');" class="px-4 py-2 bg-red-500/20 border border-red-500/40 text-red-400 hover:bg-red-600 hover:text-white rounded-xl text-xs font-bold transition flex items-center gap-2">
+                                <i class="fa-solid fa-trash"></i> Xóa bài viết
+                            </button>
+                        </div>
+                    ` : ''}
                 </div>
             `;
         }
