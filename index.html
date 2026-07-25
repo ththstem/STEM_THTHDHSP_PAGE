@@ -13,49 +13,94 @@
     <!-- Tailwind CSS & FontAwesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- FONTS: Plus Jakarta Sans & Shrikhand (for Noders style branding) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Shrikhand&display=swap" rel="stylesheet">
     
     <!-- FIREBASE SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <style>
+        :root {
+            --font-shrikhand: 'Shrikhand', cursive;
+        }
+
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: #030712;
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(147, 51, 234, 0.15) 0px, transparent 50%),
-                radial-gradient(at 50% 50%, rgba(15, 23, 42, 0.5) 0px, transparent 100%);
-            background-attachment: fixed;
+            background-color: #060b13;
+            color: #f1f5f9;
+            overflow-x: hidden;
+            position: relative;
         }
 
-        /* Styling hiệu ứng chữ nổi 3D & Neon Glowing Header */
-        .3d-glow-text {
+        /* Canvas Particle Background */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Noders Style Typography & Styling */
+        .noders-title-main {
+            font-family: var(--font-shrikhand);
             color: #ffffff;
-            text-shadow: 
-                0 0 10px rgba(59, 130, 246, 0.5),
-                0 0 20px rgba(59, 130, 246, 0.3),
-                0 2px 4px rgba(0, 0, 0, 0.8);
+            letter-spacing: 0.02em;
+            text-shadow: 0 0 25px rgba(59, 130, 246, 0.6);
         }
 
-        .heading-emboss {
-            background: linear-gradient(135deg, #ffffff 0%, #93c5fd 50%, #3b82f6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.5));
+        .noders-title-blue {
+            font-family: var(--font-shrikhand);
+            color: #3b82f6;
+            text-shadow: 0 0 25px rgba(59, 130, 246, 0.8);
         }
 
         .active-tab { 
-            background: linear-gradient(135deg, #2563eb, #1d4ed8); 
+            background: #2563eb; 
             color: white; 
-            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4); 
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.5); 
+        }
+
+        .glass-card {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(59, 130, 246, 0.6);
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.2);
+            transform: translateY(-3px);
         }
 
         .aspect-16-9 { aspect-ratio: 16 / 9; }
         .blog-content p { margin-bottom: 1.25rem; line-height: 1.8; color: #cbd5e1; font-size: 1.05rem; }
         
-        /* Smooth Fade Animation */
+        /* Click Ripple Effect */
+        .click-ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.8) 0%, rgba(147, 51, 234, 0.4) 50%, rgba(0,0,0,0) 80%);
+            transform: scale(0);
+            animation: ripple-animation 0.6s ease-out forwards;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(3.5);
+                opacity: 0;
+            }
+        }
+
         .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(12px); }
@@ -63,22 +108,25 @@
         }
     </style>
 </head>
-<body class="text-slate-100 min-h-screen flex flex-col selection:bg-blue-500 selection:text-white">
+<body class="min-h-screen flex flex-col selection:bg-blue-500 selection:text-white">
+
+    <!-- CANVAS BACKGROUND CHUYỂN ĐỘNG / PHÁT SÁNG THE NODERS -->
+    <canvas id="particle-canvas"></canvas>
 
     <!-- HEADER -->
-    <header class="bg-slate-900/80 border-b border-slate-800/80 sticky top-0 z-40 backdrop-blur-xl">
+    <header class="bg-slate-950/80 border-b border-slate-800/80 sticky top-0 z-40 backdrop-blur-xl">
         <div class="max-w-7xl mx-auto px-4 py-3.5 flex flex-wrap justify-between items-center gap-4">
             
-            <!-- LOGO & BRAND -->
+            <!-- LOGO & BRAND (Dùng Font Shrikhand Noders Style) -->
             <div class="flex items-center gap-3.5 cursor-pointer group" onclick="navigateTo('home')">
-                <div class="w-12 h-12 bg-white/10 rounded-2xl p-1.5 flex items-center justify-center shadow-lg border border-slate-700/50 group-hover:scale-105 group-hover:border-blue-500/50 transition duration-300 overflow-hidden shrink-0 backdrop-blur-md">
+                <div class="w-12 h-12 bg-blue-500/10 rounded-2xl p-1.5 flex items-center justify-center border border-blue-500/30 group-hover:scale-105 group-hover:border-blue-400 transition duration-300 overflow-hidden shrink-0 shadow-[0_0_15px_rgba(59,130,246,0.3)]">
                     <img src="STEM_THTHDHSP_LOGO.png" alt="CLB STEM THTH ĐHSP Logo" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/150?text=STEM'">
                 </div>
                 <div>
-                    <h1 class="font-black text-xl heading-emboss leading-tight tracking-tight flex items-center gap-2">
-                        CLB STEM THTH ĐHSP
+                    <h1 class="text-lg sm:text-2xl lg:text-[1.65rem] leading-none font-['Shrikhand',cursive] text-slate-100 whitespace-nowrap flex items-center gap-1.5">
+                        CLB STEM <span class="text-blue-500">THTH ĐHSP</span>
                     </h1>
-                    <div class="flex items-center gap-2 text-xs text-slate-400 mt-0.5">
+                    <div class="flex items-center gap-2 text-xs text-slate-400 mt-1">
                         <span id="status-mode" class="text-slate-400 flex items-center gap-1.5">
                             <i class="fa-solid fa-clock text-emerald-400"></i>
                             Cập nhật: <span id="last-updated-time">Đang đồng bộ...</span>
@@ -88,7 +136,7 @@
             </div>
 
             <!-- NAVBAR TABS -->
-            <nav class="flex bg-slate-950/80 p-1.5 rounded-2xl border border-slate-800/80 shadow-inner backdrop-blur-md">
+            <nav class="flex bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800 shadow-inner backdrop-blur-md">
                 <button onclick="navigateTo('home')" id="nav-home" class="px-5 py-2 rounded-xl text-sm font-bold transition flex items-center gap-2">
                     <i class="fa-solid fa-house text-xs"></i> Trang Chủ
                 </button>
@@ -105,7 +153,7 @@
                 <button id="btn-auth" onclick="toggleAdminLogin()" class="px-4 py-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500 hover:text-white text-xs font-bold rounded-xl flex items-center gap-2 transition duration-300 shadow-sm">
                     <i class="fa-solid fa-key"></i> <span id="admin-auth-text">Admin Login</span>
                 </button>
-                <button onclick="exportJSON()" class="px-4 py-2 bg-slate-800/80 border border-slate-700/80 text-slate-300 hover:text-white hover:border-slate-600 text-xs font-bold rounded-xl flex items-center gap-2 transition duration-300">
+                <button onclick="exportJSON()" class="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-slate-700 text-xs font-bold rounded-xl flex items-center gap-2 transition duration-300">
                     <i class="fa-solid fa-download"></i> Data JSON
                 </button>
             </div>
@@ -113,7 +161,7 @@
     </header>
 
     <!-- MAIN CONTAINER -->
-    <main class="max-w-7xl mx-auto px-4 py-8 flex-1 w-full">
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-1 w-full relative z-10">
         <div id="app-content">
             <div class="text-center py-20 text-slate-500">
                 <i class="fa-solid fa-circle-notch fa-spin text-3xl mb-3 text-blue-500"></i>
@@ -122,13 +170,13 @@
         </div>
     </main>
 
-    <!-- FOOTER CHÂN TRANG ĐẦY ĐỦ -->
-    <footer class="border-t border-slate-800/80 bg-slate-950/90 backdrop-blur-xl pt-12 pb-8 text-slate-400 text-sm">
+    <!-- FOOTER CHÂN TRANG ĐẦY ĐỦ CẬP NHẬT THEO YÊU CẦU -->
+    <footer class="border-t border-slate-800/80 bg-slate-950/90 backdrop-blur-xl pt-12 pb-8 text-slate-400 text-sm relative z-10">
         <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div class="space-y-4 md:col-span-1">
                 <div class="flex items-center gap-3">
                     <img src="STEM_THTHDHSP_LOGO.png" class="w-10 h-10 object-contain" onerror="this.src='https://via.placeholder.com/150?text=STEM'">
-                    <span class="font-extrabold text-white text-base tracking-tight">CLB STEM THTH ĐHSP</span>
+                    <span class="text-lg font-['Shrikhand',cursive] text-white tracking-wide">CLB STEM <span class="text-blue-500">THTH ĐHSP</span></span>
                 </div>
                 <p class="text-xs text-slate-400 leading-relaxed">
                     Nơi khơi nguồn đam mê sáng tạo khoa học, công nghệ, kỹ thuật và toán học dành cho học sinh Trường Trung Học Thực Hành - Đại Học Sư Phạm.
@@ -147,18 +195,23 @@
             <div>
                 <h4 class="text-white font-bold text-sm mb-3 uppercase tracking-wider">Liên Hệ</h4>
                 <ul class="space-y-2 text-xs">
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-blue-500"></i> 280 An Dương Vương, P.4, Q.5, TP.HCM</li>
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-envelope text-blue-500"></i> stemclub.thth@gmail.com</li>
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-phone text-blue-500"></i> (028) 3835 2020</li>
+                    <li class="flex items-start gap-2">
+                        <i class="fa-solid fa-location-dot text-blue-500 mt-0.5"></i> 
+                        <span>280 An Dương Vương, Phường Chợ Quán, TP. HCM</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <i class="fa-solid fa-envelope text-blue-500"></i> 
+                        <a href="mailto:ththstem@hcmue.edu.vn" class="hover:text-blue-400 transition">ththstem@hcmue.edu.vn</a>
+                    </li>
                 </ul>
             </div>
 
             <div>
-                <h4 class="text-white font-bold text-sm mb-3 uppercase tracking-wider">Mạng Xã Hội</h4>
+                <h4 class="text-white font-bold text-sm mb-3 uppercase tracking-wider">LIÊN KẾT</h4>
                 <div class="flex gap-3">
-                    <a href="#" class="w-9 h-9 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-center text-slate-300 hover:text-white hover:bg-blue-600 transition"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="#" class="w-9 h-9 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-center text-slate-300 hover:text-white hover:bg-rose-600 transition"><i class="fa-brands fa-youtube"></i></a>
-                    <a href="#" class="w-9 h-9 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-center text-slate-300 hover:text-white hover:bg-sky-500 transition"><i class="fa-brands fa-github"></i></a>
+                    <a href="https://www.facebook.com/STEMthth?locale=vi_VN" target="_blank" rel="noopener noreferrer" class="w-9 h-9 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-center text-slate-300 hover:text-white hover:bg-blue-600 transition shadow-md hover:shadow-blue-500/50" title="Facebook CLB STEM">
+                        <i class="fa-brands fa-facebook-f"></i>
+                    </a>
                 </div>
             </div>
         </div>
@@ -275,9 +328,98 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- JAVASCRIPT LOGIC & CANVASES -->
     <script>
-        // FIREBASE REALTIME DATABASE CONFIG
+        // --- 1. MOUSE CLICK RIPPLE EFFECT ---
+        document.addEventListener('click', function(e) {
+            const ripple = document.createElement('div');
+            ripple.className = 'click-ripple';
+            ripple.style.left = `${e.clientX - 25}px`;
+            ripple.style.top = `${e.clientY - 25}px`;
+            ripple.style.width = '50px';
+            ripple.style.height = '50px';
+            document.body.appendChild(ripple);
+
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+
+        // --- 2. THE NODERS NETWORK PARTICLE ANIMATED BACKGROUND ---
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.8;
+                this.vy = (Math.random() - 0.5) * 0.8;
+                this.radius = Math.random() * 2 + 1.5;
+                this.alpha = Math.random() * 0.5 + 0.3;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(59, 130, 246, ${this.alpha})`;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = '#3b82f6';
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        const particleCount = Math.min(Math.floor(window.innerWidth / 20), 60);
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Connect nearby particles with glowing lines
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < 140) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        const opacity = (1 - dist / 140) * 0.35;
+                        ctx.strokeStyle = `rgba(59, 130, 246, ${opacity})`;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // --- 3. FIREBASE REALTIME DATABASE CONFIG ---
         const firebaseConfig = {
             databaseURL: "https://stem-ththdhsp-page-default-rtdb.asia-southeast1.firebasedatabase.app/"
         };
@@ -304,11 +446,14 @@
 
         let appData = defaultData;
 
-        // Tăng đếm tổng lượt xem website
-        function incrementTotalViews() {
-            db.ref('stem_club/totalViews').transaction((views) => {
-                return (views || 100) + 1;
-            });
+        // Tự động tăng số lượt truy cập mỗi khi ai đó mở/truy cập trang web
+        function incrementTotalViewsOnVisit() {
+            if (!sessionStorage.getItem('has_visited_stem_club')) {
+                sessionStorage.setItem('has_visited_stem_club', 'true');
+                db.ref('stem_club/totalViews').transaction((views) => {
+                    return (views || 100) + 1;
+                });
+            }
         }
 
         function updateTimestamp() {
@@ -318,7 +463,7 @@
             if (el) el.innerText = timeStr;
         }
 
-        // Đọc dữ liệu từ Firebase
+        // Đọc dữ liệu từ Firebase Realtime DB
         db.ref('stem_club').on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -329,14 +474,17 @@
             }
             updateTimestamp();
             updateAdminAuthBtnText();
-            handleRouting(); // Render theo đường dẫn URL
+            handleRouting();
         });
+
+        // Trigger Tăng Lượt Xem Tự Động Mỗi Khi Vào Trang
+        incrementTotalViewsOnVisit();
 
         function saveData() {
             db.ref('stem_club').set(appData);
         }
 
-        // HỆ THỐNG ROUTING (Dựa trên Hash URL để reload không bị quay về trang chủ)
+        // HỆ THỐNG ROUTING (Dựa trên Hash URL)
         window.addEventListener('hashchange', handleRouting);
 
         function navigateTo(path) {
@@ -347,10 +495,9 @@
             const hash = window.location.hash.replace('#', '') || 'home';
             const container = document.getElementById('app-content');
             
-            // Xóa interval slideshow cũ nếu có
             if (slideInterval) clearInterval(slideInterval);
 
-            // Cập nhật Active tab
+            // Cập nhật Active tab Navbar
             const mainCat = hash.split('/')[0];
             ['home', 'sp', 'stem'].forEach(tab => {
                 const el = document.getElementById(`nav-${tab}`);
@@ -447,7 +594,8 @@
         }
 
         function renderPreviewImages() {
-            const textUrls = document.getElementById('form-image-urls').value.split('\n').map(u => u.trim()).filter(u => u !== '');
+            const textUrls = document.getElementById('form-image-urls').value.split('
+').map(u => u.trim()).filter(u => u !== '');
             const allImgs = [...currentUploadedImages, ...textUrls];
             
             const container = document.getElementById('gallery-preview-container');
@@ -464,9 +612,11 @@
                 currentUploadedImages.splice(index, 1);
             } else {
                 const textIdx = index - currentUploadedImages.length;
-                const textUrls = document.getElementById('form-image-urls').value.split('\n').map(u => u.trim()).filter(u => u !== '');
+                const textUrls = document.getElementById('form-image-urls').value.split('
+').map(u => u.trim()).filter(u => u !== '');
                 textUrls.splice(textIdx, 1);
-                document.getElementById('form-image-urls').value = textUrls.join('\n');
+                document.getElementById('form-image-urls').value = textUrls.join('
+');
             }
             renderPreviewImages();
         }
@@ -508,7 +658,8 @@
             const summary = document.getElementById('form-summary').value;
             const content = document.getElementById('form-content').value;
             
-            const textUrls = document.getElementById('form-image-urls').value.split('\n').map(u => u.trim()).filter(u => u !== '');
+            const textUrls = document.getElementById('form-image-urls').value.split('
+').map(u => u.trim()).filter(u => u !== '');
             const finalImages = [...currentUploadedImages, ...textUrls];
 
             if (finalImages.length === 0) {
@@ -551,13 +702,15 @@
             const hero = appData.hero || defaultData.hero;
             document.getElementById('hero-title').value = hero.title;
             document.getElementById('hero-desc').value = hero.desc;
-            document.getElementById('hero-image-urls').value = hero.images ? hero.images.join('\n') : '';
+            document.getElementById('hero-image-urls').value = hero.images ? hero.images.join('
+') : '';
             openModal('hero-modal');
         }
 
         function handleHeroSubmit(e) {
             e.preventDefault();
-            const textUrls = document.getElementById('hero-image-urls').value.split('\n').map(u => u.trim()).filter(u => u !== '');
+            const textUrls = document.getElementById('hero-image-urls').value.split('
+').map(u => u.trim()).filter(u => u !== '');
             
             appData.hero = {
                 title: document.getElementById('hero-title').value,
@@ -588,7 +741,7 @@
             downloadAnchor.remove();
         }
 
-        // RENDER TRANG CHỦ (HERO BANNER, SLIDESHOW & DASHBOARD THỐNG KÊ)
+        // RENDER TRANG CHỦ (HERO BANNER, SLIDESHOW & NODERS STYLE DASHBOARD)
         function renderHomeView(container) {
             const hero = appData.hero || defaultData.hero;
             const images = hero.images && hero.images.length > 0 ? hero.images : ["STEM_THTHDHSP_LOGO.png"];
@@ -599,8 +752,8 @@
 
             container.innerHTML = `
                 <div class="space-y-12 fade-in">
-                    <!-- HERO SECTION -->
-                    <div class="relative rounded-3xl overflow-hidden border border-slate-800 bg-slate-900/60 p-6 md:p-12 shadow-2xl flex flex-col md:flex-row items-center gap-8 backdrop-blur-md">
+                    <!-- HERO SECTION WITH NODERS STYLE HEADINGS -->
+                    <div class="relative rounded-3xl overflow-hidden glass-card p-6 md:p-12 flex flex-col md:flex-row items-center gap-8 shadow-2xl">
                         ${isAdmin ? `
                             <button onclick="openHeroModal()" class="absolute top-4 right-4 z-20 px-3.5 py-1.5 bg-amber-600/80 hover:bg-amber-500 text-white rounded-xl text-xs font-semibold backdrop-blur-md transition flex items-center gap-1.5 shadow-lg">
                                 <i class="fa-solid fa-pen-to-square"></i> Sửa Banner
@@ -608,20 +761,20 @@
                         ` : ''}
                         
                         <div class="md:w-1/2 space-y-5">
-                            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-full text-xs font-bold uppercase tracking-wider">
-                                <i class="fa-solid fa-sparkles"></i> Welcome to STEM Club
+                            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-blue-500/10 border border-blue-500/30 text-blue-400 rounded-full text-xs font-bold uppercase tracking-wider shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+                                <i class="fa-solid fa-sparkles"></i> WELCOME TO STEM CLUB
                             </span>
-                            <h1 class="text-3xl md:text-5xl font-black heading-emboss leading-tight tracking-tight">
+                            <h1 class="text-3xl md:text-5xl font-['Shrikhand',cursive] text-white leading-tight tracking-wide">
                                 ${hero.title}
                             </h1>
-                            <p class="text-slate-300 leading-relaxed text-sm md:text-base">
+                            <p class="text-slate-300 leading-relaxed text-sm md:text-base font-medium">
                                 ${hero.desc}
                             </p>
                             <div class="flex flex-wrap gap-3 pt-2">
-                                <button onclick="navigateTo('sp')" class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-xs shadow-lg shadow-blue-600/25 transition flex items-center gap-2">
+                                <button onclick="navigateTo('sp')" class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-xs shadow-lg shadow-blue-600/30 transition flex items-center gap-2">
                                     <i class="fa-solid fa-microchip"></i> Sản Phẩm Kỹ Thuật
                                 </button>
-                                <button onclick="navigateTo('stem')" class="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl font-bold text-xs border border-slate-700 transition flex items-center gap-2">
+                                <button onclick="navigateTo('stem')" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-xl font-bold text-xs border border-slate-700 transition flex items-center gap-2">
                                     <i class="fa-solid fa-newspaper"></i> Các Hoạt Động CLB
                                 </button>
                             </div>
@@ -632,16 +785,16 @@
                             <img id="slideshow-img" src="${images[0]}" class="w-full h-full object-cover transition duration-700 cursor-pointer" onclick="openLightbox(this.src)" onerror="this.src='STEM_THTHDHSP_LOGO.png'">
                             
                             ${images.length > 1 ? `
-                                <button onclick="prevSlide()" class="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                                <button onclick="nextSlide()" class="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                                <button onclick="prevSlide()" class="absolute left-3 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/90 text-white w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                                <button onclick="nextSlide()" class="absolute right-3 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/90 text-white w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                             ` : ''}
                         </div>
                     </div>
 
-                    <!-- THỐNG KÊ DASHBOARD (STATISTICS) -->
+                    <!-- THỐNG KÊ DASHBOARD (STATISTICS WITH DYNAMIC COUNTER) -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="bg-slate-900/60 border border-slate-800/80 p-6 rounded-3xl backdrop-blur-md flex items-center gap-5 hover:border-blue-500/30 transition">
-                            <div class="w-14 h-14 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-2xl flex items-center justify-center text-2xl shrink-0">
+                        <div class="glass-card p-6 rounded-3xl flex items-center gap-5">
+                            <div class="w-14 h-14 bg-blue-500/10 border border-blue-500/30 text-blue-400 rounded-2xl flex items-center justify-center text-2xl shrink-0 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
                                 <i class="fa-solid fa-camera"></i>
                             </div>
                             <div>
@@ -650,8 +803,8 @@
                             </div>
                         </div>
 
-                        <div class="bg-slate-900/60 border border-slate-800/80 p-6 rounded-3xl backdrop-blur-md flex items-center gap-5 hover:border-emerald-500/30 transition">
-                            <div class="w-14 h-14 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center text-2xl shrink-0">
+                        <div class="glass-card p-6 rounded-3xl flex items-center gap-5">
+                            <div class="w-14 h-14 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-2xl flex items-center justify-center text-2xl shrink-0 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
                                 <i class="fa-solid fa-microchip"></i>
                             </div>
                             <div>
@@ -660,12 +813,12 @@
                             </div>
                         </div>
 
-                        <div class="bg-slate-900/60 border border-slate-800/80 p-6 rounded-3xl backdrop-blur-md flex items-center gap-5 hover:border-purple-500/30 transition">
-                            <div class="w-14 h-14 bg-purple-500/10 border border-purple-500/20 text-purple-400 rounded-2xl flex items-center justify-center text-2xl shrink-0">
+                        <div class="glass-card p-6 rounded-3xl flex items-center gap-5">
+                            <div class="w-14 h-14 bg-purple-500/10 border border-purple-500/30 text-purple-400 rounded-2xl flex items-center justify-center text-2xl shrink-0 shadow-[0_0_15px_rgba(168,85,247,0.2)]">
                                 <i class="fa-solid fa-eye"></i>
                             </div>
                             <div>
-                                <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">Tổng Lượt Xem</p>
+                                <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">Tổng Lượt Xem (Live)</p>
                                 <h3 class="text-3xl font-black text-white mt-1">${totalViews} <span class="text-xs font-normal text-slate-500">Lượt</span></h3>
                             </div>
                         </div>
@@ -673,7 +826,6 @@
                 </div>
             `;
 
-            // Tự động chuyển slide ảnh nếu có nhiều hơn 1 ảnh
             if (images.length > 1) {
                 currentSlideIndex = 0;
                 slideInterval = setInterval(() => {
@@ -696,7 +848,7 @@
             if (imgEl) imgEl.src = images[currentSlideIndex];
         }
 
-        // RENDER DANH SÁCH BÀI VIẾT
+        // RENDER DANH SÁCH BÀI VIẾT - NODERS CARD STYLE
         function renderListView(container, cat) {
             const list = appData[cat] || [];
             const title = cat === 'sp' ? 'Sản Phẩm Kỹ Thuật' : 'Các Hoạt Động CLB';
@@ -706,39 +858,39 @@
                 <div class="space-y-8 fade-in">
                     <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-800 pb-6">
                         <div>
-                            <h2 class="text-3xl font-black heading-emboss">${title}</h2>
+                            <h2 class="text-3xl sm:text-4xl font-['Shrikhand',cursive] text-white tracking-wide">${title}</h2>
                             <p class="text-slate-400 text-sm mt-1">${desc}</p>
                         </div>
                         ${isAdmin ? `
-                            <button onclick="openItemModal(null, '${cat}')" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-lg shadow-blue-600/20">
+                            <button onclick="openItemModal(null, '${cat}')" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-lg shadow-blue-600/30">
                                 <i class="fa-solid fa-plus"></i> Thêm Bài Viết Mới
                             </button>
                         ` : ''}
                     </div>
 
                     ${list.length === 0 ? `
-                        <div class="text-center py-16 bg-slate-900/40 border border-slate-800 rounded-3xl">
+                        <div class="text-center py-16 glass-card rounded-3xl">
                             <i class="fa-solid fa-folder-open text-4xl text-slate-600 mb-3"></i>
                             <p class="text-slate-400 text-sm">Chưa có bài đăng nào trong chuyên mục này.</p>
                         </div>
                     ` : `
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             ${list.map(item => `
-                                <div class="bg-slate-900/60 border border-slate-800/80 rounded-3xl overflow-hidden hover:border-slate-700 transition duration-300 flex flex-col group backdrop-blur-md">
+                                <div class="glass-card rounded-3xl overflow-hidden flex flex-col group">
                                     <div class="aspect-video bg-slate-950 overflow-hidden relative">
                                         <img src="${item.images && item.images.length > 0 ? item.images[0] : 'STEM_THTHDHSP_LOGO.png'}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='STEM_THTHDHSP_LOGO.png'">
-                                        <span class="absolute top-3 left-3 bg-slate-950/80 backdrop-blur-md border border-slate-800 text-blue-400 text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase">
+                                        <span class="absolute top-3 right-3 bg-slate-950/80 backdrop-blur-md border border-slate-800 text-blue-400 text-[10px] font-bold px-3 py-1 rounded-full uppercase">
                                             ${item.author || 'CLB STEM'}
                                         </span>
                                     </div>
                                     <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
                                         <div class="space-y-2">
-                                            <p class="text-[11px] text-slate-500 flex items-center gap-1.5"><i class="fa-regular fa-calendar"></i> ${item.date}</p>
+                                            <p class="text-[11px] text-slate-400 flex items-center gap-1.5"><i class="fa-regular fa-calendar text-blue-400"></i> ${item.date}</p>
                                             <h3 class="font-bold text-lg text-white group-hover:text-blue-400 transition line-clamp-2 cursor-pointer" onclick="navigateTo('post/${cat}/${item.id}')">${item.title}</h3>
                                             <p class="text-slate-400 text-xs line-clamp-3 leading-relaxed">${item.summary}</p>
                                         </div>
                                         
-                                        <div class="pt-3 border-t border-slate-800/60 flex items-center justify-between">
+                                        <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
                                             <button onclick="navigateTo('post/${cat}/${item.id}')" class="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1.5">
                                                 Xem chi tiết <i class="fa-solid fa-arrow-right text-[10px]"></i>
                                             </button>
@@ -775,9 +927,6 @@
                 return;
             }
 
-            // Đếm lượt xem khi mở bài viết
-            incrementTotalViews();
-
             container.innerHTML = `
                 <div class="max-w-4xl mx-auto space-y-8 fade-in">
                     <button onclick="navigateTo('${cat}')" class="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 hover:text-white rounded-xl text-xs font-bold transition inline-flex items-center gap-2">
@@ -785,12 +934,12 @@
                     </button>
 
                     <div class="space-y-4">
-                        <span class="px-3 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-full text-xs font-bold uppercase tracking-wider">
+                        <span class="px-3.5 py-1 bg-blue-500/10 border border-blue-500/30 text-blue-400 rounded-full text-xs font-bold uppercase tracking-wider">
                             ${item.author || 'CLB STEM'}
                         </span>
-                        <h1 class="text-3xl md:text-5xl font-black text-white leading-tight">${item.title}</h1>
-                        <p class="text-xs text-slate-500 flex items-center gap-2">
-                            <i class="fa-regular fa-calendar"></i> Đăng ngày: ${item.date}
+                        <h1 class="text-3xl md:text-5xl font-['Shrikhand',cursive] text-white leading-tight">${item.title}</h1>
+                        <p class="text-xs text-slate-400 flex items-center gap-2">
+                            <i class="fa-regular fa-calendar text-blue-400"></i> Đăng ngày: ${item.date}
                         </p>
                     </div>
 
@@ -804,20 +953,20 @@
                         </div>
                     ` : ''}
 
-                    <div class="bg-slate-900/40 border border-slate-800/80 p-6 md:p-8 rounded-3xl space-y-6 backdrop-blur-md">
-                        <div class="p-4 bg-blue-500/5 border-l-4 border-blue-500 rounded-r-2xl">
+                    <div class="glass-card p-6 md:p-8 rounded-3xl space-y-6">
+                        <div class="p-4 bg-blue-500/10 border-l-4 border-blue-500 rounded-r-2xl">
                             <p class="text-sm font-semibold text-blue-200 leading-relaxed italic">${item.summary}</p>
                         </div>
 
                         <div class="blog-content text-slate-300 leading-relaxed space-y-4 text-base">
-                            ${(item.content || '').split('\n').map(p => p.trim() ? `<p>${p}</p>` : '').join('')}
+                            ${(item.content || '').split('
+').map(p => p.trim() ? `<p>${p}</p>` : '').join('')}
                         </div>
                     </div>
                 </div>
             `;
         }
 
-        // LẦN ĐẦU KHỞI CHẠY KHÔNG CÓ HASH -> MẶC ĐỊNH LÀ #home
         if (!window.location.hash) {
             window.location.hash = 'home';
         }
