@@ -479,12 +479,14 @@
 
 
      
-     function renderCurrentView() {
-         handleRouting(); // Render lại view theo hash URL hiện tại
-     }
-     
-     function saveData() {
-            return db.ref('stem_club').set(appData);
+        function renderCurrentView() {
+            handleRouting(); // Render lại view theo hash URL hiện tại
+        }
+        
+        function saveData() {
+            // Lọc bỏ dữ liệu undefined nếu có
+            const cleanData = JSON.parse(JSON.stringify(appData));
+            return db.ref('stem_club').set(cleanData);
         }
 
         // --- ROUTING SYSTEM ---
@@ -907,23 +909,14 @@
         
             // 5. Lưu vào Firebase và cập nhật giao diện
             try {
-                await saveData(); // Đảm bảo hàm saveData() trả về db.ref().set()
-                
+                await saveData();
                 closeModal('item-modal');
-                
-                // Render lại danh sách/view hiện tại thay vì handleRouting()
-                if (typeof renderCurrentView === 'function') {
-                    renderCurrentView();
-                } else {
-                    handleRouting(); // Fallback nếu bạn chưa tách hàm render
-                }
-        
-                // Reset biến ảnh tạm
+                renderCurrentView();
                 currentUploadedImages = [];
-                
+                alert("✅ Đăng bài thành công!");
             } catch (error) {
-                console.error("Lỗi khi lưu bài viết:", error);
-                alert("Lưu thất bại! Vui lòng kiểm tra kết nối mạng hoặc Firebase Rules.");
+                console.error("Lỗi chi tiết từ Firebase:", error);
+                alert("Lưu thất bại!\nMã lỗi: " + error.message);
             }
         }
 
