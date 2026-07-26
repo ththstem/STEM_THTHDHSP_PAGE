@@ -346,7 +346,6 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        // SỬA LẠI LỚP PARTICLE ĐỂ KHÔNG BỊ LAG
         class Particle {
             constructor() {
                 this.x = Math.random() * canvas.width;
@@ -368,7 +367,6 @@
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
                 ctx.fillStyle = `rgba(59, 130, 246, ${this.alpha})`;
-                // ĐÃ XÓA shadowBlur Ở ĐÂY ĐỂ TRÁNH LAG MÁY
                 ctx.fill();
             }
         }
@@ -402,22 +400,8 @@
         }
         animateParticles();
 
-        // --- 3. FIREBASE CONFIG ---
-        const firebaseConfig = {
-          apiKey: "AIzaSyB-KE-0EBia76-v4rpCZbWHmF8c3OW41DU",
-          authDomain: "stem-ththdhsp-page.firebaseapp.com",
-          databaseURL: "https://stem-ththdhsp-page-default-rtdb.asia-southeast1.firebasedatabase.app",
-          projectId: "stem-ththdhsp-page",
-          storageBucket: "stem-ththdhsp-page.firebasestorage.app",
-          messagingSenderId: "160006484209",
-          appId: "1:160006484209:web:eb86afd9a542486eacb950",
-          measurementId: "G-NTV5YCC2B6"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-
+        // --- 3. BIẾN TOÀN CỤC & DỮ LIỆU MẶC ĐỊNH ---
         const ADMIN_PIN_HASH = "c6f79918cdb313adf1017aece79c61f17fb7ce934ed56a3deb0e7d1d4f1f502a"; 
-        
         let isAdmin = false; 
         let currentUploadedImages = [];
         let currentSlideIndex = 0;
@@ -436,6 +420,32 @@
 
         let appData = defaultData;
 
+        // --- 4. FIREBASE CONFIG ---
+        const firebaseConfig = {
+          apiKey: "AIzaSyB-KE-0EBia76-v4rpCZbWHmF8c3OW41DU",
+          authDomain: "stem-ththdhsp-page.firebaseapp.com",
+          databaseURL: "https://stem-ththdhsp-page-default-rtdb.asia-southeast1.firebasedatabase.app",
+          projectId: "stem-ththdhsp-page",
+          storageBucket: "stem-ththdhsp-page.firebasestorage.app",
+          messagingSenderId: "160006484209",
+          appId: "1:160006484209:web:eb86afd9a542486eacb950",
+          measurementId: "G-NTV5YCC2B6"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // --- 5. HÀM DỰ PHÒNG RENDER MÀN HÌNH ---
+        let hasRendered = false;
+        function forceRender() {
+            if (!hasRendered) {
+                hasRendered = true;
+                updateTimestamp();
+                updateAdminAuthBtnText();
+                renderCurrentView();
+            }
+        }
+
         function incrementTotalViewsOnVisit() {
             if (!sessionStorage.getItem('has_visited_stem_club')) {
                 sessionStorage.setItem('has_visited_stem_club', 'true');
@@ -452,26 +462,30 @@
             if (el) el.innerText = timeStr;
         }
 
-        // 1. TĂNG LƯỢT XEM ĐỘC LẬP (Chỉ chạy đúng 1 lần duy nhất khi mở web)
+        // --- 6. KHỞI TẠO LẮNG NGHE REALTIME DATABASE ---
         incrementTotalViewsOnVisit();
+
+        try {
+            db.ref('stem_club').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    appData = { ...defaultData, ...data };
+                }
+                forceRender();
+            }, (error) => {
+                console.error("Lỗi đọc Firebase:", error);
+                forceRender(); 
+            });
+        } catch (err) {
+            console.error("Lỗi khởi tạo Firebase:", err);
+            forceRender();
+        }
         
-        // 2. LẮNG NGHE VÀ HIỂN THỊ DỮ LIỆU REALTIME
-        db.ref('stem_club').on('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                appData = { ...defaultData, ...data };
-            } else {
-                appData = defaultData;
-            }
-            
-            updateTimestamp();
-            updateAdminAuthBtnText();
-            
-            // BẮT BUỘC phải gọi hàm này để hiển thị dữ liệu ra màn hình!
-            renderCurrentView(); 
-        }, (error) => {
-            console.error("Lỗi đọc dữ liệu từ Firebase:", error);
-        });
+        // Timeout chống treo: Đúng 2 giây tự động hiển thị web dù có lỗi mạng/Firebase
+        setTimeout(() => {
+            forceRender();
+        }, 2000);
+
         function renderCurrentView() {
             handleRouting();
         }
@@ -516,7 +530,7 @@
             }
         }
 
-        // --- RENDER TRANG CHỦ MỚI (BANNER + STATS + 2 CAROUSELS) ---
+        // --- RENDER TRANG CHỦ ---
         function renderHomeView(container) {
             const hero = appData.hero || defaultData.hero;
             const heroImages = hero.images && hero.images.length > 0 ? hero.images : ["STEM_THTHDHSP_LOGO.png"];
@@ -527,7 +541,7 @@
 
             container.innerHTML = `
                 <div class="space-y-10 fade-in">
-                    <!-- 1. HERO BANNER THU NHỎ -->
+                    <!-- 1. HERO BANNER -->
                     <div class="glass-card rounded-3xl p-6 md:p-8 relative overflow-hidden border border-slate-800 shadow-2xl">
                         ${isAdmin ? `
                             <button onclick="openHeroModal()" class="absolute top-4 right-4 z-20 px-3 py-1.5 bg-amber-500/20 border border-amber-500/50 text-amber-300 hover:bg-amber-500 hover:text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-lg">
@@ -566,7 +580,7 @@
                         </div>
                     </div>
 
-                    <!-- 2. THANH THỐNG KÊ (STATS BAR) -->
+                    <!-- 2. THANH THỐNG KÊ -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div class="glass-card p-5 rounded-2xl border border-slate-800 flex items-center justify-between group hover:border-blue-500/50 transition">
                             <div>
@@ -602,8 +616,7 @@
                         </div>
                     </div>
 
-
-                    <!-- 3. SLIDESHOW CAROUSEL: HOẠT ĐỘNG GẦN ĐÂY -->
+                    <!-- 3. CAROUSEL: HOẠT ĐỘNG GẦN ĐÂY -->
                     <div class="space-y-4">
                         <div class="flex justify-between items-end">
                             <div>
@@ -624,7 +637,7 @@
                         </div>
 
                         <div id="carousel-stem" class="flex gap-5 overflow-x-auto no-scrollbar scroll-smooth py-2">
-                            ${stemList.length > 0 ? stemList.map(item => renderBlogCardSlide(item, 'stem')).join('') : `
+                            ${stemList.length > 0 ? stemList.map((item, idx) => renderBlogCardSlide(item, 'stem', idx)).join('') : `
                                 <div class="w-full text-center py-10 bg-slate-900/40 rounded-2xl border border-slate-800/60 text-slate-500 text-xs">
                                     Chưa có bài đăng hoạt động nào.
                                 </div>
@@ -632,7 +645,7 @@
                         </div>
                     </div>
 
-                    <!-- 4. SLIDESHOW CAROUSEL: SẢN PHẨM KỸ THUẬT -->
+                    <!-- 4. CAROUSEL: SẢN PHẨM KỸ THUẬT -->
                     <div class="space-y-4">
                         <div class="flex justify-between items-end">
                             <div>
@@ -653,7 +666,7 @@
                         </div>
 
                         <div id="carousel-sp" class="flex gap-5 overflow-x-auto no-scrollbar scroll-smooth py-2">
-                            ${spList.length > 0 ? spList.map(item => renderBlogCardSlide(item, 'sp')).join('') : `
+                            ${spList.length > 0 ? spList.map((item, idx) => renderBlogCardSlide(item, 'sp', idx)).join('') : `
                                 <div class="w-full text-center py-10 bg-slate-900/40 rounded-2xl border border-slate-800/60 text-slate-500 text-xs">
                                     Chưa có sản phẩm kỹ thuật nào.
                                 </div>
@@ -663,9 +676,8 @@
                 </div>
             `;
 
-            // Slideshow Banner
             if (heroImages.length > 1) {
-                if (slideInterval) clearInterval(slideInterval); // CLEAR TRƯỚC KHI TẠO MỚI
+                if (slideInterval) clearInterval(slideInterval);
                 currentSlideIndex = 0;
                 slideInterval = setInterval(() => {
                     const slides = document.querySelectorAll('.hero-slide-img');
@@ -678,10 +690,9 @@
                     }
                 }, 4000);
             }
+        }
 
-        // HÀM TẠO THẺ SLIDE - DÙNG CHUNG CHO CẢ SỰ KIỆN VÀ SẢN PHẨM KỸ THUẬT
         function renderBlogCardSlide(item, category, index) {
-            // Tự động dùng index hoặc key làm ID dự phòng nếu item.id bị undefined
             const itemId = (item && item.id !== undefined && item.id !== null) ? item.id : (item.key !== undefined ? item.key : index);
             const firstImg = (item.images && item.images.length > 0) ? item.images[0] : 'STEM_THTHDHSP_LOGO.png';
             const isSP = category === 'sp';
@@ -721,7 +732,6 @@
             if (el) el.scrollBy({ left: offset, behavior: 'smooth' });
         }
 
-        // --- RENDER MÀN HÌNH DANH SÁCH BÀI VIẾT (GIAO DIỆN LƯỚI) ---
         function renderListView(container, category) {
             const isSP = category === 'sp';
             const title = isSP ? 'Sản Phẩm Kỹ Thuật' : 'Hoạt Động Gần Đây';
@@ -795,7 +805,6 @@
             `;
         }
 
-        // --- RENDER XEM BÀI VIẾT CHI TIẾT ---
         function renderDetailBlogView(container, category, id) {
             const list = appData[category] || [];
             const item = list.find(i => String(i.id) === String(id));
@@ -831,7 +840,6 @@
                             </p>
                         </div>
 
-                        <!-- THƯ VIỆN ẢNH CHI TIẾT -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                             ${images.map(img => `
                                 <div class="h-64 rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 cursor-zoom-in" onclick="openLightbox('${img}')">
@@ -852,7 +860,6 @@
             `;
         }
 
-        // --- XỬ LÝ LIGHTBOX ẢNH ---
         function openLightbox(url) {
             document.getElementById('lightbox-img').src = url;
             document.getElementById('lightbox').classList.remove('hidden');
@@ -861,7 +868,6 @@
             document.getElementById('lightbox').classList.add('hidden');
         }
 
-        // --- XỬ LÝ FORM THÊM / SỬA BÀI BÁO ---
         async function handleFormSubmit(e) {
             e.preventDefault();
             
@@ -933,7 +939,6 @@
             }
         }
 
-        // ADMINISTRATIVE LOGIC
         async function hashPIN(pin) {
             const encoder = new TextEncoder();
             const data = encoder.encode(pin);
