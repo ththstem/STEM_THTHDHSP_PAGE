@@ -346,6 +346,7 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
+        // SỬA LẠI LỚP PARTICLE ĐỂ KHÔNG BỊ LAG
         class Particle {
             constructor() {
                 this.x = Math.random() * canvas.width;
@@ -355,22 +356,20 @@
                 this.radius = Math.random() * 2 + 1.5;
                 this.alpha = Math.random() * 0.5 + 0.3;
             }
-
+        
             update() {
                 this.x += this.vx;
                 this.y += this.vy;
                 if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
                 if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
             }
-
+        
             draw() {
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
                 ctx.fillStyle = `rgba(59, 130, 246, ${this.alpha})`;
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = '#3b82f6';
+                // ĐÃ XÓA shadowBlur Ở ĐÂY ĐỂ TRÁNH LAG MÁY
                 ctx.fill();
-                ctx.shadowBlur = 0;
             }
         }
 
@@ -446,21 +445,23 @@
             if (el) el.innerText = timeStr;
         }
 
-        db.ref('stem_club').on('value', (snapshot) => {
-          const data = snapshot.val();
-          if (data) {
-            appData = { ...defaultData, ...data };
-          } else {
-            appData = defaultData;
-          }
-          updateTimestamp();
-          updateAdminAuthBtnText();
-          renderCurrentView(); 
-        }, (error) => {
-          console.error("Lỗi đọc dữ liệu từ Firebase:", error);
+        // Dùng once('value') cho lần đầu hoặc chỉ update appData chứ KHÔNG tự động re-render nếu không cần thiết
+        db.ref('stem_club').once('value').then((snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                appData = { ...defaultData, ...data };
+            } else {
+                appData = defaultData;
+            }
+            updateTimestamp();
+            updateAdminAuthBtnText();
+            handleRouting(); // Chỉ chạy routing 1 lần duy nhất khi load xong data
+        }).catch((error) => {
+            console.error("Lỗi đọc dữ liệu từ Firebase:", error);
         });
+        
+        // Chỉ tăng lượt xem 1 lần duy nhất
         incrementTotalViewsOnVisit();
-
         function renderCurrentView() {
             handleRouting();
         }
@@ -591,6 +592,7 @@
                         </div>
                     </div>
 
+
                     <!-- 3. SLIDESHOW CAROUSEL: HOẠT ĐỘNG GẦN ĐÂY -->
                     <div class="space-y-4">
                         <div class="flex justify-between items-end">
@@ -653,6 +655,7 @@
 
             // Slideshow Banner
             if (heroImages.length > 1) {
+                if (slideInterval) clearInterval(slideInterval); // CLEAR TRƯỚC KHI TẠO MỚI
                 currentSlideIndex = 0;
                 slideInterval = setInterval(() => {
                     const slides = document.querySelectorAll('.hero-slide-img');
@@ -665,16 +668,17 @@
                     }
                 }, 4000);
             }
-        }
 
         // HÀM TẠO THẺ SLIDE - DÙNG CHUNG CHO CẢ SỰ KIỆN VÀ SẢN PHẨM KỸ THUẬT
-        function renderBlogCardSlide(item, category) {
+        function renderBlogCardSlide(item, category, index) {
+            // Tự động dùng index hoặc key làm ID dự phòng nếu item.id bị undefined
+            const itemId = (item && item.id !== undefined && item.id !== null) ? item.id : (item.key !== undefined ? item.key : index);
             const firstImg = (item.images && item.images.length > 0) ? item.images[0] : 'STEM_THTHDHSP_LOGO.png';
             const isSP = category === 'sp';
             const tagText = item.tag || (isSP ? 'Sản Phẩm Kỹ Thuật' : 'Hoạt Động Gần Đây');
-
+        
             return `
-                <div class="min-w-[280px] max-w-[280px] sm:min-w-[320px] sm:max-w-[320px] glass-card rounded-2xl overflow-hidden border border-slate-800 flex flex-col shrink-0 cursor-pointer group" onclick="navigateTo('post/${category}/${item.id}')">
+                <div class="min-w-[280px] max-w-[280px] sm:min-w-[320px] sm:max-w-[320px] glass-card rounded-2xl overflow-hidden border border-slate-800 flex flex-col shrink-0 cursor-pointer group" onclick="navigateTo('post/${category}/${itemId}')">
                     <div class="relative h-44 overflow-hidden bg-slate-950">
                         <img src="${firstImg}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='STEM_THTHDHSP_LOGO.png'">
                         <span class="absolute top-3 left-3 px-2.5 py-1 ${isSP ? 'bg-emerald-500/80 text-emerald-100' : 'bg-blue-500/80 text-blue-100'} backdrop-blur-md rounded-lg text-[10px] font-bold uppercase tracking-wider shadow-md">
@@ -987,7 +991,7 @@
             renderPreviewImages();
         }
 
-        function compressImageFile(file, maxWidth = 800, quality = 0.7) {
+        function compressImageFile(file, maxWidth = 500, quality = 0.5) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
