@@ -140,7 +140,7 @@
 
             <div class="flex items-center gap-3">
                 <button id="btn-auth" onclick="toggleAdminLogin()" class="px-5 py-2.5 bg-amber-500/10 border border-amber-500/40 text-white hover:bg-amber-500 hover:text-white text-xs font-bold rounded-xl flex items-center gap-2 transition duration-300 shadow-lg shadow-amber-500/10">
-                    <i class="fa-solid fa-lock text-white" id="admin-auth-icon"></i> <span id="admin-auth-text" class="text-white">Admin Login</span>
+                    <i class="fa-solid fa-lock text-white" id="admin-auth-icon"></i> <span id="admin-auth-text" class="text-white">Login</span>
                 </button>
             </div>
         </div>
@@ -222,9 +222,9 @@
     <div id="admin-login-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 shadow-2xl">
             <h2 class="text-xl font-bold mb-2 text-amber-400 flex items-center gap-2">
-                <i class="fa-solid fa-lock"></i> Đăng Nhập Admin
+                <i class="fa-solid fa-lock"></i> Login
             </h2>
-            <p class="text-xs text-slate-400 mb-6">Nhập mã PIN xác thực để kích hoạt quyền quản trị.</p>
+            <p class="text-xs text-slate-400 mb-6">Tính năng này tạm thời chưa hoạt động</p>
             
             <form onsubmit="handleAdminLogin(event)" class="space-y-4">
                 <input type="password" id="admin-pin-input" required placeholder="••••" class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 text-center tracking-[1rem] text-xl font-bold">
