@@ -445,23 +445,26 @@
             if (el) el.innerText = timeStr;
         }
 
-        // Dùng once('value') cho lần đầu hoặc chỉ update appData chứ KHÔNG tự động re-render nếu không cần thiết
-        db.ref('stem_club').once('value').then((snapshot) => {
+        // 1. TĂNG LƯỢT XEM ĐỘC LẬP (Chỉ chạy đúng 1 lần duy nhất khi mở web)
+        incrementTotalViewsOnVisit();
+        
+        // 2. LẮNG NGHE VÀ HIỂN THỊ DỮ LIỆU REALTIME
+        db.ref('stem_club').on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
                 appData = { ...defaultData, ...data };
             } else {
                 appData = defaultData;
             }
+            
             updateTimestamp();
             updateAdminAuthBtnText();
-            handleRouting(); // Chỉ chạy routing 1 lần duy nhất khi load xong data
-        }).catch((error) => {
+            
+            // BẮT BUỘC phải gọi hàm này để hiển thị dữ liệu ra màn hình!
+            renderCurrentView(); 
+        }, (error) => {
             console.error("Lỗi đọc dữ liệu từ Firebase:", error);
         });
-        
-        // Chỉ tăng lượt xem 1 lần duy nhất
-        incrementTotalViewsOnVisit();
         function renderCurrentView() {
             handleRouting();
         }
